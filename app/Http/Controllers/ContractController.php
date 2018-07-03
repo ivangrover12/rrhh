@@ -139,7 +139,6 @@ class ContractController extends Controller
         $file_name= "Seguro.pdf";
         $data = [
             'contract' => $contract,
-            'numeroliteral' => \NumeroALetras::convertir($contract->position->charge->base_wage),
             'mae' => Contract::where([['position_id', '=', '1'],['status', '=', 'true'],])->first(),
             'daa' => Contract::where([['position_id', '=', '53'],['status', '=', 'true'],])->first()
         ];
