@@ -32,6 +32,7 @@ Route::get('payroll/print/{year}/{month}', 'PayrollController@print')->where(['p
 
 // Route::resource('report','ReportController');
 Route::get('report/{year}/{month}','ReportController@getExcel')->name('report_excel');
+Route::get('report/print/contracts/{from}/{to}', 'ReportController@printContracts')->name('report_print_contracts');
 Route::resource('contract','ContractController');
 
 /*  tickets */
