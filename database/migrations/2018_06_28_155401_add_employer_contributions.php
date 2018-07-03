@@ -1,9 +1,7 @@
 <?php
-
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-
 class AddEmployercontributions extends Migration
 {
     /**
@@ -14,13 +12,12 @@ class AddEmployercontributions extends Migration
     public function up()
     {
         Schema::table('procedures', function (Blueprint $table) {
-            $table->decimal('contribution_insurance_company', 8, 2)->default(0);
-            $table->decimal('contribution_professional_risk', 8, 2)->default(0);
-            $table->decimal('contribution_employer_solidary', 8, 2)->default(0);
-            $table->decimal('contribution_employer_housing', 8, 2)->default(0);
+            $table->decimal('contribution_insurance_company', 8, 2)->default(10);
+            $table->decimal('contribution_professional_risk', 8, 2)->default(1.71);
+            $table->decimal('contribution_employer_solidary', 8, 2)->default(3);
+            $table->decimal('contribution_employer_housing', 8, 2)->default(2);
         });
     }
-
     /**
      * Reverse the migrations.
      *
@@ -33,4 +30,3 @@ class AddEmployercontributions extends Migration
         });
     }
 }
-
