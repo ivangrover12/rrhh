@@ -18,7 +18,6 @@
 	    "maatwebsite/excel": "~2.1.0",
         "nesbot/carbon": "~1.21",
         "yajra/laravel-datatables-oracle": "~8.0",
-        "arielcr/numero-a-letras": "dev-master"
     },
     "require-dev": {
         "filp/whoops": "^2.0",
