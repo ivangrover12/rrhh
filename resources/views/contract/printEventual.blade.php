@@ -68,7 +68,7 @@
             <span class="title-text">CLÁUSULA QUINTA (VACACIÓN). -</span> Por tratarse de un contrato eventual, el <span class="title-text">CONTRATADO</span> no tiene derecho a vacación.
         </p>
         <p>
-            <span class="title-text">CLÁUSULA SEXTA (REMUNERACION). -</span> El <span class="title-text">CONTRATADO</span> percibirá el sueldo mensual de <span class="title-text">Bs.- {{ Util::formatMoney($contract->position->charge->base_wage) }}.- ( {{ $numeroliteral }} 00/100 Bolivianos)</span> sueldo que será pagado y ejecutado a la Partida Presupuestaria 12100 (Personal Eventual).
+            <span class="title-text">CLÁUSULA SEXTA (REMUNERACION). -</span> El <span class="title-text">CONTRATADO</span> percibirá el sueldo mensual de <span class="title-text">Bs.- {{ Util::formatMoney($contract->position->charge->base_wage) }}.- ( {{ Util::convertir($contract->position->charge->base_wage) }} Bolivianos)</span> sueldo que será pagado y ejecutado a la Partida Presupuestaria 12100 (Personal Eventual).
         </p>
         <p>
             Asimismo, de la remuneración acordada la <span class="title-text">MUSERPOL</span> hará las retenciones impositivas aplicables si correspondiera y los descuentos determinados por Ley. La forma de pago será la establecida por <span class="title-text">MUSERPOL</span> pudiendo el pago efectuarse por la Unidad de Tesorería o a través de una entidad bancaria.

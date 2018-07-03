@@ -58,7 +58,7 @@
                                         <button class="btn btn-primary" type="button" data-toggle="tooltip" data-placement="top" title="Afiliacion y reingreso del trabajador" onclick="printJS({printable:'{!! route('print_high_insurance', [$contract->id]) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})" ><i class="fa fa-print"></i></button>
                                         <button class="btn btn-primary" type="button" data-toggle="tooltip" data-placement="top" title="Aviso de baja del asegurado" onclick="printJS({printable:'{!! route('print_low_insurance', [$contract->id]) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})" ><i class="fa fa-print"></i></button>
                                     @endif
-                                    <button class="btn btn-primary" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir contrato" onclick="printJS({printable:'{!! route('print_contract', [$contract->id]) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})" ><i class="fa fa-print"></i></button>
+                                    
                                 </td>
                             </tr>
                         @endforeach
