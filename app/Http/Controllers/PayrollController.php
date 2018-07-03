@@ -593,7 +593,7 @@ class PayrollController extends Controller
         })->download('xls');    
     }
 
-    private function getFormattedData($year, $month, $valid_contracts, $management_entity, $position_group, $employer_number)
+    private function getFormattedData($year, $month, $valid_contracts, $consultant, $with_account, $management_entity, $position_group, $employer_number)
     {
         $procedure = Procedure::where('month_id', $month)->where('year', $year)->select()->first();
 
@@ -606,7 +606,7 @@ class PayrollController extends Controller
 
             $payrolls = Payroll::where('procedure_id',$procedure->id)->get();
             // if (!config('app.debug')) {
-            //     $payrolls = Payroll::where('procedure_id',$procedure->id)->take(3)->get();
+            //     $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->get();
             // }
             foreach ($payrolls as $key => $payroll) {
                 $contract = $payroll->contract;
@@ -614,7 +614,7 @@ class PayrollController extends Controller
 
                 $e = new EmployeePayroll($payroll, $procedure);
                 
-                if (($valid_contracts && !$e->valid_contract) || (($management_entity != 0) && ($e->management_entity_id != $management_entity)) || (($position_group != 0) && ($e->position_group_id != $position_group)) || ($employer_number && ($e->employer_number_id != $employer_number))) {
+                if (($valid_contracts && !$e->valid_contract) || (($management_entity != 0) && ($e->management_entity_id != $management_entity)) || (($position_group != 0) && ($e->position_group_id != $position_group)) || ($employer_number && ($e->employer_number_id != $employer_number)) || (!$consultant && $e->consultant) || ($consultant && !$e->consultant) || ($with_account && !$employee->account_number)) {
                     $e->setZeroAccounts();
                 } else {
                     $employees[] = $e;
@@ -697,17 +697,23 @@ class PayrollController extends Controller
         $employer_number = 0;
         $position_group = 0;
         $management_entity = 0;
+        $with_account = 0;
+        $consultant = 0;
         $valid_contracts = 0;
         $report_name = '';
         $report_type = 'H';
 
         switch (count($params)) {
-            case 6:
+            case 8:
                 $employer_number = request('employer_number');
-            case 5:
+            case 7:
                 $position_group = request('position_group');
-            case 4:
+            case 6:
                 $management_entity = request('management_entity');
+            case 5:
+                $with_account = request('with_account');
+            case 4:
+                $consultant = request('consultant');
             case 3:
                 $valid_contracts = request('valid_contracts');
             case 2:
@@ -723,7 +729,7 @@ class PayrollController extends Controller
                 ], 404);
         }
 
-        $response = $this->getFormattedData($year, $month->id, $valid_contracts, $management_entity, $position_group, $employer_number);
+        $response = $this->getFormattedData($year, $month->id, $valid_contracts, $consultant, $with_account, $management_entity, $position_group, $employer_number);
 
         $response->data['title']->subtitle = '';
         $response->data['title']->management_entity = '';
@@ -732,20 +738,7 @@ class PayrollController extends Controller
         $response->data['title']->report_name = $report_name;
         $response->data['title']->report_type = $report_type;
         $response->data['title']->month = $month->name;
-
-        if ($management_entity) {
-            $response->data['title']->management_entity = ManagementEntity::find($management_entity)->name;
-        }
-        if ($position_group) {
-            $position_group = PositionGroup::find($position_group);
-            $response->data['title']->position_group = $position_group->name;
-            $response->data['company']->employer_number = $position_group->employer_number->number;
-        }
-        if ($employer_number) {
-            $employer_number = EmployerNumber::find($employer_number);
-            $response->data['title']->employer_number = $employer_number->number;
-            $response->data['company']->employer_number = $employer_number->number;
-        }
+        $response->data['title']->consultant = $consultant;
 
         switch ($report_type) {
             case 'H':
@@ -762,6 +755,20 @@ class PayrollController extends Controller
                     'message' => 'No se encuentra la planilla',
                     'data' => null
                 ]);
+        }
+
+        if ($management_entity) {
+            $response->data['title']->management_entity = ManagementEntity::find($management_entity)->name;
+        }
+        if ($position_group) {
+            $position_group = PositionGroup::find($position_group);
+            $response->data['title']->position_group = $position_group->name;
+            $response->data['company']->employer_number = $position_group->employer_number->number;
+        }
+        if ($employer_number) {
+            $employer_number = EmployerNumber::find($employer_number);
+            $response->data['title']->employer_number = $employer_number->number;
+            $response->data['company']->employer_number = $employer_number->number;
         }
 
         $file_name= implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]).".pdf";

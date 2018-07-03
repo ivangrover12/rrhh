@@ -12,8 +12,10 @@ class EmployeePayroll
         $contract = $payroll->contract;
         $employee = $contract->employee;
 
+        // Common data
         $this->ci_ext = Util::ciExt($employee);
         $this->full_name = Util::fullName($employee, 'uppercase', 'lastname_first');
+        $this->consultant = ($employee->employee_type->name == 'Consultor') ? true : false;
         $this->account_number = $employee->account_number;
         $this->birth_date = Util::getDate($employee->birth_date);
         $this->gender = $employee->gender;
@@ -26,6 +28,8 @@ class EmployeePayroll
         $this->quotable = $this->base_wage * $this->worked_days / 30;
         $this->management_entity = $employee->management_entity->name;
         $this->management_entity_id = $employee->management_entity->id;
+
+        // Payable template
         $this->discount_old = Util::get_percentage($this->quotable, $procedure->discount_old);
         $this->discount_common_risk = Util::get_percentage($this->quotable,$procedure->discount_common_risk);
         $this->discount_commission = Util::get_percentage($this->quotable,$procedure->discount_commission);
@@ -37,16 +41,20 @@ class EmployeePayroll
         $this->total_amount_discount_institution = $payroll->total_amount_discount_institution;
         $this->total_discounts = $this->total_amount_discount_law + $this->total_amount_discount_institution + $this->discount_rc_iva;
         $this->payable_liquid = round(($this->quotable - $this->total_discounts), 2);
+
+        // Employer template
         $this->contribution_insurance_company = Util::get_percentage($this->quotable, $procedure->contribution_insurance_company);
         $this->contribution_professional_risk = Util::get_percentage($this->quotable, $procedure->contribution_professional_risk);
         $this->contribution_employer_solidary = Util::get_percentage($this->quotable, $procedure->contribution_employer_solidary);
         $this->contribution_employer_housing = Util::get_percentage($this->quotable, $procedure->contribution_employer_housing);
         $this->total_contributions = round(($this->contribution_insurance_company + $this->contribution_professional_risk + $this->contribution_employer_solidary + $this->contribution_employer_housing), 2);
+
+        // Extra data
         $this->position_group = $contract->position->position_group->name;
         $this->position_group_id = $contract->position->position_group->id;
         $this->employer_number = $contract->position->position_group->employer_number->number;
         $this->employer_number_id = $contract->position->position_group->employer_number->id;
-        $this->valid_contract = Carbon::parse($contract->date_end)->gte(Carbon::create($procedure->year, $procedure->month->id)->endOfMonth()) && $this->account_number;
+        $this->valid_contract = Carbon::parse($contract->date_end)->gte(Carbon::create($procedure->year, $procedure->month->id)->endOfMonth());
     }
 
     public function setZeroAccounts() {

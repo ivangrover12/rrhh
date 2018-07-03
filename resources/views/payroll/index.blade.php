@@ -29,22 +29,23 @@
                             <ul class="dropdown-menu" style="overflow-x: hidden; max-height: 35em; height: auto;">
                                 @for ($i = 1; $i <= 2; $i++)
                                     @php ($t = ($i == 1) ? 'H' : 'P')
-                                    <li><a href="#" onclick="printJS({printable:'{!! route('print_payroll', [$procedure->year, $procedure->month->id, 'report_type='.$t, 'report_name=B-'.$i, 'valid_contracts=0']) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})">B-{{ $i }} ({{ $t }}.)</a></li>
+                                    <li><a href="#" onclick="printJS({printable:'{!! route('print_payroll', [$procedure->year, $procedure->month->id, 'report_type='.$t, 'report_name=B-'.$i, 'valid_contracts=1', 'consultant=0', 'with_account=1']) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})">B-{{ $i }} ({{ $t }}.)</a></li>
                                 @endfor
+                                <li><a href="#" onclick="printJS({printable:'{!! route('print_payroll', [$procedure->year, $procedure->month->id, 'report_type=H', 'report_name=C-1', 'valid_contracts=1', 'consultant=1', 'with_account=0']) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})">C-1 (CONSULTORES EN LÍNEA)</a></li>
                                 @for ($i = 1; $i <= 2; $i++)
                                     @php ($t = ($i == 1) ? 'H' : 'P')
-                                    <li><a href="#" onclick="printJS({printable:'{!! route('print_payroll', [$procedure->year, $procedure->month->id, 'report_type='.$t, 'report_name=A-'.$i]) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})">A-{{ $i }} ({{ $t }}.)</a></li>
+                                    <li><a href="#" onclick="printJS({printable:'{!! route('print_payroll', [$procedure->year, $procedure->month->id, 'report_type='.$t, 'report_name=A-'.$i, 'valid_contracts=0', 'consultant=0', 'with_account=0']) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})">A-{{ $i }} ({{ $t }}.)</a></li>
                                 @endfor
                                 @php ($i = 4)
                                 @foreach (['H', 'P'] as $type)
                                     @foreach ($management_entities as $management_entity)
-                                        <li><a href="#" onclick="printJS({printable:'{!! route('print_payroll', [$procedure->year, $procedure->month->id, 'report_type='.$type, 'report_name=A-'.$i, 'valid_contracts=0', 'management_entity='.$management_entity->id]) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})">A-{{ $i }} ({{ $type.'. '.$management_entity->name }})</a></li>
+                                        <li><a href="#" onclick="printJS({printable:'{!! route('print_payroll', [$procedure->year, $procedure->month->id, 'report_type='.$type, 'report_name=A-'.$i, 'valid_contracts=0', 'consultant=0', 'with_account=0', 'management_entity='.$management_entity->id]) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})">A-{{ $i }} ({{ $type.'. '.$management_entity->name }})</a></li>
                                         @php ($i++)
                                     @endforeach
                                 @endforeach
                                 @foreach (['H', 'P'] as $type)
                                     @foreach ($position_groups as $position_group)
-                                        <li><a href="#" onclick="printJS({printable:'{!! route('print_payroll', [$procedure->year, $procedure->month->id, 'report_type='.$type, 'report_name='.$type.'-'.$i.'-'.$position_group->id, 'valid_contracts=0', 'management_entity=0', 'position_group='.$position_group->id]) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})">{{ $type.'-'.$i.'-'.$position_group->id }} ({{ $position_group->name }})</a></li>
+                                        <li><a href="#" onclick="printJS({printable:'{!! route('print_payroll', [$procedure->year, $procedure->month->id, 'report_type='.$type, 'report_name='.$type.'-'.$i.'-'.$position_group->id, 'valid_contracts=0', 'consultant=0', 'with_account=0', 'management_entity=0', 'position_group='.$position_group->id]) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})">{{ $type.'-'.$i.'-'.$position_group->id }} ({{ $position_group->name }})</a></li>
                                     @endforeach
                                     @php ($i++)
                                 @endforeach
