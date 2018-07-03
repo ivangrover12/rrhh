@@ -14,6 +14,8 @@ use App\Contract;
 use App\Position;
 use App\DiscountPayroll;
 use App\Procedure;
+use App\Helpers\Util;
+use Carbon\Carbon;
 
 class ReportController extends Controller
 {
@@ -405,5 +407,53 @@ class ReportController extends Controller
         //        }
         //     });
         // })->download('xls');
+    }
+
+    public function printContracts($from, $to)
+    {
+        $contracts = Contract::where('created_at', '>=', $from.'T00:00:00')->where('created_at', '<=', $to.'T23:59:59')->get();
+
+        $data = array(
+            'employees' => [],
+            'title' => (object)array(
+                'name' => '',
+            ),
+        );
+
+        $from = Util::getDate($from);
+        $to = Util::getDate($to);
+
+        foreach ($contracts as $contract) {
+            $base_wage = $contract->position->charge->base_wage;
+            $start = Carbon::parse($contract->date_start);
+            $end = Carbon::parse($contract->date_end);
+
+            $data['employees'][] = (object)array(
+                'full_name' => Util::fullName($contract->employee, 'uppercase'),
+                'position' => $contract->position->name,
+                'charge' => $contract->position->charge->name,
+                'position_group' => $contract->position->position_group->name,
+                'base_wage' => $base_wage,
+                'total_amount' => ($end->diffInDays($start) * $base_wage),
+                'date_start' => Util::getDate($contract->date_start),
+                'date_end' => Util::getDate($contract->date_end),
+                'item' => $contract->position->item,
+            );
+        }
+
+        // return response()->json($data);
+
+        $file_name= implode(" ", ['Reporte', 'contratos', $from, $to]).".pdf";
+        $data['title']->name = 'PERSONAL PARA RECONTRATACIÓN DESDE '.$from.' HASTA '.$to;
+
+        return \PDF::loadView('report.print_contracts', $data)
+            // ->setOption('page-width', '216')
+            // ->setOption('page-height', '330')
+            // ->setOrientation('landscape')
+            ->setPaper('letter')
+            ->setOption('encoding', 'utf-8')
+            ->setOption('footer-font-size', 5)
+            ->setOption('footer-center', '[page] de [topage] - Impreso el '.date('m/d/Y H:i'))
+            ->stream($file_name);
     }
 }
