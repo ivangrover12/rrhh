@@ -434,7 +434,7 @@ class ReportController extends Controller
                 'charge' => $contract->position->charge->name,
                 'position_group' => $contract->position->position_group->name,
                 'base_wage' => $base_wage,
-                'total_amount' => ($end->diffInDays($start) * $base_wage),
+                'total_amount' => ($end->diffInDays($start) * ($base_wage / 30)),
                 'date_start' => Util::getDate($contract->date_start),
                 'date_end' => Util::getDate($contract->date_end),
                 'item' => $contract->position->item,
@@ -444,7 +444,7 @@ class ReportController extends Controller
         // return response()->json($data);
 
         $file_name= implode(" ", ['Reporte', 'contratos', $from, $to]).".pdf";
-        $data['title']->name = 'PERSONAL PARA RECONTRATACIÓN DESDE '.$from.' HASTA '.$to;
+        $data['title']->name = 'CONTRATOS EMITIDOS DESDE '.$from.' HASTA '.$to;
 
         return \PDF::loadView('report.print_contracts', $data)
             // ->setOption('page-width', '216')
