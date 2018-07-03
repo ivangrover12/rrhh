@@ -178,9 +178,9 @@ class Util
 		return $grouped;
     }
 
-    public static function format_number($number, $decimals = 2)
+    public static function format_number($number, $decimals = 2, $thousand_separator = ',', $decimal_separator = '.')
     {
-        return number_format($number, $decimals, ',', '.');
+        return number_format($number, $decimals, $thousand_separator, $thousand_separator);
     }
 
     public static function get_percentage($number, $percent){

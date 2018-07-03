@@ -46,11 +46,11 @@
                 <tr>
                     <td>{{ ++$i }}</td>
                     <td>{{ $employee->full_name }}</td>
-                    <td>{{ strtoupper($employee->position) }}</td>
+                    <td>{{ mb_strtoupper($employee->position) }}</td>
                     <td>{{ $employee->charge }}</td>
                     <td>{{ $employee->position_group }}</td>
-                    <td>{{ Util::format_number($employee->base_wage) }}</td>
-                    <td>{{ $employee->total_amount }}</td>
+                    <td>{{ number_format($employee->base_wage, 0) }}</td>
+                    <td>{{ Util::format_number($employee->total_amount, 0, ',') }}</td>
                     <td>{{ $employee->date_start }}</td>
                     <td>{{ $employee->date_end }}</td>
                     <td>{{ $employee->item }}</td>
