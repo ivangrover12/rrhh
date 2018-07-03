@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Contract;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use App\PositionGroup;
 use App\Employee;
 class ContractController extends Controller
@@ -104,6 +105,13 @@ class ContractController extends Controller
         $contract->position_id = $request->position_id;
         $contract->date_start = $request->date_start;
         $contract->date_end = $request->date_end;
+
+        $contract->number_insurance = $request->number_insurance;
+        $contract->number_contract = $request->number_contract;
+        $contract->cite_rrhh = $request->cite_rrhh;
+        $contract->cite_rrhh_date = $request->cite_rrhh_date;
+        $contract->numer_announcement = $request->numer_announcement;
+
         if ($request->status == 'on') {
             $contract->status = true;
         }else{
@@ -122,5 +130,43 @@ class ContractController extends Controller
     public function destroy(Contract $contract)
     {
         //
+    }
+    public function print(int $id)
+    { 
+        $contract = Contract::where('id',$id)->first();
+        
+        $meses = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];        
+        $file_name= "Seguro.pdf";
+        $data = [
+            'contract' => $contract,
+            'mae' => Contract::where([['position_id', '=', '1'],['status', '=', 'true'],])->first(),
+            'daa' => Contract::where([['position_id', '=', '53'],['status', '=', 'true'],])->first()
+        ];
+        $headerHtml = view()->make('partials.head')->render();
+        if ($contract->employee->employee_type_id == 3) {
+            return \PDF::loadView('contract.printConsultor',$data)
+            ->setOption('header-html', $headerHtml)
+            ->setPaper('legal')
+            ->setOption('margin-top', 30)
+            ->setOption('margin-bottom', 40)
+            ->setOption('margin-left', 30)
+            ->setOption('margin-right', 25)
+            ->setOption('encoding', 'utf-8')
+            ->stream($file_name);
+        } else {
+            return \PDF::loadView('contract.printEventual',$data)
+            ->setOption('header-html', $headerHtml)
+            ->setPaper('legal')
+            ->setOption('margin-top', 30)
+            ->setOption('margin-bottom', 40)
+            ->setOption('margin-left', 30)
+            ->setOption('margin-right', 25)
+            ->setOption('encoding', 'utf-8')
+            ->stream($file_name);
+        }        
+    }
+    public function header()
+    {
+        echo 'aaaa';die;
     }
 }

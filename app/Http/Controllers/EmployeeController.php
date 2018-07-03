@@ -31,7 +31,30 @@ class EmployeeController extends Controller
         $data = [
             'employees' => $employees,
         ];
-        return view('employee.index',$data);   
+        return view('employee.index',$data);
+    }
+    public function list()
+    {
+        $employees = Employee::get();        
+        foreach ($employees as $key => $employee) {
+            $row = [];
+            $row[] = $key+1;
+            $row[] = $employee->identity_card.' '.$employee->city_identity_card->shortened;
+            $row[] = $employee->last_name;
+            $row[] = $employee->mothers_last_name;
+            $row[] = $employee->first_name;
+            $row[] = $employee->second_name; 
+            $row[] = date("d-m-Y", strtotime($employee->birth_date));
+            $row[] = $employee->account_number;
+            $row[] = $employee->nua_cua;
+            $row[] = $employee->management_entity->name;
+            $row[] = $employee->employee_type->name;
+            $row[] = '
+                    <a class="btn btn-primary" type="button" href="employee/'.$employee->id.'"><i class="fa fa-check-circle"></i>&nbsp;Ver</a>
+                    <a class="btn btn-primary" type="button" href="employee/'.$employee->id.'/edit"><i class="fa fa-check-circle"></i>&nbsp;Editar</a>';
+            $output['aaData'][] = $row;
+        }        
+        return response()->json($output);
     }
 
     public function getEmployeeDatatable(){
@@ -169,6 +192,10 @@ class EmployeeController extends Controller
         $employee->management_entity_id = $request->management_entity_id;
         $employee->insurance_company_id = $request->insurance_company_id;
         $employee->nua_cua = $request->nua_cua;
+        $employee->location = $request->location;
+        $employee->zone = $request->zone;
+        $employee->street = $request->street;
+        $employee->number = $request->number;
         $employee->save();
         return redirect('employee');
     }
@@ -259,6 +286,10 @@ class EmployeeController extends Controller
         $employee->management_entity_id = $request->management_entity_id;
         $employee->insurance_company_id = $request->insurance_company_id;
         $employee->nua_cua = $request->nua_cua;
+        $employee->location = $request->location;
+        $employee->zone = $request->zone;
+        $employee->street = $request->street;
+        $employee->number = $request->number;
         $employee->save();
         return redirect('employee');
     }

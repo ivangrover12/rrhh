@@ -8,14 +8,15 @@
     </div>
 </div>
 
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
             <a class="btn btn-primary" type="button" href="{{ asset('employee/create' ) }}"><i class="fa fa-check-circle"></i>&nbsp;Crear Empleado</a>
-            <table id="employee-table" class="table table-striped table-bordered" style="width:100%">
+            <table id="employee-table" class="table table-striped table-bordered myTable" style="width:100%">
                 <thead>
                     <tr>
-                        <th>id</th>
+                        <th>#</th>
                         <th>CI</th>
                         <th>Apellido</th>
                         <th>Materno</th>
@@ -30,75 +31,47 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($employees as $employee)
-                        <tr>
-                            <td> {{ $employee->id }} </td>
-                            <td> {{ $employee->identity_card.' '.$employee->city_identity_card->shortened }} </td>
-                            <td> {{ $employee->last_name }} </td>
-                            <td> {{ $employee->mothers_last_name }} </td>
-                            <td> {{ $employee->first_name }} </td>
-                            <td> {{ $employee->second_name }} </td>                                                                    
-                            <td> {{ date("d-m-Y", strtotime($employee->birth_date)) }} </td>
-                            <td> {{ $employee->account_number }} </td>
-                            <td> {{ $employee->nua_cua }} </td>
-                            <td> {{ $employee->management_entity->name }} </td>
-                            <td> {{ $employee->employee_type->name }} </td> 
-                            <td> 
-                                <a class="btn btn-primary" type="button" href="{{ asset('employee/'.$employee->id ) }}"><i class="fa fa-check-circle"></i>&nbsp;Ver</a>
-                                <a class="btn btn-primary" type="button" href="{{ asset('employee/'.$employee->id.'/edit' ) }}"><i class="fa fa-check-circle"></i>&nbsp;Editar</a>
-                            </td>
-                        </tr>
-                    @endforeach
+                    
                 </tbody>
             </table>
         </div>
-    </div>    
+    </div> 
+
 </div>
 
 
 @endsection
 
 @section('jss')
-{{-- <script src="{{ asset('/js/datatables.js')}}"></script> --}}
 <script>
-    // alert("here");
-        // $(document).ready(function () {
-            // console.log($(".wrapper"));
-            
-            // $('#employee-table').DataTable({
-            //     processing: true,
-            //     serverSide: true,
-            //     ajax: "{!! route('employee_list') !!}",
-            // });
-    // });
-         
-    
-        // var user_tables = $('#employee-table').DataTable({
-        // processing: true,
-        // serverSide: true,
-        // ajax: "{!! route('employee_list') !!}",
-        // columns: [ 
-        // {"className":      'details-control',
-        // "orderable":      false,
-        // "searchable":      false,
-        // "data":           'button-roles',
-        // "name":            'button-roles',
-        // }, 
-        // { data: 'id', name: 'username', orderable: true },
-        // { data: 'identity_card', name: 'identity_card' },
-        // { data: 'last_name_name', name: 'last_name', },
-        // { data: 'mothers_last_name', name: 'mothers_last_name', },
-        // { data: 'first_name', name: 'first_name' },
-        // { data: 'second_name', name: 'second_name', },    
-        // { data: 'employee_type', name: 'employee_type' },    
-        // {data: 'action', name: 'action', orderable: false, searchable: false},
-        // {"className":      'details-control',
-        // "name":         'state',
-        // "orderable":      false,
-        // "searchable":      false,
-        // "data":           'state',
-        // "defaultContent": ''
-        // },]});
-    
-    </script>
+    $(document).ready(function(){
+        $('.myTable').DataTable({
+            "ajax":"employee/list",
+            "language": {
+                "sProcessing":     "Procesando...",
+                "sLengthMenu":     "Mostrar _MENU_ registros",
+                "sZeroRecords":    "No se encontraron resultados",
+                "sEmptyTable":     "Ningún dato disponible en esta tabla",
+                "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix":    "",
+                "sSearch":         "Buscar:",
+                "sUrl":            "",
+                "sInfoThousands":  ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst":    "Primero",
+                    "sLast":     "Último",
+                    "sNext":     "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            }
+        });
+    });    
+</script>
 @endsection

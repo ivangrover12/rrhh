@@ -57,6 +57,17 @@
                 <br>
                 Fecha de fin
                 <input type="date" name="date_end" value="{{ $contract->date_end }}" class="form-control">
+                Numero de asegurado <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: 11-1111-XXX"></i>
+                <input type="text" name="number_insurance" value="{{ $contract->number_insurance }}" class="form-control">
+                Numero de Contrato <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: 104/2018"></i>
+                <input type="text" name="number_contract" value="{{ $contract->number_contract }}" class="form-control">
+                Cite de Resursos Humanos <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: RR.HH.-120/2018"></i>
+                <input type="text" name="cite_rrhh" value="{{ $contract->cite_rrhh }}" class="form-control">
+                Fecha del cite 
+                <input type="date" name="cite_rrhh_date" value="{{ $contract->cite_rrhh_date }}" class="form-control">
+                Numero de convocatoria <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: URH-028"></i>
+                <input type="text" name="numer_announcement" value="{{ $contract->numer_announcement }}" class="form-control">
+                
                 <br>
                 <label for="">Contrato Vigente: </label>
                 @if ($contract->status)
