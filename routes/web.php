@@ -18,6 +18,9 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('employee/list','EmployeeController@list');
+
 Route::resource('employee','EmployeeController');
 Route::get('employee_data', 'EmployeeController@getEmployeeDatatable' )->name('employee_list');
 
@@ -33,7 +36,14 @@ Route::get('payroll/print/{year}/{month}', 'PayrollController@print')->where(['p
 // Route::resource('report','ReportController');
 Route::get('report/{year}/{month}','ReportController@getExcel')->name('report_excel');
 Route::get('report/print/contracts/{from}/{to}', 'ReportController@printContracts')->name('report_print_contracts');
+
+Route::get('contract/print/{id}', 'ContractController@print')->name('print_contract');
 Route::resource('contract','ContractController');
 
 /*  tickets */
+
 Route::get('ticket/print/{year}/{month}', 'TicketController@print')->name('print_ticket');
+
+/*	asurance	*/
+Route::get('insurance/printhigh/{id}', 'InsuranceController@printhigh')->name('print_high_insurance');
+Route::get('insurance/printlow/{id}', 'InsuranceController@printlow')->name('print_low_insurance');

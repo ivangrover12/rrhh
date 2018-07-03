@@ -30,6 +30,21 @@ class PayrollController extends Controller
      */
     public function index()
     {
+        $procedure = Procedure::where([['month_id', '=', (int)date('m')],['year', '=', date('Y')],])->first();
+        if (!$procedure) {
+            $pro = new Procedure;
+            $pro->month_id = (int)date('m');
+            $pro->year = date('Y');
+            $pro->name = '';  
+            $pro->discount_old = 10;
+            $pro->discount_common_risk = 1.71;
+            $pro->discount_commission = 0.50;
+            $pro->discount_solidary = 0.50;
+            $pro->discount_national = 0;
+            $pro->discount_rc_iva = 13;
+            $pro->discount_faults = 0;
+            $pro->save();
+        }
         $procedures = Procedure::with('month')->orderBy('year', 'asc')->orderBy('month_id','desc')->get();
 
         $positions = PositionGroup::all()->groupBy('employer_number_id');

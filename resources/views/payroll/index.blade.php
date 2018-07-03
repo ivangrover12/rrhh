@@ -2,7 +2,10 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        {{ Breadcrumbs::render('payroll_index') }}
+        {{ Breadcrumbs::render('payroll_index') }} 
+    </div>
+    <div class="col-lg-3" align="right">
+        ssss
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
