@@ -207,7 +207,7 @@ class Util
 
     public static function format_number($number, $decimals = 2, $thousand_separator = ',', $decimal_separator = '.')
     {
-        return number_format($number, $decimals, $thousand_separator, $thousand_separator);
+        return number_format(round($number, $decimals), $decimals, $decimal_separator, $thousand_separator);
     }
 
     public static function get_percentage($number, $percent){
