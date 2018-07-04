@@ -28,14 +28,14 @@
             <li class="" data-toggle="tooltip" data-placement="right" title="Empleados">
                 <a href="{{ url('/employee') }}"><i class="fa fa-user"></i> <span class="nav-label">Empleados</span></a>
             </li>
-            <li class="" data-toggle="tooltip" data-placement="right" title="Contracts">
-                <a href="{{ url('/contract') }}"><i class="glyphicon glyphicon-piggy-bank"></i> <span class="nav-label">Contratos</span></a>
+            <li class="" data-toggle="tooltip" data-placement="right" title="Contratos">
+                <a href="{{ url('/contract') }}"><i class="glyphicon glyphicon-list-alt"></i> <span class="nav-label">Contratos</span></a>
             </li>
             <li class="" data-toggle="tooltip" data-placement="right" title="Planillas">
                 <a href="{{ url('/payroll') }}"><i class="glyphicon glyphicon-paperclip"></i> <span class="nav-label">Planillas</span></a>
             </li>
             <li class="" data-toggle="tooltip" data-placement="right" title="Reportes">
-                <a href="{{ url('/report') }}"><i class="a fa-fw fa-heartbeat"></i> <span class="nav-label">Reportes</span></a>
+                <a href="{{ url('/report') }}"><i class="glyphicon glyphicon-check"></i> <span class="nav-label">Reportes</span></a>
             </li>
         </ul>
 

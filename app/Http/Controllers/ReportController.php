@@ -432,6 +432,13 @@ class ReportController extends Controller
 
         $contracts = Contract::where('created_at', '>=', $from.'T00:00:00')->where('created_at', '<=', $to.'T23:59:59')->get();
 
+        if (count($contracts) == 0) {
+            return Redirect::back()->withErrors([
+                "message" => "No existen contratos generados en ese rango de fechas"
+            ]);
+        }
+        
+
         $data = array(
             'employees' => [],
             'title' => (object)array(
@@ -473,7 +480,7 @@ class ReportController extends Controller
         // return response()->json($data);
 
         $file_name= implode(" ", ['Reporte', 'contratos', $from, $to]).".pdf";
-        $data['title']->name = 'CONTRATOS EMITIDOS DESDE '.$from.' HASTA '.$to;
+        $data['title']->name = 'CONTRATOS GENERADOS DESDE '.$from.' HASTA '.$to;
 
         return \PDF::loadView('report.print_contracts', $data)
             // ->setOption('page-width', '216')

@@ -54,7 +54,7 @@ class EmployeePayroll
         $this->position_group_id = $contract->position->position_group->id;
         $this->employer_number = $contract->position->position_group->employer_number->number;
         $this->employer_number_id = $contract->position->position_group->employer_number->id;
-        $this->valid_contract = Carbon::parse($contract->date_end)->gte(Carbon::create($procedure->year, $procedure->month->id)->endOfMonth());
+        $this->valid_contract = Carbon::parse($contract->date_end)->gte(Carbon::create($procedure->year, $procedure->month->id)->endOfMonth()) || Carbon::parse($contract->date_end)->gte(Carbon::create($procedure->year, $procedure->month->id, 30));
     }
 
     public function setZeroAccounts() {

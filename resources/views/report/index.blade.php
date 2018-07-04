@@ -30,7 +30,7 @@
                                         <label for="print_contracts_date_to">Hasta</label>
                                         <input type="date" name="to" class="form-control" id="print_contracts_date_to" value="">
                                     </div>
-                                    <button type="submit" class="btn btn-success col-lg-2">Buscar</button>
+                                    <button type="submit" class="btn btn-success col-lg-1"><i class="glyphicon glyphicon-search"></i> Buscar</button>
                                 </div>
                                 @if ($errors->any())
                                     <div class="col-lg-12">
