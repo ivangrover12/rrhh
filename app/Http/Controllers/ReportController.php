@@ -16,6 +16,7 @@ use App\DiscountPayroll;
 use App\Procedure;
 use App\Helpers\Util;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redirect;
 
 class ReportController extends Controller
 {
@@ -409,8 +410,26 @@ class ReportController extends Controller
         // })->download('xls');
     }
 
-    public function printContracts($from, $to)
+
+
+
+    function cmp($a, $b)
     {
+        return strcmp($a->position_group, $b->position_group);
+    }
+
+
+    public function printContracts(Request $params)
+    {
+        $from = request('from');
+        $to = request('to');
+
+        if (Carbon::parse($to)->lte($from) || !$to || !$from) {
+            return Redirect::back()->withErrors([
+                "message" => "Rango de fechas inválido"
+            ]);
+        }
+
         $contracts = Contract::where('created_at', '>=', $from.'T00:00:00')->where('created_at', '<=', $to.'T23:59:59')->get();
 
         $data = array(
@@ -424,22 +443,32 @@ class ReportController extends Controller
         $to = Util::getDate($to);
 
         foreach ($contracts as $contract) {
-            $base_wage = $contract->position->charge->base_wage;
             $start = Carbon::parse($contract->date_start);
             $end = Carbon::parse($contract->date_end);
 
-            $data['employees'][] = (object)array(
-                'full_name' => Util::fullName($contract->employee, 'uppercase'),
-                'position' => $contract->position->name,
-                'charge' => $contract->position->charge->name,
-                'position_group' => $contract->position->position_group->name,
-                'base_wage' => $base_wage,
-                'total_amount' => ($end->diffInDays($start) * ($base_wage / 30)),
-                'date_start' => Util::getDate($contract->date_start),
-                'date_end' => Util::getDate($contract->date_end),
-                'item' => $contract->position->item,
-            );
+            if ($end->gt($start)) {
+                $base_wage = $contract->position->charge->base_wage;
+
+                $middle_months = $end->diffInMonths($start);
+                $worked_days = (30 - $start->day + 1) + ($end->day) + (30 * $middle_months);
+
+
+                $data['employees'][] = (object)array(
+                    'full_name' => Util::fullName($contract->employee, 'uppercase'),
+                    'position' => $contract->position->name,
+                    'charge' => $contract->position->charge->name,
+                    'position_group' => $contract->position->position_group->name,
+                    'base_wage' => $base_wage,
+                    'worked_days' => $worked_days,
+                    'total_amount' => ($worked_days * ($base_wage / 30)),
+                    'date_start' => Util::getDate($contract->date_start),
+                    'date_end' => Util::getDate($contract->date_end),
+                    'item' => $contract->position->item,
+                );
+            }
         }
+
+        usort($data['employees'], array($this, "cmp"));
 
         // return response()->json($data);
 

@@ -30,12 +30,14 @@ Route::get('payroll','PayrollController@index');
 Route::get('payroll/{year}/{month}','PayrollController@create')->name('create_payroll');
 Route::get('payroll/{year}/{month}/edit','PayrollController@edit')->name('edit_payroll');
 Route::post('payroll','PayrollController@store');
-Route::get('payroll/print/{year}/{month}', 'PayrollController@print')->where(['params'=>'.*'])->name('print_payroll');
+Route::get('payroll/print/pdf/{year}/{month}', 'PayrollController@print_pdf')->name('print_pdf_payroll');
+Route::get('payroll/print/txt/{year}/{month}', 'PayrollController@print_txt')->name('print_txt_payroll');
 
 
 // Route::resource('report','ReportController');
+Route::get('report/','ReportController@index');
+Route::get('report/print/contracts', 'ReportController@printContracts')->name('report_print_contracts');
 Route::get('report/{year}/{month}','ReportController@getExcel')->name('report_excel');
-Route::get('report/print/contracts/{from}/{to}', 'ReportController@printContracts')->name('report_print_contracts');
 
 Route::get('contract/print/{id}', 'ContractController@print')->name('print_contract');
 Route::resource('contract','ContractController');
