@@ -64,12 +64,12 @@ class Util
         return self::removeSpaces($result);
 
     }
-    public static function fillZerosLeft($value)
+    public static function fillZerosLeft($value, $length = 8)
     {
         if ($value) {
-            return str_pad($value, 8, "0", STR_PAD_LEFT);
+            return str_pad($value, $length, "0", STR_PAD_LEFT);
         }
-        return str_pad(0, 8, "0", STR_PAD_LEFT);
+        return str_pad(0, $length, "0", STR_PAD_LEFT);
 
     }
     public static function getCivilStatus($est, $gender)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Response;
 use App\Payroll;
 use Illuminate\Http\Request;
 use App\Employee;
@@ -684,7 +685,7 @@ class PayrollController extends Controller
     }
 
     /**
-     * Print payroll reports.
+     * Print PDF payroll reports.
      *
      * @param  integer  $year
      * @param  integer  $month
@@ -696,7 +697,7 @@ class PayrollController extends Controller
      * @param  integer  $employer_number_id
      * @return \PDF
      */
-    public function print(Request $params, $year, $month)
+    public function print_pdf(Request $params, $year, $month)
     {
         $month = Month::where('id', $month)->select()->first();
         if (!$month) {
@@ -798,5 +799,48 @@ class PayrollController extends Controller
             ->setOption('footer-font-size', 5)
             ->setOption('footer-center', '[page] de [topage] - Impreso el '.date('m/d/Y H:i'))
             ->stream($file_name);
+    }
+
+    /**
+     * Print TXT payroll reports.
+     *
+     * @param  integer  $year
+     * @param  integer  $month
+     * @return \TXT
+     */
+    public function print_txt($year, $month)
+    {
+        $month = Month::where('id', $month)->select()->first();
+        if (!$month) {
+            return response()->json([
+                "error" => true,
+                "message" => "Mes inexistente",
+                "data" => null,
+            ], 404);
+        }
+
+        $response = $this->getFormattedData($year, $month->id, 1, 0, 1, 0, 0, 0);
+        $total_employees = count($response->data['employees']);
+        $content = "";
+
+        $content .= "sueldo del mes de ".strtolower($month->name)." ".$year." ".Util::fillZerosLeft(strval($total_employees), 4).Carbon::now()->format('dmY') ."\n";
+
+        $content .= $response->data['company']->account_number.Util::fillZerosLeft(strval(Util::format_number($response->data['total_discounts']->payable_liquid, 2, '', '.')), 12)."\n";
+
+        foreach ($response->data['employees'] as $i => $employee) {
+            $content .= $employee->account_number.Util::fillZerosLeft(strval(Util::format_number($employee->payable_liquid, 2, '', '.')), 12)."1";
+
+            if ($i < ($total_employees - 1)) {
+                $content .= "\n";
+            }
+        }
+
+        $filename = implode('_', ["sueldos", strtolower($month->name), $year]).".txt";
+
+        $headers = ['Content-type'=>'text/plain', 'Content-Disposition'=>sprintf('attachment; filename="%s"', $filename)];
+
+        // return response()->json($content);
+
+        return Response::make($content, 200, $headers);
     }
 }
