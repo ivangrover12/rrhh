@@ -169,16 +169,14 @@ class ContractController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    { 
         $messages = [
             'required' => 'Campo obligatorio',
         ];
         $validator = Validator::make($request->all(), [
             'position_id' => 'required',
             'date_start' => 'required',
-            'date_end'  => 'required',
-            'cite_rrhh'  => 'required',
-            'cite_rrhh_date'  => 'required'
+            
         ],$messages);
 
         if ($validator->fails()) {
@@ -187,6 +185,7 @@ class ContractController extends Controller
                         ->withInput();
         }
         $contract = Contract::find($id);
+        $contract->employee_id = $contract->employee_id;
         $contract->position_id = $request->position_id;
         $contract->date_start = $request->date_start;
         $contract->date_end = $request->date_end;

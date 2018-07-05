@@ -54,7 +54,8 @@
                                 <div class="col-md-4">Cargo: <span class="text-danger">*</span></div>
                                 <div class="col-md-8">
                                     <input type="hidden" name="position_id" id="position_id" class="form-control" value=" {{ $contract->position_id }} " />
-                                    <input type="text" id="position" placeholder="Cargo" class="form-control" value=" {{ $contract->position->name }} " /> <<div class="text-danger">{{ $errors->first('position_id') }}</div>                                   
+                                    <input type="text" id="position" placeholder="Cargo" class="form-control" value=" {{ $contract->position->name }} " />
+                                    <div class="text-danger">{{ $errors->first('position_id') }}</div>                                   
                                 </div>
                             </div>
                             <div class="form-group row">
