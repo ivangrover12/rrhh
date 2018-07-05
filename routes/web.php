@@ -10,42 +10,46 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::group(['middleware' => 'auth'], function(){
+    Route::get('/', function () {
+        return view('home');
+    });
+    
+    Route::get('/home', 'HomeController@index')->name('home');
+    
+    Route::get('employee/list','EmployeeController@list');
+    
+    Route::resource('employee','EmployeeController');
+    Route::get('employee_data', 'EmployeeController@getEmployeeDatatable' )->name('employee_list');
+    
+    
+    Route::get('employee/{employee}/payroll','PayrollController@employee_payroll');
+    Route::get('payroll','PayrollController@index');
+    Route::get('payroll/{year}/{month}','PayrollController@create')->name('create_payroll');
+    Route::get('payroll/{year}/{month}/edit','PayrollController@edit')->name('edit_payroll');
+    Route::post('payroll','PayrollController@store');
+    Route::get('payroll/print/pdf/{year}/{month}', 'PayrollController@print_pdf')->name('print_pdf_payroll');
+    Route::get('payroll/print/txt/{year}/{month}', 'PayrollController@print_txt')->name('print_txt_payroll');
 
-Route::get('/', function () {
-    return view('home');
+    // Route::resource('report','ReportController');
+    Route::get('report/','ReportController@index');
+    Route::get('report/print/contracts', 'ReportController@printContracts')->name('report_print_contracts');
+    Route::get('report/{year}/{month}','ReportController@getExcel')->name('report_excel');
+    
+    Route::get('contract/print/{id}', 'ContractController@print')->name('print_contract');
+    Route::resource('contract','ContractController');
+    
+    /*  tickets */
+    
+    Route::get('ticket/print/{year}/{month}', 'TicketController@print')->name('print_ticket');
+    
+    /*	asurance	*/
+    Route::get('insurance/printhigh/{id}', 'InsuranceController@printhigh')->name('print_high_insurance');
+    Route::get('insurance/printlow/{id}', 'InsuranceController@printlow')->name('print_low_insurance');
+    
+    Route::get('/home', 'HomeController@index')->name('home');
 });
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::get('employee/list','EmployeeController@list');
-
-Route::resource('employee','EmployeeController');
-Route::get('employee_data', 'EmployeeController@getEmployeeDatatable' )->name('employee_list');
-
-
-Route::get('employee/{employee}/payroll','PayrollController@employee_payroll');
-Route::get('payroll','PayrollController@index');
-Route::get('payroll/{year}/{month}','PayrollController@create')->name('create_payroll');
-Route::get('payroll/{year}/{month}/edit','PayrollController@edit')->name('edit_payroll');
-Route::post('payroll','PayrollController@store');
-Route::get('payroll/print/pdf/{year}/{month}', 'PayrollController@print_pdf')->name('print_pdf_payroll');
-Route::get('payroll/print/txt/{year}/{month}', 'PayrollController@print_txt')->name('print_txt_payroll');
-
-
-// Route::resource('report','ReportController');
-Route::get('report/','ReportController@index');
-Route::get('report/print/contracts', 'ReportController@printContracts')->name('report_print_contracts');
-Route::get('report/{year}/{month}','ReportController@getExcel')->name('report_excel');
-
-Route::get('contract/print/{id}', 'ContractController@print')->name('print_contract');
-Route::resource('contract','ContractController');
-
-/*  tickets */
-
-Route::get('ticket/print/{year}/{month}', 'TicketController@print')->name('print_ticket');
-
-/*	asurance	*/
-Route::get('insurance/printhigh/{id}', 'InsuranceController@printhigh')->name('print_high_insurance');
-Route::get('insurance/printlow/{id}', 'InsuranceController@printlow')->name('print_low_insurance');
+Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
