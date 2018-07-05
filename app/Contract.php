@@ -18,4 +18,9 @@ class Contract extends Model
     {
         return $this->belongsTo(Position::class);
     }
+
+    public function schedules()
+    {
+        return $this->belongsToMany('App\JobSchedule')->withTimestamps();
+    }
 }
