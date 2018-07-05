@@ -24,7 +24,7 @@
                         <a class="btn btn-md btn-primary" href="{{ route('edit_payroll', [$procedure->year, $procedure->month->name])}}" data-toggle="tooltip" data-placement="top" title="Editar datos de la Planilla"><i class="fa fa-pencil"></i> Editar</a>
                         <a class="btn btn-md btn-primary" href="{{ route('report_excel', [$procedure->year, $procedure->month->name])}}" data-toggle="tooltip" data-placement="top" title="Seleccionar Excel"><i class="fa fa-file-excel-o"></i></a>
                         <button class="btn btn-primary" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Boletas" onclick="printJS({printable:'{!! route('print_ticket', [$procedure->year, $procedure->month->name]) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})" ><i class="fa fa-print"></i></button>
-                        <a class="btn btn-md btn-primary" href="{{ route('print_txt_payroll', [$procedure->year, $procedure->month->id])}}" data-toggle="tooltip" data-placement="top" title="Imprimir TXT">TXT</a>
+                        <a class="btn btn-md btn-primary" href="{{ route('print_txt_payroll', [$procedure->year, $procedure->month->id])}}" data-toggle="tooltip" data-placement="top" title="Descargar TXT"><i class="glyphicon glyphicon-download-alt"></i> TXT</a>
                         <div class="dropdown btn-group" role="group">
                             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
                                 Planillas
