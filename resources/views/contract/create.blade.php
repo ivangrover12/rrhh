@@ -19,8 +19,10 @@
     </div>
     <div class="col-lg-2" align="right">
         <ul class="breadcrumb m-t-md">
-            <li><a href="/contract"><button class="btn btn-outline btn-primary dim" type="button"><i class="fa fa-reply"></i> volver </button></a></li>
+            <li><button onclick="location.href='{{ url('contract') }}'" class="btn btn-outline btn-primary dim" type="button"><i class="fa fa-reply"></i> volver </button></li>
         </ul>
+        
+    </div>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">

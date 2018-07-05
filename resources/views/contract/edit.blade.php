@@ -19,11 +19,13 @@
     </div>
     <div class="col-lg-2" align="right">
         <ul class="breadcrumb m-t-md">
-            <li><button class="btn btn-outline btn-primary dim" type="button"><a href="/contract"><i class="fa fa-reply"></i> volver </a></button></li>
+            <li><button onclick="location.href='{{ url('contract') }}'" class="btn btn-outline btn-primary dim" type="button"><i class="fa fa-reply"></i> volver </button></li>
         </ul>
+        
+    </div>
 </div>
 
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content fadeInRight">
     <div class="row">
         <div class="ibox ">
             <div class="ibox-title">

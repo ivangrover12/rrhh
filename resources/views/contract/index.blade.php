@@ -17,15 +17,16 @@
     <div class="col-lg-6">
         <ul class="nav navbar-top-links navbar-right m-t-md" align="right">
             <li>
-                <a href="{{ asset('contract/create' ) }}"><button class="btn btn-outline btn-primary  dim " type="button"><i class="fa fa-share"></i> Crear contrato</button></a>
+                <button onclick="location.href='{{ url('contract/create') }}'" class="btn btn-outline btn-primary  dim " type="button"><i class="fa fa-share"></i> Crear contrato</button>
             </li>
             <li>
-                <a href="{{ asset('contract/checkrenovate' ) }}"><button class="btn btn-outline btn-primary  dim " type="button"><i class="fa fa-share"></i> Renovar contratos</button></a>
+                <button onclick="location.href='{{ url('contract/checkrenovate') }}'" class="btn btn-outline btn-primary  dim " type="button"><i class="fa fa-share"></i> Renovar contratos</button>
             </li>
         </ul>
+    </div>
 </div>
 
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content fadeInRight">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox ">
