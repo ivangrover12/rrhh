@@ -29,10 +29,7 @@ class AddToEmployeesTables extends Migration
     public function down()
     {
         Schema::table('employees', function (Blueprint $table) {
-            Schema::dropIfExists('location');
-            Schema::dropIfExists('zone');
-            Schema::dropIfExists('street');
-            Schema::dropIfExists('number');
+            Schema::dropColumn(['location', 'zone', 'street', 'number']);
         });
     }
 }
