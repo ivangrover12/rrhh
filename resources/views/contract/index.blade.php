@@ -3,68 +3,62 @@
 @section('content')
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-9">
-        {{ Breadcrumbs::render('contract_list') }} 
+    <div class="col-lg-6">
+        <h2>Lista de contratos</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/">Inicio</a>
+            </li>            
+            <li class="breadcrumb-item active">
+                <strong>contract</strong>
+            </li>
+        </ol>
     </div>
+    <div class="col-lg-6">
+        <ul class="nav navbar-top-links navbar-right m-t-md" align="right">
+            <li>
+                <a href="{{ asset('contract/create' ) }}"><button class="btn btn-outline btn-primary  dim " type="button"><i class="fa fa-share"></i> Crear contrato</button></a>
+            </li>
+            <li>
+                <a href="{{ asset('contract/checkrenovate' ) }}"><button class="btn btn-outline btn-primary  dim " type="button"><i class="fa fa-share"></i> Renovar contratos</button></a>
+            </li>
+        </ul>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <div class="col-lg-12">            
-            <a class="btn btn-primary" type="button" href="{{ asset('contract/create' ) }}"><i class="fa fa-check-circle"></i>&nbsp;Crear contrato</a>
-            <div class="table-responsive">
-                <table id="contract-table" class="table table-striped table-bordered" id="contract-table" style="width:100%">
-                    <thead>
-                        <tr>
-                            {{-- <th>id</th> --}}
-                            <th>CI</th>
-                            <th>Apellido</th>
-                            <th>Apellido materno</th>
-                            <th>Nombre</th>
-                            <th>Segundo Nombre</th>
-                            <th>Cargo</th>
-                            <th>Puesto</th>
-                            <th>Fecha de contrato Inicio</th>
-                            <th>Fecha de contrato Fin</th>
-                            <th>Estado</th>
-                            <th>Acci&oacute;n</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($contracts as $contract)
-                            <tr>
-                                {{-- <td> {{ $contract->id }} </td> --}}
-                                <td> {{ $contract->employee->identity_card }} </td>
-                                <td> {{ $contract->employee->last_name }} </td>
-                                <td> {{ $contract->employee->mothers_last_name }} </td>
-                                <td> {{ $contract->employee->first_name }} </td>
-                                <td> {{ $contract->employee->second_name }} </td>
-                                <td> {{ $contract->position->name }} </td>
-                                <td> {{ $contract->position->position_group->name }} </td>
-                                <td> {{ date("d-m-Y", strtotime($contract->date_start)) }} </td>
-                                <td> {{ date("d-m-Y", strtotime($contract->date_end)) }} </td>
-                                <td>
-                                    @if ($contract->status)
-                                        <i class="fa fa-check"></i>
-                                    @else
-                                        <i class="fa fa-times"></i>
-                                    @endif
-
-                                </td>
-                                <td> 
-                                    <a class="btn btn-primary" type="button" href="{{ asset('contract/'.$contract->id ) }}"><i class="fa fa-eye"></i>&nbsp;Ver</a>
-                                    <a class="btn btn-default" type="button" href="{{ asset('contract/'.$contract->id.'/edit' ) }}"><i class="fa fa-pencil"></i>&nbsp;Editar</a>
-                                    @if ($contract->employee->employee_type_id != 3)
-                                        <button class="btn btn-primary" type="button" data-toggle="tooltip" data-placement="top" title="Afiliacion y reingreso del trabajador" onclick="printJS({printable:'{!! route('print_high_insurance', [$contract->id]) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})" ><i class="fa fa-print"></i></button>
-                                        <button class="btn btn-primary" type="button" data-toggle="tooltip" data-placement="top" title="Aviso de baja del asegurado" onclick="printJS({printable:'{!! route('print_low_insurance', [$contract->id]) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})" ><i class="fa fa-print"></i></button>
-                                        <button class="btn btn-primary" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir contrato" onclick="printJS({printable:'{!! route('print_contract', [$contract->id]) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})" ><i class="fa fa-print"></i></button>
-                                    @endif
-                                    
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table id="contract-table" class="table table-striped table-bordered" id="contract-table" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>CI</th>
+                                    <th>Apellido</th>
+                                    <th>Apellido materno</th>
+                                    <th>Nombre</th>
+                                    <th>Segundo Nombre</th>
+                                    <th>Cargo</th>
+                                    <th>Puesto</th>
+                                    <th>Fecha Inicio</th>
+                                    <th width="70">Fecha de Conclusion</th>
+                                    <th style="text-align: center;">
+                                        <span id="label-status">Vigentes</span>
+                                        <input type="checkbox" name="" id="status" checked="true" style="transform: scale(1.5);">
+                                    </th>
+                                    <th width="300">Acci&oacute;n</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -73,7 +67,8 @@
 @section('jss')
 <script>
     $(document).ready(function(){
-        $('#contract-table').DataTable({
+        var table = $('#contract-table').DataTable({
+            "ajax":"contract/list/"+$("#status").val(),
             "language": {
                 "sProcessing":     "Procesando...",
                 "sLengthMenu":     "Mostrar _MENU_ registros",
@@ -98,6 +93,16 @@
                     "sSortDescending": ": Activar para ordenar la columna de manera descendente"
                 }
             }
+        });        
+        $("#status").change(function() {
+            if ($("#status").is(':checked')) {
+                table.ajax.url( 'contract/list/true' ).load();
+                $("#label-status").text("Vigentes");
+            }
+            else {
+                table.ajax.url( 'contract/list/false' ).load();
+                $("#label-status").text("Concluidos");
+            }            
         });
     });
 </script>

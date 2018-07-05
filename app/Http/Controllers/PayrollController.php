@@ -31,24 +31,9 @@ class PayrollController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        $procedure = Procedure::where([['month_id', '=', (int)date('m')],['year', '=', date('Y')],])->first();
-        if (!$procedure) {
-            $pro = new Procedure;
-            $pro->month_id = (int)date('m');
-            $pro->year = date('Y');
-            $pro->name = '';  
-            $pro->discount_old = 10;
-            $pro->discount_common_risk = 1.71;
-            $pro->discount_commission = 0.50;
-            $pro->discount_solidary = 0.50;
-            $pro->discount_national = 0;
-            $pro->discount_rc_iva = 13;
-            $pro->discount_faults = 0;
-            $pro->save();
-        }
+    {        
         $procedures = Procedure::with('month')->orderBy('year', 'asc')->orderBy('month_id','desc')->get();
-
+        $lastprocedure = Procedure::orderBy('id', 'desc')->first();
         $positions = PositionGroup::all()->groupBy('employer_number_id');
         $position_groups = [];
 
@@ -64,6 +49,7 @@ class PayrollController extends Controller
             'procedures' => $procedures,
             'position_groups' => $position_groups,
             'management_entities' => $management_entities,
+            'lastprocedure' => $lastprocedure
         ];
         return view("payroll.index", $data);
 
@@ -802,6 +788,26 @@ class PayrollController extends Controller
             ->stream($file_name);
     }
 
+    public function addmonth ()
+    {
+        $procedure = Procedure::where([['month_id', '=', (int)date('m')],['year', '=', date('Y')],])->first();
+        if (!$procedure) {
+            $pro = new Procedure;
+            $pro->month_id = (int)date('m');
+            $pro->year = date('Y');
+            $pro->name = '';  
+            $pro->discount_old = 10;
+            $pro->discount_common_risk = 1.71;
+            $pro->discount_commission = 0.50;
+            $pro->discount_solidary = 0.50;
+            $pro->discount_national = 0;
+            $pro->discount_rc_iva = 13;
+            $pro->discount_faults = 0;
+            $pro->save();
+        }
+        return redirect('payroll');
+  }
+
     /**
      * Print TXT payroll reports.
      *
@@ -850,5 +856,6 @@ class PayrollController extends Controller
         // return response()->json($content);
 
         return Response::make($content, 200, $headers);
+
     }
 }

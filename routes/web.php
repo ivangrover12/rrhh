@@ -22,6 +22,8 @@ Route::group(['middleware' => 'auth'], function(){
     
     
     Route::get('employee/{employee}/payroll','PayrollController@employee_payroll');
+  
+    Route::get('payroll/addmonth','PayrollController@addmonth');
     Route::get('payroll','PayrollController@index');
     Route::get('payroll/{year}/{month}','PayrollController@create')->name('create_payroll');
     Route::get('payroll/{year}/{month}/edit','PayrollController@edit')->name('edit_payroll');
@@ -34,6 +36,9 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('report/print/contracts', 'ReportController@printContracts')->name('report_print_contracts');
     Route::get('report/{year}/{month}','ReportController@getExcel')->name('report_excel');
     
+    Route::get('contract/list/{status}','ContractController@list');
+    Route::get('contract/checkrenovate', 'ContractController@checkrenovate')->name('checkrenovate_contract');
+    Route::post('contract/renovate', 'ContractController@renovate');
     Route::get('contract/print/{id}', 'ContractController@print')->name('print_contract');
     Route::resource('contract','ContractController');
     
@@ -49,5 +54,6 @@ Route::group(['middleware' => 'auth'], function(){
 });
 
 Auth::routes();
+
 
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');

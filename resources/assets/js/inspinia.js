@@ -27,3 +27,5 @@ require('../inspinia/js/plugins/select2/select2.full.min.js');
 // require('../inspinia/js/plugins/touchspin/jquery.bootstrap-touchspin.min.js');
 // require('../inspinia/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js');
 // require('../inspinia/js/plugins/dualListbox/jquery.bootstrap-duallistbox.js');
+
+require('../inspinia/js/plugins/typehead/bootstrap3-typeahead.min.js');

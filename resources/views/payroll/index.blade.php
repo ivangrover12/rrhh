@@ -4,6 +4,17 @@
     <div class="col-lg-9">
         {{ Breadcrumbs::render('payroll_index') }}
     </div>
+    <div class="col-lg-3" align="right">
+        <ul class="nav navbar-top-links navbar-right m-t-md" align="right">
+            <li>
+            @if ( $lastprocedure->month_id < (int)date('m') )            
+                <button class="btn btn-outline btn-primary  dim " type="button"><a href="{{ asset('payroll/addmonth' ) }}"><i class="fa fa-plus"></i> Nuevo mes </a></button>
+            @else
+                <button class="btn btn-outline btn-primary disabled" type="button"><i class="fa fa-plus"></i> Nuevo mes</button>
+            @endif
+            </li>
+        </ul>
+    </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     @if ($errors->any())
