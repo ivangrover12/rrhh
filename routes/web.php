@@ -26,6 +26,8 @@ Route::get('employee_data', 'EmployeeController@getEmployeeDatatable' )->name('e
 
 
 Route::get('employee/{employee}/payroll','PayrollController@employee_payroll');
+
+Route::get('payroll/addmonth','PayrollController@addmonth');
 Route::get('payroll','PayrollController@index');
 Route::get('payroll/{year}/{month}','PayrollController@create')->name('create_payroll');
 Route::get('payroll/{year}/{month}/edit','PayrollController@edit')->name('edit_payroll');
@@ -35,6 +37,10 @@ Route::get('payroll/print/{year}/{month}', 'PayrollController@print')->where(['p
 
 // Route::resource('report','ReportController');
 Route::get('report/{year}/{month}','ReportController@getExcel')->name('report_excel');
+
+Route::get('contract/list/{status}','ContractController@list');
+Route::get('contract/checkrenovate', 'ContractController@checkrenovate')->name('checkrenovate_contract');
+Route::post('contract/renovate', 'ContractController@renovate');
 Route::get('contract/print/{id}', 'ContractController@print')->name('print_contract');
 Route::resource('contract','ContractController');
 
