@@ -1,10 +1,12 @@
 @extends('layouts.app') 
 @section('content')
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        {{-- Breadcrumbs::render('payroll_edit', $year, $month) --}}
+        {{ Breadcrumbs::render('reports') }}
     </div>
 </div>
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">

@@ -1,10 +1,10 @@
 @extends('layouts.app') 
-@section('title','Crear empleado') 
+@section('title','Editar empleado') 
 @section('content')
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        ruta
+        {{ Breadcrumbs::render('employee_edit') }}
     </div>
 </div>
 

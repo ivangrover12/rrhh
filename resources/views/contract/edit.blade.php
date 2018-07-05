@@ -4,7 +4,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        ruta
+        {{ Breadcrumbs::render('contract_edit') }}
     </div>
 </div>
 
