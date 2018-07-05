@@ -2,13 +2,22 @@
 @section('content')
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        {{ Breadcrumbs::render('payroll_index') }} 
-    </div>
-    <div class="col-lg-3" align="right">
-        ssss
+        {{ Breadcrumbs::render('payroll_index') }}
     </div>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
+    @if ($errors->any())
+        <div class="col-lg-9">
+            @foreach ($errors->all() as $error)
+            <div class="alert alert-block alert-danger fade in">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <p>
+                    <strong>{{ $error }}</strong>
+                </p>
+            </div>
+            @endforeach
+        </div>
+    @endif
     <div class="row">
         @foreach ($procedures as $procedure)
         <div class="col-lg-4">

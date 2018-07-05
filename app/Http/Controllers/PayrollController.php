@@ -21,6 +21,7 @@ use App\TotalPayrollEmployer;
 use App\ManagementEntity;
 use App\PositionGroup;
 use App\EmployerNumber;
+use Illuminate\Support\Facades\Redirect;
 
 class PayrollController extends Controller
 {
@@ -821,6 +822,13 @@ class PayrollController extends Controller
 
         $response = $this->getFormattedData($year, $month->id, 1, 0, 1, 0, 0, 0);
         $total_employees = count($response->data['employees']);
+
+        if ($total_employees == 0) {
+            return Redirect::back()->withErrors([
+                "message" => "Todavía no se ha registrado el mes de ".$month->name
+            ]);
+        }
+
         $content = "";
 
         $content .= "sueldo del mes de ".strtolower($month->name)." ".$year." ".Util::fillZerosLeft(strval($total_employees), 4).Carbon::now()->format('dmY') ."\n";
