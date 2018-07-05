@@ -23,7 +23,6 @@
                 <a href="{{ asset('contract/checkrenovate' ) }}"><button class="btn btn-outline btn-primary  dim " type="button"><i class="fa fa-share"></i> Renovar contratos</button></a>
             </li>
         </ul>
-    </div>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">

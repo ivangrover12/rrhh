@@ -64,12 +64,12 @@ class Util
         return self::removeSpaces($result);
 
     }
-    public static function fillZerosLeft($value)
+    public static function fillZerosLeft($value, $length = 8)
     {
         if ($value) {
-            return str_pad($value, 8, "0", STR_PAD_LEFT);
+            return str_pad($value, $length, "0", STR_PAD_LEFT);
         }
-        return str_pad(0, 8, "0", STR_PAD_LEFT);
+        return str_pad(0, $length, "0", STR_PAD_LEFT);
 
     }
     public static function getCivilStatus($est, $gender)
@@ -205,9 +205,9 @@ class Util
 		return $grouped;
     }
 
-    public static function format_number($number, $decimals = 2)
+    public static function format_number($number, $decimals = 2, $thousand_separator = ',', $decimal_separator = '.')
     {
-        return number_format($number, $decimals, ',', '.');
+        return number_format(round($number, $decimals), $decimals, $decimal_separator, $thousand_separator);
     }
 
     public static function get_percentage($number, $percent){

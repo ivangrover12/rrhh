@@ -35,9 +35,18 @@
         </div>
 
         <div class="header-center">
-            <h2>{{ implode(' - ', array_filter([$title->name, $title->subtitle, $title->management_entity, $title->position_group, $title->employer_number])) }}
-            </h2>
-            <h3>PERSONAL EVENTUAL - MES {{ $title->month }} DE {{ $title->year }}</h3>
+            @if (!$title->consultant)
+                <h2>
+                    {{ implode(' - ', array_filter([$title->name, $title->subtitle, $title->management_entity, $title->position_group, $title->employer_number])) }}
+                </h2>
+                <h3>PERSONAL EVENTUAL - 
+            @else
+                <h2>
+                    {{ implode(' - ', array_filter([$title->name, 'CONSULTORES EN LÍNEA'])) }}
+                </h2>
+                <h3>
+            @endif
+            MES {{ $title->month }} DE {{ $title->year }}</h3>
             <h3>(EXPRESADO EN BOLIVIANOS)</h3>
         </div>
 
@@ -47,6 +56,7 @@
 
         <table align="center">
             <thead>
+            @if (!$title->consultant)
                 <tr>
                 @switch ($title->report_type)
                     @case ('H')
@@ -61,6 +71,7 @@
                     <th colspan="{{ $table_header_space1 }}" style="border-left: 1px solid white; border-top: 1px solid white; background-color: white;"></th>
                     <th colspan="{{ $table_header_space2 }}">{{ $title->table_header }}</th>
                 </tr>
+            @endif
                 <tr>
                     <th width="1%">N°</th>
                     <th width="2%">C.I.</th>
@@ -88,6 +99,7 @@
                     <th width="2%">TOTAL GANADO</th>
                     <th width="1%">AFP</th>
                 @if ($title->report_type == 'H')
+                    @if (!$title->consultant)
                     <th width="1%">Renta vejez {{ $procedure->discount_old }}%</th>
                     <th width="1%">Riesgo común {{ $procedure->discount_common_risk }}%</th>
                     <th width="1%">Comisión {{ $procedure->discount_commission }}%</th>
@@ -96,6 +108,7 @@
                     <th width="1%">TOTAL DESCUENTOS DE LEY</th>
                     <th width="3%">SUELDO NETO</th>
                     <th width="3%">RC IVA {{ $procedure->discount_rc_iva }}%</th>
+                    @endif
                     <th width="3%">Desc Atrasos, Faltas y Licencia S/G Haberes</th>
                     <th width="1%">TOTAL DESCUENTOS</th>
                     <th width="3%">LIQUIDO PAGABLE</th>
@@ -138,6 +151,7 @@
                     <td>{{ Util::format_number($employee->quotable) }}</td>
                     <td>{{ $employee->management_entity }}</td>
                 @if ($title->report_type == 'H')
+                    @if (!$title->consultant)
                     <td>{{ Util::format_number($employee->discount_old) }}</td>
                     <td>{{ Util::format_number($employee->discount_common_risk) }}</td>
                     <td>{{ Util::format_number($employee->discount_commission) }}</td>
@@ -146,6 +160,7 @@
                     <td>{{ Util::format_number($employee->total_amount_discount_law) }}</td>
                     <td>{{ Util::format_number($employee->net_salary) }}</td>
                     <td>{{ Util::format_number($employee->discount_rc_iva) }}</td>
+                    @endif
                     <td>{{ Util::format_number($employee->total_amount_discount_institution) }}</td>
                     <td>{{ Util::format_number($employee->total_discounts) }}</td>
                     <td>{{ Util::format_number($employee->payable_liquid) }}</td>
@@ -183,6 +198,7 @@
                     <td class="footer">{{ Util::format_number($total_discounts->base_wage) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->quotable) }}</td>
                     <td class="footer"></td>
+                    @if (!$title->consultant)
                     <td class="footer">{{ Util::format_number($total_discounts->discount_old) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->discount_common_risk) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->discount_commission) }}</td>
@@ -191,6 +207,7 @@
                     <td class="footer">{{ Util::format_number($total_discounts->total_amount_discount_law) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->net_salary) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->discount_rc_iva) }}</td>
+                    @endif
                     <td class="footer">{{ Util::format_number($total_discounts->total_amount_discount_institution) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->total_discounts) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->payable_liquid) }}</td>

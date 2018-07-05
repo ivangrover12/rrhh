@@ -1,43 +1,50 @@
 @extends('layouts.app') 
 @section('content')
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
-        {{-- Breadcrumbs::render('payroll_edit', $year, $month) --}}
+        {{ Breadcrumbs::render('reports') }}
     </div>
 </div>
+
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
-            <div class="text-center m-t-lg">
-                <form action="/report" method="POST">
-                    {{ csrf_field() }}
-                    <select id="type" name="type">
-                        <option value="1">Reporte Laboral</option>
-                        <option value="2">Reporte Patronal</option>
-                        <option value="3">Reporte Tributaria</option>
-                        <option value="4">Reporte Laboral Previsi&oacute;n</option>
-                        <option value="5">Reporte Laboral Futuro</option>
-                        <option value="6">Reporte Patronal Previsi&oacute;;n</option>
-                        <option value="7">Reporte Patronal Futuro</option>
-                        <option value="8">Trib>8000</option>
-                    </select>
-                    <select id="month" name="month">
-                        <option value="1">Enero</option>
-                        <option value="2">Febrero</option>
-                        <option value="3">Marzo</option>
-                        <option value="4">Abril</option>
-                        <option value="5">Mayo</option>
-                        <option value="6">Junio</option>
-                        <option value="7">Julio</option>
-                        <option value="8">Agosto</option>
-                        <option value="9">Septimbre</option>
-                        <option value="10">Octubre</option>
-                        <option value="11">Noviembre</option>
-                        <option value="12">Diciembre</option>
-                    </select>
-                    <input id="year" name="year" type="number" placeholder="A&ntilde;o"><sinput>
-                            <button class="btn btn-primary" type="submit"> <i class="fa fa-save"></i> Generar reporte</button>
-                </form>
+            <div id="accordion">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <button class="btn btn-primary" data-toggle="collapse" data-target="#collapseContracts" aria-expanded="true" aria-controls="collapseContracts">
+                            REPORTE DE CONTRATOS GENERADOS
+                            </button>
+                        </h5>
+                    </div>
+
+                    <div id="collapseContracts" class="collapse show" data-parent="#accordion">
+                        <div class="card-body">
+                            <form method="get" action="{{url('/report/print/contracts')}}"> 
+                                <div class="form-inline">
+                                    <div class="form-group col-lg-2">
+                                        <label for="print_contracts_date_from">Desde</label>
+                                        <input type="date" name="from" class="form-control" id="print_contracts_date_from" value="">
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <label for="print_contracts_date_to">Hasta</label>
+                                        <input type="date" name="to" class="form-control" id="print_contracts_date_to" value="">
+                                    </div>
+                                    <button type="submit" class="btn btn-success col-lg-1"><i class="glyphicon glyphicon-search"></i> Buscar</button>
+                                </div>
+                                @if ($errors->any())
+                                    <div class="col-lg-12">
+                                        <div class="alert alert-danger form-group col-lg-6">
+                                            {{ implode('', $errors->all(':message')) }}
+                                        </div>
+                                    </div>
+                                @endif
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

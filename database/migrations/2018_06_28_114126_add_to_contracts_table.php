@@ -30,11 +30,11 @@ class AddToContractsTable extends Migration
     public function down()
     {
         Schema::table('contracts', function (Blueprint $table) {
-            Schema::dropIfExists('number_insurance');
-            Schema::dropIfExists('number_contract');
-            Schema::dropIfExists('cite_rrhh');
-            Schema::dropIfExists('cite_rrhh_date');
-            Schema::dropIfExists('numer_announcement');
+            Schema::dropColumn('number_insurance');
+            Schema::dropColumn('number_contract');
+            Schema::dropColumn('cite_rrhh');
+            Schema::dropColumn('cite_rrhh_date');
+            Schema::dropColumn('numer_announcement');
         });
     } 
 }
