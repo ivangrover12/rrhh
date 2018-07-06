@@ -23,4 +23,8 @@ class Contract extends Model
     {
         return $this->belongsToMany('App\JobSchedule')->withTimestamps();
     }
+    public function contracttype()
+    {
+        return $this->belongsTo('App\ContractType','contracts_type_id','id');
+    }
 }

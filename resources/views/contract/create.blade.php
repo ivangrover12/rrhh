@@ -68,6 +68,13 @@
                                 </div>                                
                             </div>
                             <div class="form-group row">
+                                <div class="col-md-4"> Numero de contrato <span class="text-danger">*</span> <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: XXX/2018"></i></div>
+                                <div class="col-md-8">
+                                    <input type="text" name="number_contract" id="number_contract" class="form-control" />
+                                    <div class="text-danger">{{ $errors->first('number_contract') }}</div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <div class="col-md-4"> 
                                     Numero de asegurado  <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: 11-1111-XXX"></i>
                                 </div>

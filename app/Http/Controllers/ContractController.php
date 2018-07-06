@@ -8,8 +8,10 @@ use Illuminate\View\View;
 use App\PositionGroup;
 use App\Employee;
 use App\Position;
+use App\ContractJobSchedule;
+use App\JobSchedule;
 use Validator;
-
+use Illuminate\Support\Facades\Redirect;
 use App\Http\Controller\Insurance;
 class ContractController extends Controller
 {
@@ -39,14 +41,12 @@ class ContractController extends Controller
             $row = [];
             //$row[] = $key+1;
             $row[] = $contract->employee->identity_card;
-            $row[] = $contract->employee->last_name;
-            $row[] = $contract->employee->mothers_last_name;
-            $row[] = $contract->employee->first_name;
-            $row[] = $contract->employee->second_name; 
+            $row[] = $contract->employee->last_name.' '.$contract->employee->mothers_last_name.' '.$contract->employee->first_name.' '.$contract->employee->second_name;
             $row[] = $contract->position->name;
             $row[] = $contract->position->position_group->name;
             $row[] = date("d-m-Y", strtotime($contract->date_start));
             $row[] = (strtotime($contract->date_end) > strtotime ( '-4 day' , strtotime (date('Y-m-d')) ) && strtotime($contract->date_end) < strtotime ( '+4 day' , strtotime (date('Y-m-d')))?'<span class="bg-warning p-xs b-r-sm">'.date("d-m-Y", strtotime($contract->date_end)).'</span>':date("d-m-Y", strtotime($contract->date_end)));
+            $row[] = (isset($contract->contracttype->name))?$contract->contracttype->name:'-';
             $row[] = ($contract->status == true?'<i class="fa fa-check"></i>':'<i class="fa fa-times"></i>');
             $row[] = "
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."'><i class='fa fa-eye'></i>&nbsp;Ver</a>
@@ -91,6 +91,7 @@ class ContractController extends Controller
     {
         $messages = [
             'required' => 'Campo obligatorio',
+            'unique' => 'Este valor ya existe'
         ];
         $validator = Validator::make($request->all(), [
             'employee_id' => 'required',
@@ -98,7 +99,8 @@ class ContractController extends Controller
             'date_start' => 'required',
             'date_end'  => 'required',
             'cite_rrhh'  => 'required',
-            'cite_rrhh_date'  => 'required'
+            'cite_rrhh_date'  => 'required',
+            'number_contract' => 'required|unique:contracts'
         ],$messages);
 
         if ($validator->fails()) {
@@ -112,18 +114,19 @@ class ContractController extends Controller
         $contract->date_start = $request->date_start;
         $contract->date_end = $request->date_end;
         
-        $lastcontract = Contract::orderBy('id','desc')->first();
+        /*$lastcontract = Contract::orderBy('id','desc')->first();
         $numberarray = explode('/', $lastcontract->number_contract);
         if ($numberarray[1] == date('Y')) {
             $number = $numberarray[0] + 1;
         } else {
             $number = 1;
-        }
-        $contract->number_contract = $number.'/'.date('Y');
+        }*/        
+        //$contract->number_contract = $number.'/'.date('Y');
+        $contract->number_contract = $request->number_contract;
         $contract->contracts_type_id = 2;
         $contract->status = true;
         $contract->save();
-        return redirect('contract');
+        return redirect('contract')->with('success', 'Creado correctamente');
     }
 
     /**
@@ -148,15 +151,19 @@ class ContractController extends Controller
      */
     public function edit(Contract $contract)
     {
+        $schedules = JobSchedule::all();
         $employee = $contract->employee;
         $position_groups = PositionGroup::get();
         $position = Position::get();
+        $schedules = JobSchedule::all();
+
         $data = [
             'contract' => $contract,
             'employee' => $employee,
             'employees' => Employee::all(),
             'position_groups' => $position_groups,
-            'position' => $position
+            'position' => $position,
+            'schedules' => $schedules
         ];
         return view('contract.edit',$data);
     }
@@ -169,39 +176,34 @@ class ContractController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    { 
-        $messages = [
-            'required' => 'Campo obligatorio',
-        ];
-        $validator = Validator::make($request->all(), [
-            'position_id' => 'required',
-            'date_start' => 'required',
-            
-        ],$messages);
-
-        if ($validator->fails()) {
-            return redirect('contract/edit')
-                        ->withErrors($validator)
-                        ->withInput();
-        }
+    {
         $contract = Contract::find($id);
         $contract->employee_id = $contract->employee_id;
         $contract->position_id = $request->position_id;
         $contract->date_start = $request->date_start;
         $contract->date_end = $request->date_end;
+        $contract->number_contract = $request->number_contract;
         $contract->number_insurance = $request->number_insurance;
         $contract->cite_rrhh = $request->cite_rrhh;
         $contract->cite_rrhh_date = $request->cite_rrhh_date;
         $contract->numer_announcement = $request->numer_announcement;
-        $contract->cite_performance = $request->cite_performance;
-
+        $contract->cite_performance = $request->cite_performance;  
         if ($request->status == 'on') {
             $contract->status = true;
         }else{
             $contract->status = false;
         }
-        $contract->update();
-        return redirect('contract');
+        $contract->update(); 
+        $schedules = JobSchedule::all();
+        $sched_id = explode('|', $request->schedule);
+        foreach ($contract->schedules as $key => $value) {
+            $contract->schedules()->detach($value);
+        }
+        $contract->schedules()->attach($schedules[$sched_id[0]-1]);
+        if (isset($sched_id[1])) {
+            $contract->schedules()->attach($schedules[$sched_id[1]-1]);
+        }
+        return redirect('contract')->with('success', 'Editado correctamente');
     }
 
     /**
@@ -292,22 +294,22 @@ class ContractController extends Controller
             $newcontract->date_end = $request->date_end;
             $newcontract->number_insurance = $oldcontract->number_insurance;
 
-            $lastcontract = Contract::orderBy('id','desc')->first();
+            /*$lastcontract = Contract::orderBy('id','desc')->first();
             $numberarray = explode('/', $lastcontract->number_contract);
             if ($numberarray[1] == date('Y')) {
                 $number = $numberarray[0] + 1;
             } else {
                 $number = 1;
             }
+            $newcontract->number_contract = $number.'/'.date('Y');*/
 
-            $newcontract->number_contract = $number.'/'.date('Y');
             $newcontract->contracts_type_id = 3;
-            $newcontract->cite_rrhh = $request->input($value.'_cite_rrhh');
-            $newcontract->cite_rrhh_date = $request->input($value.'_date_cite_rrhh');
-            $newcontract->cite_performance = $request->input($value.'_cite_performance');
+            //$newcontract->cite_rrhh = $request->input($value.'_cite_rrhh');
+            //$newcontract->cite_rrhh_date = $request->input($value.'_date_cite_rrhh');
+            //$newcontract->cite_performance = $request->input($value.'_cite_performance');
             $newcontract->status = true;
             $newcontract->save();
         }
-        return redirect('contract');
+        return redirect('contract')->with('success', 'Contratos renovados correctamente');
     }
 }
