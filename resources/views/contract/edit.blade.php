@@ -120,7 +120,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4"> Horarios {{var_dump($contract->contracttype->name)}}
+                                <div class="col-md-4"> Horarios 
                                 </div>
                                 <div class="col-md-8">
                                     @foreach ( $schedules as $schedule)
