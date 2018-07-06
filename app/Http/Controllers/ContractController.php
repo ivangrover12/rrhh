@@ -256,8 +256,8 @@ class ContractController extends Controller
     }
     public function checkRenovate () 
     {
-        $fecha1 = strtotime ( '-4 day' , strtotime (date('Y-m-d')) ) ;
-        $fecha2 = strtotime ( '+4 day' , strtotime (date('Y-m-d')) ) ;
+        $fecha1 = strtotime ( '-9 day' , strtotime (date('Y-m-d')) ) ;
+        $fecha2 = strtotime ( '+9 day' , strtotime (date('Y-m-d')) ) ;
         $contracts = Contract::whereBetween('date_end', [date ( 'Y-m-d' , $fecha1 ), date ( 'Y-m-d' , $fecha2 )])
                             ->where('status','true')
                             ->get();
