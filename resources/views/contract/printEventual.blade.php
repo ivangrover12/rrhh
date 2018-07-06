@@ -48,7 +48,7 @@
         </p>
         @if ($contract->contracts_type_id == 3)
         <p>
-            Mediante CITE: <span class="title-text"> {{ $contract->cite_rrhh }} </span> de fecha {{ date('d', strtotime($contract->cite_rrhh_date)) }} de {{ Util::getMonthEs(date('m', strtotime($contract->cite_rrhh_date))) }} de {{ date('Y', strtotime($contract->cite_rrhh_date)) }}, como resultado de la evaluación de desempeño realizado mediante la nota con CITE: {{ $contract->cite_performance }} para el cargo de <span class="title-text">“{{ $contract->position->name }}”</span>, se solicita la recontratación de Personal Eventual de {{ Util::fullName($contract->employee, 'capitalize') }}.
+            Mediante CITE: <span class="title-text"> {{ $contract->cite_rrhh }} </span> de fecha {{ date('d', strtotime($contract->cite_rrhh_date)) }} de {{ Util::getMonthEs(date('m', strtotime($contract->cite_rrhh_date))) }} de {{ date('Y', strtotime($contract->cite_rrhh_date)) }}, como resultado de la evaluación de desempeño realizado mediante la nota con CITE: {{ $contract->cite_performance }} para el cargo de <span class="title-text">“{{ $contract->position->name }}”</span>, se solicita la recontratación de Personal Eventual de <span class="title-text">{{ Util::fullName($contract->employee, 'capitalize') }}</span>.
         </p>
         @else
         <p>

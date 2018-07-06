@@ -30,7 +30,6 @@
             <!-- Main view  -->
             <div id="app">
             @yield('content')
-            {{-- <flash message="{{ session('flash') }}"></flash> --}}
             </div>
             <!-- Footer -->
             @include('layouts.footer')

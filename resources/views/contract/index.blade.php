@@ -29,6 +29,7 @@
 <div class="wrapper wrapper-content fadeInRight">
     <div class="row">
         <div class="col-lg-12">
+            @include('layouts.flash-message')
             <div class="ibox ">
                 <div class="ibox-title">
                     
@@ -39,14 +40,12 @@
                             <thead>
                                 <tr>
                                     <th>CI</th>
-                                    <th>Apellido</th>
-                                    <th>Apellido materno</th>
-                                    <th>Nombre</th>
-                                    <th>Segundo Nombre</th>
+                                    <th>Funcionario</th>
                                     <th>Cargo</th>
                                     <th>Puesto</th>
                                     <th>Fecha Inicio</th>
                                     <th width="70">Fecha de Conclusion</th>
+                                    <th>Tipo</th>
                                     <th style="text-align: center;">
                                         <span id="label-status">Vigentes</span>
                                         <input type="checkbox" name="" id="status" checked="true" style="transform: scale(1.5);">

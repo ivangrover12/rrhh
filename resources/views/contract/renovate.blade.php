@@ -52,8 +52,8 @@
                                             <input type="checkbox" name="" id="checkTodos" checked="true" align="center">
                                             <div class="text-danger">{{ $errors->first('renovar') }}</div>
                                         </th>
-                                        <th>Cite RRHH</th>
-                                        <th>Cite Evaluacion Desempeño</th>
+                                        <!--<th>Cite RRHH</th>
+                                        <th>Cite Evaluacion Desempeño</th>-->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -78,13 +78,13 @@
                                             <td>
                                                 <input type="checkbox" name="renovar[]" id="renovar" value=" {{ $contract->id }} " checked="true">
                                             </td>                                    
-                                            <td width="100">
+                                            <!--<td width="100">
                                                 <input type="text" name="{{ $contract->id }}_cite_rrhh" id="cite_rrhh" placeholder="CITE RRHH" class="form-control">
                                                 <input type="date" name="{{ $contract->id }}_date_cite_rrhh" id="date_cite_rrhh" class="form-control">
                                             </td>
                                             <td width="110">
                                                 <input type="text" name="{{ $contract->id }}_cite_performance" id="cite_performance" placeholder="CITE de Evaluación" class="form-control">                                                
-                                            </td>
+                                            </td>-->
                                         </tr>
                                     @endforeach
                                 </tbody>

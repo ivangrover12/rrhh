@@ -73,6 +73,13 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <div class="col-md-4"> Numero de contrato <span class="text-danger">*</span> <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: XXX/2018"></i></div>
+                                <div class="col-md-8">
+                                    <input type="text" name="number_contract" id="number_contract" class="form-control" value=" {{ $contract->number_contract }} " />
+                                    <div class="text-danger">{{ $errors->first('number_contract') }}</div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <div class="col-md-4">Numero de asegurado 
                                     <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: 11-1111-XXX"></i>
                                 </div>
@@ -110,6 +117,50 @@
                                 </div>
                                 <div class="col-md-8">
                                     <input type="text" name="cite_performance" value="{{ $contract->cite_performance }}" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-4"> Horarios {{var_dump($contract->contracttype->name)}}
+                                </div>
+                                <div class="col-md-8">
+                                    @foreach ( $schedules as $schedule)
+                                        @if (isset($contract->schedules[0]->id))
+                                            @if($schedule->id == $contract->schedules[0]->id)
+                                                @if (isset($contract->schedules[1]->id))
+                                                    <label><input type="radio" name="schedule" value="1|2" checked >
+                                                    Horario  (08:00-12:00 | 14:30-18:30)</label><br>
+                                                @else
+                                                    <label><input type="radio" name="schedule" value=" {{ $schedule->id }} " checked >
+                                                    Horario  ({{str_pad($schedule->start_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->start_minutes,2,0,STR_PAD_LEFT)}}-
+                                                    {{str_pad($schedule->end_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->end_minutes,2,0,STR_PAD_LEFT)}})</label><br>
+                                                @endif
+                                            @else
+                                                @if ($schedule->id == 1 )
+                                                    <label><input type="radio" name="schedule" value="1|2" >
+                                                    Horario  (08:00-12:00 | 14:30-18:30)</label><br>
+                                                @elseif ($schedule->id == 2)
+
+                                                @else
+                                                    <label><input type="radio" name="schedule" value=" {{ $schedule->id }} " >
+                                                    Horario  ({{str_pad($schedule->start_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->start_minutes,2,0,STR_PAD_LEFT)}}-
+                                                    {{str_pad($schedule->end_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->end_minutes,2,0,STR_PAD_LEFT)}})</label><br>
+                                                @endif                                                
+                                            @endif
+                                        @else
+                                            @if ($schedule->id == 1 )
+                                                <label><input type="radio" name="schedule" value="1|2" >
+                                                Horario  (08:00-12:00 | 14:30-18:30)</label><br>
+                                            @elseif ($schedule->id == 2)
+
+                                            @else
+                                                <label><input type="radio" name="schedule" value=" {{ $schedule->id }} " >
+                                                Horario  ({{str_pad($schedule->start_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->start_minutes,2,0,STR_PAD_LEFT)}}-
+                                                {{str_pad($schedule->end_hour,2,0,STR_PAD_LEFT).':'.str_pad($schedule->end_minutes,2,0,STR_PAD_LEFT)}})</label><br>
+                                            @endif 
+                                        @endif
+                                    @endforeach
+
+                                                                     
                                 </div>
                             </div>
                             <div class="form-group row">
