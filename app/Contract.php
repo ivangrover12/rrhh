@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Contract extends Model
 {
+    protected $dates = ['deleted_at'];
+
     public function payrolls()
     {
         return $this->hasMany(Payroll::class);
