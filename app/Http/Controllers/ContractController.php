@@ -45,8 +45,12 @@ class ContractController extends Controller
             $row[] = $contract->position->name;
             $row[] = $contract->position->position_group->name;
             $row[] = date("d-m-Y", strtotime($contract->date_start));
-            $row[] = (strtotime($contract->date_end) > strtotime ( '-4 day' , strtotime (date('Y-m-d')) ) && strtotime($contract->date_end) < strtotime ( '+4 day' , strtotime (date('Y-m-d')))?'<span class="bg-warning p-xs b-r-sm">'.date("d-m-Y", strtotime($contract->date_end)).'</span>':date("d-m-Y", strtotime($contract->date_end)));
-            $row[] = (isset($contract->contracttype->name))?$contract->contracttype->name:'-';
+            if(!is_null($contract->date_end)) {
+                $row[] = (strtotime($contract->date_end) > strtotime ( '-4 day' , strtotime (date('Y-m-d')) ) && strtotime($contract->date_end) < strtotime ( '+4 day' , strtotime (date('Y-m-d')))?'<span class="bg-warning p-xs b-r-sm">'.date("d-m-Y", strtotime($contract->date_end)).'</span>':date("d-m-Y", strtotime($contract->date_end)));    
+            } else {
+                $row[] = '-';
+            }        
+            $row[] = $contract->employee->employee_type->name;
             $row[] = ($contract->status == true?'<i class="fa fa-check"></i>':'<i class="fa fa-times"></i>');
             $row[] = "
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."'><i class='fa fa-eye'></i>&nbsp;Ver</a>
