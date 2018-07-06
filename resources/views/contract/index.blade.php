@@ -43,7 +43,7 @@
                                     <th>Funcionario</th>
                                     <th>Cargo</th>
                                     <th>Puesto</th>
-                                    <th>Fecha Inicio</th>
+                                    <th width="70">Fecha Inicio</th>
                                     <th width="70">Fecha de Conclusion</th>
                                     <th>Tipo</th>
                                     <th style="text-align: center;">
