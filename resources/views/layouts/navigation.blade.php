@@ -7,9 +7,9 @@
                              </span>
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold"> USUARIO </strong>
-                             </span> <span class="text-muted text-xs block"> ADMIN <b class="caret"></b></span> </span> </a>
+                             </span> <span class="text-muted text-xs block">{{ Auth::user()->username }}<b class="caret"></b></span> </span> </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                        <li><a href="#"> <i class="fa fa-address-card-o"></i> Perfil</a></li>
+                        <li><a href="{{route('user_profile', [Auth::user()->id])}}"> <i class="fa fa-address-card-o"></i> Perfil</a></li>
                         @if(Session::get('rol_id')=='1')
                             <li class="divider"></li>
                             <li><a href="{{ url('/')}}"><i class="fa fa-users"></i> Usuarios</a></li>
