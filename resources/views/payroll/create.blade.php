@@ -14,6 +14,7 @@
                     <input type="hidden" value="{{ $procedure->year }}" name="year">
                     {{ csrf_field() }}
                 <payroll-index :edit="false" :procedure="{{ $procedure }}"></payroll-index>
+                <div style="clear: both;"></div>
                 <button class="btn btn-primary" type="submit"> <i class="fa fa-save"></i> Guardar</button>
                 </form>
             </div>

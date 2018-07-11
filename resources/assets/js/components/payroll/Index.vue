@@ -9,17 +9,17 @@
           </a>
         </div>
       </div>
-      <div class="ibox-content" >
-        <div class="table-responsive"  style="min-height:450px;max-height:500px;">
+      <div class="ibox-content" style="height:600px">
+        <div class="" id="parent">
           <table class="table table-striped table-bordered table-hover zui-table">
-            <thead>
+            <thead id="myhead">
               <tr>
-                <th>Ci</th>
+                <th>C.I.</th>
                 <th>Trabajador</th>
                 <th>Cuenta Bancaria</th>
                 <th>Fecha de Nacimiento</th>
-                <th>Cargo</th>
                 <th>Puesto</th>
+                <th>Cargo</th>                
                 <th># de dias Trabajados</th>
                 <th>Haber basico</th>
                 <th>Total Ganado</th>
@@ -37,15 +37,17 @@
                 <th>Liquido Pagable</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="mybody" onscroll="document.getElementById('myhead').scrollLeft=document.getElementById('mybody').scrollLeft">
 
               <row v-for="(value, index) in contracts"
                    :key="`contract-${index}`"
                    :contract="value"
+                   :cont="index"
                    :procedure="procedure"
                    v-if="!edit"></row>
               <edit-row v-for="(value, index) in payrolls"
                         :key="`payroll-${index}`"
+                        :cont="index"
                         :payroll="value"
                         :procedure="procedure"
                         v-if="edit"></edit-row>
@@ -113,9 +115,75 @@
       }
     }
   };
+  function fixscroll() {
+  const thead = document.getElementById("myhead");
+  const tbodyScroll = document.getElementById("mybody").scrollLeft;
+  thead.scrollLeft = tbodyScroll;
+  //document.getElementById("frozen").scrollLeft = 0;
+}
 </script>
-<style scoped>
-  .zui-table {
+<style>
+#parent {
+  position: absolute;
+  left: 15px;
+  top: 100px;
+  width: 98%;
+  height: 500px;
+  overflow: hidden;
+}
+
+table {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+}
+
+thead {
+  flex: 1 0 auto;
+  display: block;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+thead::-webkit-scrollbar { display: block;  }
+thead::-webkit-scrollbar-track { }
+tbody {
+  display: block;
+  overflow: scroll;
+}
+tbody:nth-child(3) { display: none; }
+
+td, th {
+  width: 400px;
+  min-width: 400px;
+  padding: 0;
+}
+
+th {
+}
+
+td:first-child,
+th:first-child {
+  position: sticky;
+  position: -webkit-sticky;
+  left:0;
+  background: #fff;
+}
+td:nth-child(2),
+th:nth-child(2) {
+  position: sticky;
+  position: -webkit-sticky;
+  left:300px;
+  background: #fff;
+}
+
+
+
+
+.zui-table {
     border: none;
     border-right: solid 1px #ddefef;
     border-collapse: separate;
@@ -132,62 +200,10 @@
     white-space: nowrap;
 
   }
-  /* .zui-table tbody td {
-    border-bottom: solid 1px #ddefef;
-    color: #333;
-    padding: 10px;
-    text-shadow: 1px 1px 1px #fff;
-    white-space: nowrap;
-  }
-  .zui-wrapper {
-    position: relative;
-    margin-bottom: 50px;
-  }
-  .zui-scroller {
-    height: 400px;
-    margin-left: 460px;
-    overflow-x: scroll;
-    overflow-y: auto;
-    padding-bottom: 5px;
-  } */
-  /* .zui-table .zui-sticky-col {
-    left: 0;
-    position: absolute;
-    top: auto;
-    width: 160px;
-  }
-  .zui-table .zui-sticky-col-1 {
-    left: 160px;
-    position: absolute;
-    top: auto;
-    width: 320px;
-  } */
-  .zui-table table {
-  overflow: hidden;
-}
 
-.zui-table td,.zui-table th {
-  padding: 10px;
-  position: relative;
-  outline: 0;
-}
 
-body:not(.nohover) .zui-table tbody tr:hover {
-  background-color: #ffa;
-}
 
-  .zui-table td:hover::after,
-  .zui-table thead th:not(:empty):hover::after,
-  .zui-table td:focus::after,
-  .zui-table thead th:not(:empty):focus::after {
-    content: '';
-    height: 10000px;
-    left: 0;
-    position: absolute;
-    top: -5000px;
-    width: 100%;
-    z-index: -1;
-  }
+
 
   .zui-table td:hover::after,
   .zui-table th:hover::after {
@@ -210,5 +226,4 @@ body:not(.nohover) .zui-table tbody tr:hover {
     width: 10000px;
     z-index: -1;
   }
-
 </style>

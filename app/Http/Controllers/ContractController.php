@@ -52,7 +52,13 @@ class ContractController extends Controller
             }        
             $row[] = $contract->employee->employee_type->name;
             $row[] = ($contract->status == true?'<i class="fa fa-check"></i>':'<i class="fa fa-times"></i>');
-            $row[] = "
+            if ( $contract->employee->employee_type_id == 3) {
+                $row[] = "
+                    <a class='btn btn-primary' type='button' href='contract/".$contract->id."'><i class='fa fa-eye'></i>&nbsp;Ver</a>
+                    <a class='btn btn-primary' type='button' href='contract/".$contract->id."/edit'><i class='fa fa-pencil'></i>&nbsp;Editar</a>
+                    ";
+            } else {
+                $row[] = "
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."'><i class='fa fa-eye'></i>&nbsp;Ver</a>
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."/edit'><i class='fa fa-pencil'></i>&nbsp;Editar</a>
                     <button class='btn btn-primary' type='button' data-toggle='tooltip' data-placement='top' title='Afiliacion y reingreso del trabajador' 
@@ -62,6 +68,8 @@ class ContractController extends Controller
                     <button class='btn btn-primary' type='button' data-toggle='tooltip' data-placement='top' title='Imprimir contrato' 
                     onclick='printJS({printable:\"".route('print_contract', [$contract->id])."\", type:\"pdf\", showModal:true, modalMessage: \"Generando documento por favor espere un momento.\"})'><i class='fa fa-print'></i></button>
                     ";
+            }
+            
             $output['aaData'][] = $row;
         }        
         return response()->json($output);

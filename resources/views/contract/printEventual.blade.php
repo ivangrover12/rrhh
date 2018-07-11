@@ -46,11 +46,11 @@
         <p>
             <span class="title-text">CLÁUSULA PRIMERA (ANTECEDENTES). -</span> En estricta aplicación del Decreto Supremo N° 1446 de fecha 19 de diciembre de 2012, se creó la Mutual de Servicios al Policía – MUSERPOL como una Institución Pública Descentralizada de duración indefinida y patrimonio propio, con autonomía de gestión administrativa, financiera, legal y técnica, bajo tuición del Ministerio de Gobierno. Mediante Decretos Supremos 2829 de 6 de julio de 2016 y 3231 de 28 de junio de 2017 se modifica el D.S. 1446 de creación de la MUSERPOL. Para la realización de los fines y alcanzar los objetivos institucionales, se requiere la contratación de personal eventual con el fin de realizar la actividades administrativas, técnicas y legales propias de la Institución.
         </p>
-        @if ($contract->contracts_type_id == 3)
+        @if ($contract->contracts_type_id == 3 || $contract->contracts_type_id == '')
         <p>
             Mediante CITE: <span class="title-text"> {{ $contract->cite_rrhh }} </span> de fecha {{ date('d', strtotime($contract->cite_rrhh_date)) }} de {{ Util::getMonthEs(date('m', strtotime($contract->cite_rrhh_date))) }} de {{ date('Y', strtotime($contract->cite_rrhh_date)) }}, como resultado de la evaluación efectuada por parte de los Directores de Área, en coordinación con la Jefatura de la Unidad de Recursos Humanos y el Director General Ejecutivo, se solicita la elaboración de Contrato del Personal Eventual de {{ Util::fullName($contract->employee, 'capitalize') }}.
         </p>
-        @else
+        @elseif ($contract->contracts_type_id == 2)
         <p>
             Mediante CITE: <span class="title-text"> {{ $contract->cite_rrhh }} </span> de fecha {{ date('d', strtotime($contract->cite_rrhh_date)) }} de {{ Util::getMonthEs(date('m', strtotime($contract->cite_rrhh_date))) }} de {{ date('Y', strtotime($contract->cite_rrhh_date)) }}, como resultado de la convocatoria {{ $contract->numer_announcement }} dentro del Proceso de Contratación para el cargo de: <span class="title-text">“{{ $contract->position->name }}”</span>, previa selección, evaluación y posterior entrevista, la Unidad de Recursos Humanos solicita se proceda a la elaboración del Contrato de Personal Eventual de {{ Util::fullName($contract->employee, 'capitalize') }}.
         </p>

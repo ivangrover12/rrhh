@@ -1,7 +1,7 @@
 <template>
     <tr>
-        <td class="zui-sticky-col">{{ payroll.identity_card}} {{ payroll.city_identity_card }}</td>
-        <td class="zui-sticky-col-1">{{ fullName(payroll) }}</td>
+        <td>{{ payroll.identity_card}} {{ payroll.city_identity_card }}</td>
+        <td>{{ fullName(payroll) }}</td>
         <td>{{ payroll.account_number}}</td>
         <td>{{ payroll.birth_date}}</td>
         <td>{{ payroll.charge}}</td>
