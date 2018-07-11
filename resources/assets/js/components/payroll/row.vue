@@ -1,7 +1,7 @@
 <template>
     <tr>
-        <td class="zui-sticky-col">{{ contract.identity_card}} {{ contract.city_identity_card }}</td>
-        <td class="zui-sticky-col-1">{{ fullName(contract) }}</td>
+        <td>{{ contract.identity_card}} {{ contract.city_identity_card }}</td>
+        <td>{{ fullName(contract) }}</td>
         <td>{{ contract.account_number}}</td>
         <td>{{ contract.birth_date}}</td>
         <td>{{ contract.charge}}</td>
@@ -26,7 +26,7 @@
 
 <script>
 export default {
-  props:['contract', 'procedure'],
+  props:['cont','contract', 'procedure'],
   data(){
     return{
         days: 30,
@@ -68,21 +68,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-/* .zui-table .zui-sticky-col {
-    left: 0;
-    position: absolute;
-    top: auto;
-    height:51px;
-    width: 160px;
-    text-align: right;
-}
-.zui-table .zui-sticky-col-1 {
-    left: 160px;
-    position: absolute;
-    top: auto;
-    height:51px;
-    width: 320px;
-    text-align:left;
-} */
-</style>
