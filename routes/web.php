@@ -13,7 +13,7 @@
 Route::group(['middleware' => 'auth'], function(){
     Route::get('/','EmployeeController@index');
     
-    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/home','EmployeeController@index')->name('home');
     
     Route::get('employee/list','EmployeeController@list');
     
@@ -50,8 +50,9 @@ Route::group(['middleware' => 'auth'], function(){
     /*	asurance	*/
     Route::get('insurance/printhigh/{id}', 'InsuranceController@printhigh')->name('print_high_insurance');
     Route::get('insurance/printlow/{id}', 'InsuranceController@printlow')->name('print_low_insurance');
-    
-    Route::get('/home', 'HomeController@index')->name('home');
+
+    Route::get('user/profile/{user_id}', 'UserController@index')->name('user_profile');
+    Route::post('user/reset_password', 'UserController@update')->name('user_reset_password');
 });
 
 Auth::routes();

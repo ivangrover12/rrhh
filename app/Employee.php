@@ -7,7 +7,8 @@ use App\Helpers\Util;
 
 class Employee extends Model
 {
-    //
+    protected $dates = ['deleted_at'];
+
     public function employee_type()
     {
         return $this->belongsTo(EmployeeType::class,'employee_type_id','id');

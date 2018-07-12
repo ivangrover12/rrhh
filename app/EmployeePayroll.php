@@ -22,7 +22,7 @@ class EmployeePayroll
         $this->charge = $contract->position->charge->name;
         $this->position = $contract->position->name;
         $this->date_start = Util::getDate($contract->date_start);
-        $this->date_end = Util::getDate($contract->date_end);
+        $this->date_end = is_null($contract->date_end) ? 'Indefinido' : Util::getDate($contract->date_end);
         $this->worked_days = $payroll->worked_days;
         $this->base_wage = $payroll->base_wage;
         $this->quotable = $this->base_wage * $this->worked_days / 30;
@@ -54,7 +54,7 @@ class EmployeePayroll
         $this->position_group_id = $contract->position->position_group->id;
         $this->employer_number = $contract->position->position_group->employer_number->number;
         $this->employer_number_id = $contract->position->position_group->employer_number->id;
-        $this->valid_contract = Carbon::parse($contract->date_end)->gte(Carbon::create($procedure->year, $procedure->month->id)->endOfMonth()) || Carbon::parse($contract->date_end)->gte(Carbon::create($procedure->year, $procedure->month->id, 30));
+        $this->valid_contract = is_null($contract->date_end) ? true : Carbon::parse($contract->date_end)->gte(Carbon::create($procedure->year, $procedure->month->id)->endOfMonth()) || Carbon::parse($contract->date_end)->gte(Carbon::create($procedure->year, $procedure->month->id, 30));
     }
 
     public function setZeroAccounts() {
