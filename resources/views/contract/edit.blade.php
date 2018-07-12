@@ -73,48 +73,40 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4"> Numero de contrato <span class="text-danger">*</span> <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: XXX/2018"></i></div>
+                                <div class="col-md-4"> Numero de contrato </div>
                                 <div class="col-md-8">
                                     <input type="text" name="number_contract" id="number_contract" class="form-control" value=" {{ $contract->number_contract }} " />
                                     <div class="text-danger">{{ $errors->first('number_contract') }}</div>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4">Numero de asegurado 
-                                    <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: 11-1111-XXX"></i>
-                                </div>
+                                <div class="col-md-4">Numero de asegurado </div>
                                 <div class="col-md-8">
                                     <input type="text" name="number_insurance" value="{{ $contract->number_insurance }}" class="form-control">
                                 </div>
                             </div>                            
                             <div class="form-group row">
-                                <div class="col-md-4">Cite de Resursos Humanos <span class="text-danger">*</span> 
-                                    <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: RR.HH.-120/2018"></i>
-                                </div>
+                                <div class="col-md-4">Cite de Resursos Humanos </div>
                                 <div class="col-md-4">
                                     <input type="text" name="cite_rrhh" value="{{ $contract->cite_rrhh }}" class="form-control">
                                     <div class="text-danger">{{ $errors->first('cite_rrhh') }}</div>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4">Fecha del cite <span class="text-danger">*</span></div>
+                                <div class="col-md-4">Fecha del cite </div>
                                 <div class="col-md-8">
                                     <input type="date" name="cite_rrhh_date" value="{{ $contract->cite_rrhh_date }}" class="form-control">
                                     <div class="text-danger">{{ $errors->first('cite_rrhh_date') }}</div>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4">Numero de convocatoria 
-                                    <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: URH-028"></i>
-                                </div>
+                                <div class="col-md-4">Numero de convocatoria </div>
                                 <div class="col-md-8">
                                     <input type="text" name="numer_announcement" value="{{ $contract->numer_announcement }}" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4"> Cite de desempeño
-                                    <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Solo en caso de recontratación"></i>
-                                </div>
+                                <div class="col-md-4"> Cite de desempeño</div>
                                 <div class="col-md-8">
                                     <input type="text" name="cite_performance" value="{{ $contract->cite_performance }}" class="form-control">
                                 </div>

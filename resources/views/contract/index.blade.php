@@ -2,6 +2,7 @@
 @section('title','Listado de contratos') 
 @section('content')
 
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-6">
         <h2>Lista de contratos</h2>
@@ -67,6 +68,7 @@
 @section('jss')
 <script>
     $(document).ready(function(){
+
         var table = $('#contract-table').DataTable({
             "ajax":"contract/list/"+$("#status").val(),
             "language": {

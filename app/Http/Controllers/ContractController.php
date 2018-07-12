@@ -59,6 +59,9 @@ class ContractController extends Controller
                     ";
             } else {
                 $row[] = "
+
+
+
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."'><i class='fa fa-eye'></i>&nbsp;Ver</a>
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."/edit'><i class='fa fa-pencil'></i>&nbsp;Editar</a>
                     <button class='btn btn-primary' type='button' data-toggle='tooltip' data-placement='top' title='Afiliacion y reingreso del trabajador' 
@@ -109,10 +112,7 @@ class ContractController extends Controller
             'employee_id' => 'required',
             'position_id' => 'required',
             'date_start' => 'required',
-            'date_end'  => 'required',
-            'cite_rrhh'  => 'required',
-            'cite_rrhh_date'  => 'required',
-            'number_contract' => 'required|unique:contracts'
+            'date_end'  => 'required'
         ],$messages);
 
         if ($validator->fails()) {
@@ -226,7 +226,12 @@ class ContractController extends Controller
      */
     public function destroy(Contract $contract)
     {
-        //
+        
+    }
+    public function delete(int $id) 
+    {
+        Contract::find($id)->delete();
+        return redirect('contract')->with('success', 'Eliminado correctamente');
     }
     public function print(int $id)
     { 

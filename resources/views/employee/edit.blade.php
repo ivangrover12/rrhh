@@ -3,8 +3,25 @@
 @section('content')
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-9">
-        {{ Breadcrumbs::render('employee_edit') }}
+    <div class="col-lg-10">
+        <h2>Editar Empleado</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/">Inicio</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="/employee">empleados</a>
+            </li>            
+            <li class="breadcrumb-item active">
+                <strong>editar empleado</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2" align="right">
+        <ul class="breadcrumb m-t-md">
+            <li><a href="/employee"><button class="btn btn-outline btn-primary dim" type="button"><i class="fa fa-reply"></i> volver </button></a></li>
+        </ul>
+        
     </div>
 </div>
 

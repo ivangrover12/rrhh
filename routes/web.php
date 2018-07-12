@@ -40,6 +40,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('contract/checkrenovate', 'ContractController@checkrenovate')->name('checkrenovate_contract');
     Route::post('contract/renovate', 'ContractController@renovate');
     Route::get('contract/print/{id}', 'ContractController@print')->name('print_contract');
+    Route::get('contract/delete/{id}', 'ContractController@delete')->name('delete_contract');
     Route::resource('contract','ContractController');
     
     /*  tickets */
