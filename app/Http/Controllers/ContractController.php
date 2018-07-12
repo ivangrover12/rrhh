@@ -189,6 +189,22 @@ class ContractController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $messages = [
+            'required' => 'Campo obligatorio',
+            'unique' => 'Este valor ya existe'
+        ];
+        $validator = Validator::make($request->all(), [
+            'position_id' => 'required',
+            'date_start' => 'required',
+            'date_end'  => 'required',
+            'schedule' => 'required'
+        ],$messages);
+
+        if ($validator->fails()) {
+            return redirect('contract/'.$id.'/edit')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
         $contract = Contract::find($id);
         $contract->employee_id = $contract->employee_id;
         $contract->position_id = $request->position_id;
