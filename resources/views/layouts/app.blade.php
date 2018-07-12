@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{!! asset('css/app.css') !!}" />
     {{-- <link rel="stylesheet" href="{{ asset('css/materialicons.css') }}" media="all" /> --}}
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="{!! asset('css/sweetalert.css') !!}" />
     @section('styles')
     @show
 </head>

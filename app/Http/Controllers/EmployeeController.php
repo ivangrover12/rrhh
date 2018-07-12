@@ -197,7 +197,7 @@ class EmployeeController extends Controller
         $employee->street = $request->street;
         $employee->number = $request->number;
         $employee->save();
-        return redirect('employee');
+        return redirect('employee')->with('success', 'Creado correctamente');
     }
 
     /**
@@ -208,8 +208,16 @@ class EmployeeController extends Controller
      */
     public function show(Employee $employee)
     {
+        $cities = City::get();
+        $employee_types = EmployeeType::get();
+        $insurance_company = InsuranceCompany::get();
+        $management_entity = ManagementEntity::get();
         $data = [
-            'employee'  =>  $employee,            
+            'employee'  =>  $employee,
+            'cities'  =>  $cities,
+            'employee_types' =>  $employee_types,
+            'insurances' =>  $insurance_company,
+            'managements'    =>  $management_entity,
         ];
         return view('employee.show',$data);
     }

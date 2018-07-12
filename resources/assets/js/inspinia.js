@@ -29,3 +29,5 @@ require('../inspinia/js/plugins/select2/select2.full.min.js');
 // require('../inspinia/js/plugins/dualListbox/jquery.bootstrap-duallistbox.js');
 
 require('../inspinia/js/plugins/typehead/bootstrap3-typeahead.min.js');
+require('../inspinia/js/plugins/sweetalert/sweetalert.min.js');
+

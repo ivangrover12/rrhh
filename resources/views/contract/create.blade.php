@@ -68,31 +68,31 @@
                                 </div>                                
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4"> Numero de contrato <span class="text-danger">*</span> <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: XXX/2018"></i></div>
+                                <div class="col-md-4"> Numero de contrato </div>
                                 <div class="col-md-8">
-                                    <input type="text" name="number_contract" id="number_contract" class="form-control" />
+                                    <input type="text" name="number_contract" id="number_contract" class="form-control" placeholder="mXXX/2018" />
                                     <div class="text-danger">{{ $errors->first('number_contract') }}</div>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-4"> 
-                                    Numero de asegurado  <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: 11-1111-XXX"></i>
+                                    Numero de asegurado 
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" name="number_insurance" class="form-control">
+                                    <input type="text" name="number_insurance" class="form-control" placeholder="11-1111-XXX">
                                 </div>
                             </div>                            
                             <div class="form-group row">
                                 <div class="col-md-4">
-                                    Cite de Resursos Humanos <span class="text-danger">*</span> <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: RR.HH.-120/2018"></i>
+                                    Cite de Resursos Humanos 
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" name="cite_rrhh" class="form-control">
+                                    <input type="text" name="cite_rrhh" class="form-control" placeholder="RR.HH.-120/2018">
                                     <div class="text-danger">{{ $errors->first('cite_rrhh') }}</div>
                                 </div>                                
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4">  Fecha del cite <span class="text-danger">*</span></div>
+                                <div class="col-md-4">  Fecha del cite </div>
                                 <div class="col-md-8">
                                     <input type="date" name="cite_rrhh_date" class="form-control">
                                     <div class="text-danger">{{ $errors->first('cite_rrhh_date') }}</div>
@@ -100,10 +100,10 @@
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-4">
-                                    Numero de convocatoria <i class="fa fa-comment" type="button" data-toggle="tooltip" data-placement="top" title="Ejemplo: URH-028"></i>
+                                    Numero de convocatoria 
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="text" name="numer_announcement" class="form-control">
+                                    <input type="text" name="numer_announcement" class="form-control" placeholder="URH-028">
                                 </div>
                             </div>
                             <div class="col-md-12" align="right">

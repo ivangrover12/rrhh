@@ -24,6 +24,7 @@
         "moment": "^2.22.1",
         "print-js": "^1.0.43",
         "vue-currency-filter": "^2.2.0",
+        "vue-scrolling-table": "^0.2.0",
         "vue2-datatable-component": "^2.3.0"
     }
 }
