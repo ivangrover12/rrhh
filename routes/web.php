@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::post('payroll','PayrollController@store');
     Route::get('payroll/print/pdf/{year}/{month}', 'PayrollController@print_pdf')->name('print_pdf_payroll');
     Route::get('payroll/print/txt/{year}/{month}', 'PayrollController@print_txt')->name('print_txt_payroll');
+    Route::get('payroll/ovt/{year}/{month}' , 'PayrollController@print_ovt')->name('print_ovt_payroll');
 
     // Route::resource('report','ReportController');
     Route::get('report/','ReportController@index');
@@ -56,6 +57,5 @@ Route::group(['middleware' => 'auth'], function(){
 });
 
 Auth::routes();
-
 
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
