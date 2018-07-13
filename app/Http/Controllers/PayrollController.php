@@ -608,7 +608,7 @@ class PayrollController extends Controller
             $company = Company::select()->first();
 
             $payrolls = Payroll::where('procedure_id', $procedure->id)->get();
-            // if (!config('app.debug')) {
+            // if (config('app.debug')) {
             //     $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->get();
             // }
             foreach ($payrolls as $key => $payroll) {
@@ -857,5 +857,62 @@ class PayrollController extends Controller
 
         return Response::make($content, 200, $headers);
 
+    }
+
+    public function print_ovt($year, $month)
+    {
+        $month = Month::where('id', $month)->select()->first();
+        if (!$month) {
+            return response()->json([
+                "error" => true,
+                "message" => "Mes inexistente",
+                "data" => null,
+            ], 404);
+        }
+
+        $employees = $this->getFormattedData($year, $month->id, 0, 0, 0, 0, 0, 0)->data['employees'];$total_employees = count($employees);
+        
+        // return response()->json($employees);
+
+        $content = "";
+
+        $content .= implode(',', ["Nro","Tipo de documento de identidad","Número de documento de identidad","Lugar de expedición","Fecha de nacimiento","Apellido Paterno","Apellido Materno","Nombres","País de nacionalidad","Sexo","Jubilado","¿Aporta a la AFP?","¿Persona con discapacidad?","Tutor de persona con discapacidad","Fecha de ingreso","Fecha de retiro","Motivo retiro","Caja de salud","AFP a la que aporta","NUA/CUA","Sucursal o ubicación adicional","Clasificación laboral","Cargo","Modalidad de contrato","Tipo contrato","Días pagados","Horas pagadas","Haber Básico","Bono de antigüedad","Horas extra","Monto horas extra","Horas recargo nocturno","Monto horas extra nocturnas","Horas extra dominicales","Monto horas extra dominicales","Domingos trabajados","Monto domingo trabajado","Nro. dominicales","Salario dominical","Bono producción","Subsidio frontera","Otros bonos y pagos","RC-IVA","Aporte Caja Salud","Aporte AFP","Otros descuentos","\n"]);
+
+        foreach ($employees as $i => $e) {
+            if ($e->insurance_company_id == 2) {
+                $e->insurance_company_id = 7;
+            } else {
+                $e->insurance_company_id = 1;
+            }
+            if ($e->management_entity_id == 1) {
+                $e->management_entity_id = 2;
+            } else {
+                $e->management_entity_id = 1;
+            }
+            if ($e->date_end) {
+                $e->contract_mode = 1;
+            } else {
+                $e->contract_mode = 5;
+            }
+            if (strtoupper($e->position) == "TRABAJO SOCIAL") {
+                $e->contract_type = 2;
+            } else {
+                $e->contract_type = 1;
+            }
+
+            $content .= implode(',', [$i++,"CI",$e->ci,$e->id_ext,$e->birth_date,$e->last_name,$e->mothers_last_name,$e->name,"BOLIVIA",$e->gender,"0","1","0","0",$e->date_start,"","",$e->insurance_company_id,$e->management_entity_id,$e->nua_cua,"1","",mb_strtoupper(str_replace(",", " ", $e->position)),$e->contract_mode,$e->contract_type,$e->worked_days,"8",$e->base_wage,"0","","","","","","","","","","","","","","",$e->discount_old,$e->total_amount_discount_institution,$e->total_amount_discount_institution]);
+
+            if ($i < ($total_employees - 1)) {
+                $content .= "\n";
+            }
+        }
+
+        $filename = implode('_', ["planilla", "ovt", strtolower($month->name), $year]).".csv";
+
+        $headers = ['Content-type'=>'text/plain', 'Content-Disposition'=>sprintf('attachment; filename="%s"', $filename)];
+
+        // return response()->json($content);
+
+        return Response::make($content, 200, $headers);
     }
 }
