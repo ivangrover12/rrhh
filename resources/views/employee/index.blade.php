@@ -3,16 +3,31 @@
 @section('content')
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-9">
-        {{ Breadcrumbs::render('employee_list') }}
+    <div class="col-lg-6">
+        <h2>Lista de contratos</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/">Inicio</a>
+            </li>            
+            <li class="breadcrumb-item active">
+                <strong>empleados</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-6">
+        <ul class="nav navbar-top-links navbar-right m-t-md" align="right">
+            <li>
+                <button onclick="location.href='{{ url('employee/create') }}'" class="btn btn-outline btn-primary  dim " type="button"><i class="fa fa-share"></i> Crear empleado</button>
+            </li>
+        </ul>
     </div>
 </div>
+
 
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
-            <a class="btn btn-primary" type="button" href="{{ asset('employee/create' ) }}"><i class="fa fa-check-circle"></i>&nbsp;Crear Empleado</a>
             <table id="employee-table" class="table table-striped table-bordered myTable" style="width:100%">
                 <thead>
                     <tr>
