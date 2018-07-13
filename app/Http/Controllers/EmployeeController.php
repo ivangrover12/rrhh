@@ -49,9 +49,25 @@ class EmployeeController extends Controller
             $row[] = $employee->nua_cua;
             $row[] = $employee->management_entity->name;
             $row[] = $employee->employee_type->name;
+            if ($employee->status == true) {
+                $checked = 'checked';
+            } else {
+                $checked = '';
+            }
+            $row[] = '
+                    <div class="switch">
+                        <div class="onoffswitch">
+                            <input type="checkbox" '.$checked.' class="onoffswitch-checkbox status" id="example1" value="'.$employee->id.'" >
+                            <label class="onoffswitch-label" for="example1">
+                                <span class="onoffswitch-inner"></span>
+                                <span class="onoffswitch-switch"></span>
+                            </label>
+                        </div>
+                    </div>';
             $row[] = '
                     <a class="btn btn-primary" type="button" href="employee/'.$employee->id.'"><i class="fa fa-check-circle"></i>&nbsp;Ver</a>
-                    <a class="btn btn-primary" type="button" href="employee/'.$employee->id.'/edit"><i class="fa fa-check-circle"></i>&nbsp;Editar</a>';
+                    <a class="btn btn-primary" type="button" href="employee/'.$employee->id.'/edit"><i class="fa fa-check-circle"></i>&nbsp;Editar</a>                    
+                    ';
             $output['aaData'][] = $row;
         }        
         return response()->json($output);
@@ -311,5 +327,15 @@ class EmployeeController extends Controller
     public function destroy(Employee $employee)
     {
         //
+    }
+    public function status(int $id) 
+    {
+        $employee = Employee::find($id);
+        if ($employee->status == true) {            
+            $employee->status = false;
+        } else {
+            $employee->status = true;
+        }
+        $employee->update();
     }
 }

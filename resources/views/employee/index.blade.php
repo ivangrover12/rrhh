@@ -4,7 +4,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-6">
-        <h2>Lista de contratos</h2>
+        <h2>Lista de Empleados</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="/">Inicio</a>
@@ -22,33 +22,41 @@
         </ul>
     </div>
 </div>
-
-
-
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content fadeInRight">
     <div class="row">
         <div class="col-lg-12">
-            <table id="employee-table" class="table table-striped table-bordered myTable" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>CI</th>
-                        <th>Apellido</th>
-                        <th>Materno</th>
-                        <th>Name</th>
-                        <th>Segundo Nombre</th>
-                        <th>Fecha de nacimiento</th>
-                        <th>Nro Cuenta</th>
-                        <th>CUA/NUA</th>
-                        <th>AFP</th>         
-                        <th>Tipo</th>
-                        <th>Acci&oacute;n</th>
-                    </tr>
-                </thead>
-                <tbody>
+            @include('layouts.flash-message')
+            <div class="ibox ">
+                <div class="ibox-title">
                     
-                </tbody>
-            </table>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table id="employee-table" class="table table-striped table-bordered myTable" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th class="abc">CI</th>
+                                    <th>Apellido</th>
+                                    <th>Materno</th>
+                                    <th>Name</th>
+                                    <th>Segundo Nombre</th>
+                                    <th>Fecha de nacimiento</th>
+                                    <th>Nro Cuenta</th>
+                                    <th>CUA/NUA</th>
+                                    <th>AFP</th>         
+                                    <th>Tipo</th>
+                                    <th>Activo</th>
+                                    <th>Acci&oacute;n</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -57,9 +65,11 @@
 @endsection
 
 @section('jss')
+
 <script>
     $(document).ready(function(){
-        $('.myTable').DataTable({
+
+        $('.myTable').DataTable({            
             "ajax":"employee/list",
             "language": {
                 "sProcessing":     "Procesando...",
@@ -84,8 +94,24 @@
                     "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
                     "sSortDescending": ": Activar para ordenar la columna de manera descendente"
                 }
+            },
+            "initComplete": function(settings, json) {
+
+                /*var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+
+                elems.forEach(function(html) {
+                  var switchery = new Switchery(html,{size: 'small'});
+                });*/
+
+                var api = this.api();
+                api.$('td .status').click( function () {
+                    $.get("employee/status/" + $(this).val());
+                });
             }
         });
+
+
     });    
 </script>
+
 @endsection
