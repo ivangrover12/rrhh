@@ -18,7 +18,7 @@ class EmployeePayroll
         $this->id_ext = $employee->city_identity_card->shortened;
         $this->insurance_company_id = $employee->insurance_company_id;
         $this->ci_ext = Util::ciExt($employee);
-        $this->name = implode(" ", [$employee->first_name, $employee->first_name]);
+        $this->name = implode(" ", [$employee->first_name, $employee->second_name]);
         $this->last_name = $employee->last_name;
         $this->mothers_last_name = $employee->mothers_last_name;
         $this->full_name = Util::fullName($employee, 'uppercase', 'lastname_first');

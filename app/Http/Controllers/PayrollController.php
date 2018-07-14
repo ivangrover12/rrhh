@@ -890,17 +890,17 @@ class PayrollController extends Controller
                 $e->management_entity_id = 1;
             }
             if ($e->date_end) {
-                $e->contract_mode = 1;
-            } else {
                 $e->contract_mode = 5;
+            } else {
+                $e->contract_mode = 1;
             }
-            if (strtoupper($e->position) == "TRABAJO SOCIAL") {
+            if (strtoupper($e->position) == "Profesional de Trabajo Social") {
                 $e->contract_type = 2;
             } else {
                 $e->contract_type = 1;
             }
 
-            $content .= implode(',', [++$i,"CI",$e->ci,$e->id_ext,$e->birth_date,$e->last_name,$e->mothers_last_name,$e->name,"BOLIVIA",$e->gender,"0","1","0","0",$e->date_start,"","",$e->insurance_company_id,$e->management_entity_id,$e->nua_cua,"1","",mb_strtoupper(str_replace(",", " ", $e->position)),$e->contract_mode,$e->contract_type,$e->worked_days,"8",$e->base_wage,"0","","","","","","","","","","","","","","",$e->discount_old,$e->total_amount_discount_law,$e->total_amount_discount_institution]);
+            $content .= implode(',', [++$i,"CI",$e->ci,$e->id_ext,$e->birth_date,$e->last_name,$e->mothers_last_name,$e->name,"BOLIVIA",$e->gender,"0","1","0","0",$e->date_start,"","",$e->insurance_company_id,$e->management_entity_id,$e->nua_cua,"1","",mb_strtoupper(str_replace(",", " ", $e->position)),$e->contract_mode,$e->contract_type,$e->worked_days,"8",$e->quotable,"0","","","","","","","","","","","","","","",$e->discount_old,$e->total_amount_discount_law,$e->total_amount_discount_institution]);
 
             if ($i < ($total_employees)) {
                 $content .= "\n";
