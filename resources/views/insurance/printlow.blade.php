@@ -65,7 +65,7 @@
             height: 2cm;                 
         }
         .start{
-            width: 12cm;  
+            width: 11.3cm;  
             height: 2cm;    
         }
         .day_end{
@@ -81,7 +81,7 @@
             height:1cm;      
         }
         .razon{
-            width: 18cm; 
+            width: 17.5cm; 
             height: 1.2cm;      
         }
         .noemp{
