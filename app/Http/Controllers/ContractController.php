@@ -39,7 +39,6 @@ class ContractController extends Controller
         $contracts = Contract::where('status',$status)->get();        
         foreach ($contracts as $key => $contract) {
             $row = [];
-            //$row[] = $key+1;
             $row[] = $contract->employee->identity_card;
             $row[] = $contract->employee->last_name.' '.$contract->employee->mothers_last_name.' '.$contract->employee->first_name.' '.$contract->employee->second_name;
             $row[] = $contract->position->name;
@@ -59,9 +58,6 @@ class ContractController extends Controller
                     ";
             } else {
                 $row[] = "
-
-
-
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."'><i class='fa fa-eye'></i>&nbsp;Ver</a>
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."/edit'><i class='fa fa-pencil'></i>&nbsp;Editar</a>
                     <button class='btn btn-primary' type='button' data-toggle='tooltip' data-placement='top' title='Afiliacion y reingreso del trabajador' 
@@ -85,7 +81,7 @@ class ContractController extends Controller
      */
     public function create()
     {
-        $employees = Employee::get();
+        $employees = Employee::where('status', true)->get();
         $position_groups = PositionGroup::get();
         $position = Position::get();
         $data = [
@@ -172,7 +168,7 @@ class ContractController extends Controller
         $data = [
             'contract' => $contract,
             'employee' => $employee,
-            'employees' => Employee::all(),
+            'employees' => Employee::where('status', true)->get(),
             'position_groups' => $position_groups,
             'position' => $position,
             'schedules' => $schedules
@@ -189,6 +185,22 @@ class ContractController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $messages = [
+            'required' => 'Campo obligatorio',
+            'unique' => 'Este valor ya existe'
+        ];
+        $validator = Validator::make($request->all(), [
+            'position_id' => 'required',
+            'date_start' => 'required',
+            'date_end'  => 'required',
+            'schedule' => 'required'
+        ],$messages);
+
+        if ($validator->fails()) {
+            return redirect('contract/'.$id.'/edit')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
         $contract = Contract::find($id);
         $contract->employee_id = $contract->employee_id;
         $contract->position_id = $request->position_id;

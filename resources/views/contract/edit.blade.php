@@ -55,7 +55,7 @@
                                 <div class="col-md-8">
                                     <input type="hidden" name="position_id" id="position_id" class="form-control" value=" {{ $contract->position_id }} " />
                                     <input type="text" id="position" placeholder="Cargo" class="form-control" value=" {{ $contract->position->name }} " />
-                                    <div class="text-danger">{{ $errors->first('position_id') }}</div>                                   
+                                    <div class="text-danger">{{ $errors->first('position_id') }}</div>                               
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -151,7 +151,7 @@
                                             @endif 
                                         @endif
                                     @endforeach
-
+                                    <div class="text-danger"> {{ $errors->first('schedule') }}</div>
                                                                      
                                 </div>
                             </div>

@@ -18,9 +18,8 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('employee/list','EmployeeController@list');
     
     Route::resource('employee','EmployeeController');
-    Route::get('employee_data', 'EmployeeController@getEmployeeDatatable' )->name('employee_list');
-    
-    
+    Route::get('employee_data', 'EmployeeController@getEmployeeDatatable' )->name('employee_list');   
+    Route::get('employee/status/{id}', 'EmployeeController@status')->name('status_employee');
     Route::get('employee/{employee}/payroll','PayrollController@employee_payroll');
   
     Route::get('payroll/addmonth','PayrollController@addmonth');

@@ -17,22 +17,22 @@
             font-family: 'Arial', sans-serif;
             text-align: center;
             
-            margin: 1.5cm 0 0 2cm;
+            margin: 1.5cm 0 0 1cm;
         }
         .first{
             margin: 5cm 0 0 0;
         }
         .second{
-            margin: 1.6cm 0 0 0;
+            margin: 1.3cm 0 0 0;
         }
         .three{
-            margin: 1.2cm 0 0 0;
-        }
-        .four{
             margin: 0.8cm 0 0 0;
         }
+        .four{
+            margin: 0.5cm 0 0 0;
+        }
         .five{
-            margin: 0.4cm 0 0 0;
+            margin: 0.1cm 0 0 0;
         }
         .camp{ 
             display: table-cell;
@@ -42,88 +42,88 @@
             clear: both;
         }
         .pat{
-            width: 5.5cm;
+            width: 5.8cm; 
             height:1.2cm;    
         }
         .mat{
-            width: 5.5cm;
+            width: 5.8cm; 
             height:1.2cm;    
         }            
         .name{
-            width: 5.5cm;
+            width: 5.8cm; 
             height:1.2cm;    
         }
         .noasegurado{
-            width: 5.5cm; 
+            width: 5.8cm;  
             height:1.2cm;   
         }
         .day_birth{
-            width: 1.8cm; 
+            width: 1.9cm;  
             height:1.2cm;   
         }
         .month_birth{
-            width: 1.8cm; 
+            width: 1.9cm;  
             height:1.2cm;   
         }
         .year_birth{
-            width: 1.8cm; 
+            width: 1.9cm;  
             height:1.2cm;   
         }
         .gender{
-            width: 2.8cm; 
+            width: 2.8cm;  
             height:1.2cm;   
         }
         .zone{
-            width: 3.6cm; 
+            width: 3.8cm;  
             height:1.2cm;   
         }
         .street{
-            width: 4.4cm; 
+            width: 4.6cm;  
             height:1.2cm;   
         }
         .no{
-            width: 2cm; 
+            width: 2.3cm;  
             height:1.2cm;   
         }
         .location{
-            width: 3.6cm; 
+            width: 4cm;  
             height:1.2cm;   
         }
         .salary{
-            width: 5.6cm; 
+            width: 5.8cm;  
             height:1.2cm;  
         }
         .position{
-            width: 7.9cm; 
+            width: 8.5cm;  
             height: 1.2cm;  
              
         }
         .start{
-            width: 8.4cm; 
+            width: 8.5cm;  
             height: 1.2cm;  
         }
         .day_end{
-            width: 2.1cm; 
+            width: 2.1cm;  
             height:0.8cm;   
         }
         .month_end{
-            width: 4.2cm;
+            width: 4.4cm; 
             height:0.8cm;    
         }
         .year_end{
-            width: 2.1cm;
+            width: 2.1cm; 
             height:0.8cm;    
         }
         .razon{
-            width: 13.5cm;
+            width: 13.5cm; 
             height: 1.3cm;    
         }
         .noemp{
-            width: 8.5cm;
+            width: 8.5cm; 
             height: 1.3cm;    
         }
         .fecha{
-            width: 17.1cm;
+            width: 17.1cm; 
             height: 0.8cm;    
         }
     </style>

@@ -15,7 +15,7 @@ require('../inspinia/js/plugins/jsKnob/jquery.knob.js');
 require('../inspinia/js/plugins/jasny/jasny-bootstrap.min.js');
 require('../inspinia/js/plugins/datapicker/bootstrap-datepicker.js');
 require('../inspinia/js/plugins/nouslider/jquery.nouislider.min.js');
-require('../inspinia/js/plugins/switchery/switchery.js');
+
 require('../inspinia/js/plugins/ionRangeSlider/ion.rangeSlider.min.js');
 require('../inspinia/js/plugins/iCheck/icheck.min.js');
 require('../inspinia/js/plugins/metisMenu/jquery.metisMenu.js');
@@ -30,4 +30,4 @@ require('../inspinia/js/plugins/select2/select2.full.min.js');
 
 require('../inspinia/js/plugins/typehead/bootstrap3-typeahead.min.js');
 require('../inspinia/js/plugins/sweetalert/sweetalert.min.js');
-
+require('../inspinia/js/plugins/switchery/switchery.js');
