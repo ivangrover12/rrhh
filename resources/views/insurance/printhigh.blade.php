@@ -26,7 +26,7 @@
             margin: 1.3cm 0 0 0;
         }
         .three{
-            margin: 0.8cm 0 0 0;
+            margin: 0.7cm 0 0 0;
         }
         .four{
             margin: 0.5cm 0 0 0;
