@@ -16,22 +16,22 @@
             font-family: 'Arial', sans-serif;
             text-align: center;
             
-            margin: 1.5cm 0 0 2cm;
+            margin: 1.5cm 0 0 1cm;
         }
         .zero{
             margin: 3.5cm 0 0 0;
         }
         .first{
-            margin: 2cm 0 0 0;
+            margin: 1.5cm 0 0 0;
         }
         .second{
-            margin: 1.2cm 0 0 0;
+            margin: 0.8cm 0 0 0;
         }
         .three{
-            margin: 1.4cm 0 0 0;
+            margin: 1cm 0 0 0;
         }
         .four{
-            margin: 0.4cm 0 0 0;
+            margin: 0.2cm 0 0 0;
         }
         .camp{ 
             display: table-cell;
@@ -41,59 +41,59 @@
             clear: both;
         }
         .pat{
-            width: 5.5cm;
+            width: 5.8cm; 
             height:1.2cm;     
         }
         .mat{
-            width: 5.5cm;
+            width: 5.9cm; 
             height:1.2cm;      
         }            
         .name{
-            width: 5.5cm;
+            width: 5.9cm; 
             height:1.2cm;      
         }
         .noasegurado{
-            width: 5.5cm; 
+            width: 5.8cm;  
             height:1.2cm;     
         }        
         .salary{
-            width: 5.5cm; 
+            width: 5.8cm;  
             height:2cm;    
         }
         .motivo{
-            width: 5.5cm; 
+            width: 5.8cm;  
             height: 2cm;                 
         }
         .start{
-            width: 11cm; 
+            width: 12cm;  
             height: 2cm;    
         }
         .day_end{
-            width: 2.5cm; 
+            width: 3cm;  
             height:1cm;     
         }
         .month_end{
-            width: 6cm;
+            width: 8cm; 
             height:1cm;      
         }
         .year_end{
-            width: 2.5cm;
+            width: 2.5cm; 
             height:1cm;      
         }
         .razon{
-            width: 16.5cm;
+            width: 18cm; 
             height: 1.2cm;      
         }
         .noemp{
-            width: 5.5cm;
+            width: 5.5cm; 
             height: 1.2cm;      
         }
         .fecha{
-            width: 16.5cm;
+            width: 16.5cm; 
             height: 1.2cm;      
         }
         .ci{
-            width: 22cm;
+            width: 22cm; 
             text-align: right;  
         }
     </style>
