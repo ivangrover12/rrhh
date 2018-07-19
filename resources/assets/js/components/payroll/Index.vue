@@ -28,6 +28,7 @@
                   <th>Fecha de Nacimiento</th>
                   <th>Puesto</th>
                   <th>Cargo</th>                
+                  <th># de dias NO Trabajados</th>
                   <th># de dias Trabajados</th>
                   <th>Haber basico</th>
                   <th>Total Ganado</th>

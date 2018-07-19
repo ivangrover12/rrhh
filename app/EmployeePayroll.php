@@ -154,7 +154,7 @@ class EmployeePayroll
 
         $worked_days = 0;
 
-        if ($date_end == null) {
+        if ($contract->date_end == null) {
             $worked_days = 30;
         } elseif ($date_start->year <= $payroll_date->year && $date_start->month == $payroll_date->month) {
             $worked_days = 30 + 1 - $date_start->day;

@@ -6,7 +6,8 @@
         <td>{{ payroll.birth_date}}</td>
         <td>{{ payroll.charge}}</td>
         <td>{{ payroll.position }}</td>
-        <td><input type="number" v-model="days" :name="`contract-${payroll.contract_id}[]`" class="form-control" placeholder="dias trabajados" min="0" max="30"></td>
+        <td><input type="number" v-model="unworked_days" :name="`contract-${payroll.contract_id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" max="30"></td>
+        <td>{{ worked_days }}</td>
         <td>{{ baseWage | currency }}</td>
         <td>{{ quotable | currency }}</td>
         <td>{{ payroll.management_entity}}</td>
@@ -29,7 +30,7 @@ export default {
   props:['payroll', 'procedure'],
   data(){
     return{
-        days: this.payroll.worked_days,
+        unworked_days: this.payroll.unworked_days,
         di: null,
         baseWage: this.payroll.base_wage,
         delay: this.payroll.discount_faults,
@@ -54,6 +55,9 @@ export default {
 
   },
   computed:{
+      worked_days() {
+        return 30 - this.unworked_days;
+      },
       total(){
           return this.quotable - this.totalDiscounts;
       },
@@ -61,7 +65,7 @@ export default {
           return this.calculateTotalDiscountLaw() + parseFloat(this.delay || 0 ) + parseFloat(this.rcIva || 0);
       },
       quotable()  {
-          return (this.baseWage/30)*this.days;
+          return (this.baseWage/30)*(30 - this.unworked_days);
       },
       salary(){
           return this.quotable - this.calculateTotalDiscountLaw();
