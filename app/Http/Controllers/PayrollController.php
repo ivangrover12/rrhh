@@ -133,10 +133,11 @@ class PayrollController extends Controller
                 $payroll->contract_id = $id;
                 $payroll->procedure_id = $procedure->id;
                 $payroll->name = "Personal Eventual - Mes ".$request->month ." de ".$request->year;
-                $payroll->worked_days = $value[0];
+                $payroll->worked_days = $value[1];
+                $payroll->unworked_days = $value[0];
                 $base_wage = $contract->position->charge->base_wage ?? 1000;
                 $payroll->base_wage = $base_wage;
-                $quotable = ($base_wage/30)* $value[0];
+                $quotable = ($base_wage/30)* $value[1];
                 $payroll->quotable = $quotable;
                 $payroll->discount_old = ($quotable * $procedure->discount_old)/100;
                 $payroll->discount_common_risk = ($quotable * $procedure->discount_common_risk)/100;
@@ -146,10 +147,10 @@ class PayrollController extends Controller
                 $total_discount_law = (($quotable * $procedure->discount_old) / 100) + (($quotable * $procedure->discount_common_risk)/100)+(($quotable * $procedure->discount_commission)/100)+(($quotable * $procedure->discount_solidary)/100)+(($quotable * $procedure->discount_national)/100);
                 $payroll->total_amount_discount_law = $total_discount_law;
                 $payroll->net_salary = $quotable - $total_discount_law;
-                $payroll->discount_rc_iva = floatval($value[1]);
-                $payroll->discount_faults = floatval($value[2]);
-                $payroll->total_amount_discount_institution = floatval($value[2]);
-                $total_discounts = $total_discount_law + floatval($value[2]);
+                $payroll->discount_rc_iva = floatval($value[2]);
+                $payroll->discount_faults = floatval($value[3]);
+                $payroll->total_amount_discount_institution = floatval($value[3]);
+                $total_discounts = $total_discount_law + floatval($value[3]);
                 $payroll->total_discounts = $total_discounts;
                 $payroll->payable_liquid = $quotable - $total_discounts;
 

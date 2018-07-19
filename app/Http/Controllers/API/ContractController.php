@@ -35,6 +35,8 @@ class ContractController extends Controller
         $identity_card = strtoupper($request->identity_card) ?? '';
         $contracts = Contract::select(
             'contracts.id',
+            'contracts.date_start',
+            'contracts.date_end',
             'employees.id as employee_id',
             'employees.identity_card',
             'cities.shortened as city_identity_card',
