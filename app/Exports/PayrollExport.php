@@ -51,6 +51,7 @@ class PayrollExport implements FromCollection, WithHeadings
                 'start_date'    =>  $contract->date_start,
                 'end_date'    =>  $contract->date_end,
                 'work_days' =>  $payroll->worked_days,
+                'unworked_days' =>  $payroll->unworked_days,
                 'base_wage' =>  $contract->base_wage,
                 'quotable'  =>  $payroll->quotable,
                 'afp'   =>  '1',

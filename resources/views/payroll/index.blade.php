@@ -45,6 +45,7 @@
                         <a class="btn btn-md btn-primary" href="{{ route('report_excel', [$procedure->year, $procedure->month->name])}}" data-toggle="tooltip" data-placement="top" title="Seleccionar Excel"><i class="fa fa-file-excel-o"></i></a>
                         <button class="btn btn-primary" type="button" data-toggle="tooltip" data-placement="top" title="Imprimir Boletas" onclick="printJS({printable:'{!! route('print_ticket', [$procedure->year, $procedure->month->name]) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})" ><i class="fa fa-print"></i></button>
                         <a class="btn btn-md btn-primary" href="{{ route('print_txt_payroll', [$procedure->year, $procedure->month->id])}}" data-toggle="tooltip" data-placement="top" title="Descargar TXT"><i class="glyphicon glyphicon-download-alt"></i> TXT</a>
+                        <a class="btn btn-md btn-primary" href="{{ route('print_ovt_payroll', [$procedure->year, $procedure->month->id, 'report_type=H', 'report_name=OVT', 'valid_contracts=0', 'consultant=0', 'with_account=0']) }}" data-toggle="tooltip" data-placement="top" title="Descargar CSV"><i class="glyphicon glyphicon-download-alt"></i> OVT</a>
                         <div class="dropdown btn-group" role="group">
                             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
                                 Planillas

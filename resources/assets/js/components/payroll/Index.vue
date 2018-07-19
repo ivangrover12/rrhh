@@ -26,8 +26,11 @@
                   <th>Trabajador</th>
                   <th>Cuenta Bancaria</th>
                   <th>Fecha de Nacimiento</th>
+                  <th>Inicio de Contrato</th>
+                  <th>Fin de Contrato</th>
                   <th>Puesto</th>
                   <th>Cargo</th>                
+                  <th># de dias NO Trabajados</th>
                   <th># de dias Trabajados</th>
                   <th>Haber basico</th>
                   <th>Total Ganado</th>

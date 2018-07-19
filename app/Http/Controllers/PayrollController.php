@@ -133,10 +133,11 @@ class PayrollController extends Controller
                 $payroll->contract_id = $id;
                 $payroll->procedure_id = $procedure->id;
                 $payroll->name = "Personal Eventual - Mes ".$request->month ." de ".$request->year;
-                $payroll->worked_days = $value[0];
+                $payroll->worked_days = $value[1];
+                $payroll->unworked_days = $value[0];
                 $base_wage = $contract->position->charge->base_wage ?? 1000;
                 $payroll->base_wage = $base_wage;
-                $quotable = ($base_wage/30)* $value[0];
+                $quotable = ($base_wage/30)* $value[1];
                 $payroll->quotable = $quotable;
                 $payroll->discount_old = ($quotable * $procedure->discount_old)/100;
                 $payroll->discount_common_risk = ($quotable * $procedure->discount_common_risk)/100;
@@ -146,10 +147,10 @@ class PayrollController extends Controller
                 $total_discount_law = (($quotable * $procedure->discount_old) / 100) + (($quotable * $procedure->discount_common_risk)/100)+(($quotable * $procedure->discount_commission)/100)+(($quotable * $procedure->discount_solidary)/100)+(($quotable * $procedure->discount_national)/100);
                 $payroll->total_amount_discount_law = $total_discount_law;
                 $payroll->net_salary = $quotable - $total_discount_law;
-                $payroll->discount_rc_iva = floatval($value[1]);
-                $payroll->discount_faults = floatval($value[2]);
-                $payroll->total_amount_discount_institution = floatval($value[2]);
-                $total_discounts = $total_discount_law + floatval($value[2]);
+                $payroll->discount_rc_iva = floatval($value[2]);
+                $payroll->discount_faults = floatval($value[3]);
+                $payroll->total_amount_discount_institution = floatval($value[3]);
+                $total_discounts = $total_discount_law + floatval($value[3]);
                 $payroll->total_discounts = $total_discounts;
                 $payroll->payable_liquid = $quotable - $total_discounts;
 
@@ -608,7 +609,7 @@ class PayrollController extends Controller
             $company = Company::select()->first();
 
             $payrolls = Payroll::where('procedure_id', $procedure->id)->get();
-            // if (!config('app.debug')) {
+            // if (config('app.debug')) {
             //     $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->get();
             // }
             foreach ($payrolls as $key => $payroll) {
@@ -873,8 +874,63 @@ class PayrollController extends Controller
         return Response::make($content, 200, $headers);
 
     }
-    public function previous_month ($id) 
+
+
+    public function print_ovt($year, $month)
     {
+        $month = Month::where('id', $month)->select()->first();
+        if (!$month) {
+            return response()->json([
+                "error" => true,
+                "message" => "Mes inexistente",
+                "data" => null,
+            ], 404);
+        }
+
+        $employees = $this->getFormattedData($year, $month->id, 0, 0, 0, 0, 0, 0)->data['employees'];$total_employees = count($employees);
+        
+        // return response()->json($employees);
+
+        $content = "";
+
+        $content .= implode(',', ["Nro","Tipo de documento de identidad","Número de documento de identidad","Lugar de expedición","Fecha de nacimiento","Apellido Paterno","Apellido Materno","Nombres","País de nacionalidad","Sexo","Jubilado","¿Aporta a la AFP?","¿Persona con discapacidad?","Tutor de persona con discapacidad","Fecha de ingreso","Fecha de retiro","Motivo retiro","Caja de salud","AFP a la que aporta","NUA/CUA","Sucursal o ubicación adicional","Clasificación laboral","Cargo","Modalidad de contrato","Tipo contrato","Días pagados","Horas pagadas","Haber Básico","Bono de antigüedad","Horas extra","Monto horas extra","Horas recargo nocturno","Monto horas extra nocturnas","Horas extra dominicales","Monto horas extra dominicales","Domingos trabajados","Monto domingo trabajado","Nro. dominicales","Salario dominical","Bono producción","Subsidio frontera","Otros bonos y pagos","RC-IVA","Aporte Caja Salud","Aporte AFP","Otros descuentos","\n"]);
+
+        foreach ($employees as $i => $e) {
+            if ($e->insurance_company_id == 2) {
+                $e->insurance_company_id = 7;
+            } else {
+                $e->insurance_company_id = 1;
+            }
+            if ($e->management_entity_id == 1) {
+                $e->management_entity_id = 2;
+            } else {
+                $e->management_entity_id = 1;
+            }
+            if ($e->date_end) {
+                $e->contract_mode = 5;
+            } else {
+                $e->contract_mode = 1;
+            }
+            if (strtoupper($e->position) == "Profesional de Trabajo Social") {
+                $e->contract_type = 2;
+            } else {
+                $e->contract_type = 1;
+            }
+
+            $content .= implode(',', [++$i,"CI",$e->ci,$e->id_ext,$e->birth_date,$e->last_name,$e->mothers_last_name,$e->name,"BOLIVIA",$e->gender,"0","1","0","0",$e->date_start,"","",$e->insurance_company_id,$e->management_entity_id,$e->nua_cua,"1","",mb_strtoupper(str_replace(",", " ", $e->position)),$e->contract_mode,$e->contract_type,$e->worked_days,"8",$e->quotable,"0","","","","","","","","","","","","","","",$e->discount_old,$e->total_amount_discount_law,$e->total_amount_discount_institution]);
+
+            if ($i < ($total_employees)) {
+                $content .= "\n";
+            }
+        }
+
+        $filename = implode('_', ["planilla", "ovt", strtolower($month->name), $year]).".csv";
+
+        $headers = ['Content-type'=>'text/plain', 'Content-Disposition'=>sprintf('attachment; filename="%s"', $filename)];
+
+        // return response()->json($content);
+
+        return Response::make($content, 200, $headers);
 
     }
 }
