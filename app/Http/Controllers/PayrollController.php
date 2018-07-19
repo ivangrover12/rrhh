@@ -752,6 +752,13 @@ class PayrollController extends Controller
                 $response->data['title']->name = 'PLANILLA PATRONAL';
                 $response->data['title']->table_header = 'APORTES PATRONALES';
                 break;
+            case 'T':
+                $response->data['title']->name = 'PLANILLA TRIBUTARIA';
+                $response->data['title']->table_header = 'S.M.N.';
+                $response->data['title']->table_header2 = 2000;
+                $response->data['title']->table_header3 = 'Saldo a favor de:';
+                $response->data['title']->table_header4 = 'Saldo anterior a favor del dependiente';
+                break;
             default:
                 return response()->json([
                     'error' => true,
@@ -790,11 +797,19 @@ class PayrollController extends Controller
 
     public function addmonth ()
     {
-        $procedure = Procedure::where([['month_id', '=', (int)date('m')],['year', '=', date('Y')],])->first();
-        if (!$procedure) {
+        $procedure = Procedure::orderBy('id', 'desc')->first();
+        
+        if ($procedure->month_id == 12) {
+            $month = 1;
+            $year = $procedure->year + 1;
+        } else {
+            $month = $procedure->month_id + 1;
+            $year = $procedure->year;
+        }
+        if ( $month < (int)date('m') + 1 && $year <= date('Y') ) {
             $pro = new Procedure;
-            $pro->month_id = (int)date('m');
-            $pro->year = date('Y');
+            $pro->month_id = $month;
+            $pro->year = $year;
             $pro->name = '';  
             $pro->discount_old = 10;
             $pro->discount_common_risk = 1.71;
@@ -856,6 +871,10 @@ class PayrollController extends Controller
         // return response()->json($content);
 
         return Response::make($content, 200, $headers);
+
+    }
+    public function previous_month ($id) 
+    {
 
     }
 }

@@ -56,8 +56,8 @@
                                     <li><a href="#" onclick="printJS({printable:'{!! route('print_pdf_payroll', [$procedure->year, $procedure->month->id, 'report_type='.$t, 'report_name=B-'.$i, 'valid_contracts=1', 'consultant=0', 'with_account=1']) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})">B-{{ $i }} ({{ $t }}.)</a></li>
                                 @endfor
                                 <li><a href="#" onclick="printJS({printable:'{!! route('print_pdf_payroll', [$procedure->year, $procedure->month->id, 'report_type=H', 'report_name=C-1', 'valid_contracts=1', 'consultant=1', 'with_account=0']) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})">C-1 (CONSULTORES EN LÍNEA)</a></li>
-                                @for ($i = 1; $i <= 2; $i++)
-                                    @php ($t = ($i == 1) ? 'H' : 'P')
+                                @for ($i = 1; $i <= 3; $i++)
+                                    @php ($t = ($i == 1) ? 'H' : $t = ($i == 2) ? 'P' : 'T')
                                     <li><a href="#" onclick="printJS({printable:'{!! route('print_pdf_payroll', [$procedure->year, $procedure->month->id, 'report_type='.$t, 'report_name=A-'.$i, 'valid_contracts=0', 'consultant=0', 'with_account=0']) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})">A-{{ $i }} ({{ $t }}.)</a></li>
                                 @endfor
                                 @php ($i = 4)
