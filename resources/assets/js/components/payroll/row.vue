@@ -4,10 +4,14 @@
         <td>{{ fullName(contract) }}</td>
         <td>{{ contract.account_number}}</td>
         <td>{{ contract.birth_date}}</td>
+        <td>{{ contract.date_start}}</td>
+        <td>{{ contract.date_end || 'Indefinido' }}</td>
         <td>{{ contract.charge}}</td>
         <td>{{ contract.position }}</td>
-        <td><input type="number" v-model="unworked_days" :name="`contract-${contract.id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" max="30"></td>
-        <td>{{ worked_days }}</td>
+        <td><input type="number" v-model="unworked_days" :name="`contract-${contract.id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="worked_days+unworked_days"></td>
+        <td>
+            <input type="hidden" v-model="worked_days" :name="`contract-${contract.id}[]`" class="form-control" min="0" max="30" readonly>{{ worked_days }}
+        </td>
         <td>{{ baseWage | currency }}</td>
         <td>{{ quotable | currency }}</td>
         <td>{{ contract.management_entity}}</td>

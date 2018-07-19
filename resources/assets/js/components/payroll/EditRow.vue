@@ -3,11 +3,15 @@
         <td>{{ payroll.identity_card}} {{ payroll.city_identity_card }}</td>
         <td>{{ fullName(payroll) }}</td>
         <td>{{ payroll.account_number}}</td>
-        <td>{{ payroll.birth_date}}</td>
+        <td>{{ payroll.birth_date }}</td>
+        <td>{{ payroll.contract.date_start }}</td>
+        <td>{{ payroll.contract.date_end || 'Indefinido' }}</td>
         <td>{{ payroll.charge}}</td>
         <td>{{ payroll.position }}</td>
-        <td><input type="number" v-model="unworked_days" :name="`contract-${payroll.contract_id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" max="30"></td>
-        <td>{{ worked_days }}</td>
+        <td><input type="number" v-model="unworked_days" :name="`contract-${payroll.contract_id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="worked_days+unworked_days"></td>
+        <td>
+            <input type="hidden" v-model="worked_days" :name="`contract-${payroll.contract_id}[]`" class="form-control" min="0" max="30" readonly>{{ worked_days }}
+        </td>
         <td>{{ baseWage | currency }}</td>
         <td>{{ quotable | currency }}</td>
         <td>{{ payroll.management_entity}}</td>
@@ -56,7 +60,7 @@ export default {
   },
   computed:{
       worked_days() {
-        return 30 - this.unworked_days;
+        return this.payroll.worked_days - this.unworked_days;
       },
       total(){
           return this.quotable - this.totalDiscounts;
