@@ -1,5 +1,6 @@
 <?php
   use \App\Helpers\Util;
+  use \App\Http\Controllers\PayrollController as Payroll;
 ?>
 
 <!DOCTYPE html>
@@ -161,30 +162,24 @@
                     <td>{{ $employee->ci_ext }}</td>
                     <td class="name">{{ $employee->full_name }}</td>
                 @if ($title->report_type == 'T')
-                    <td>{{ Util::format_number($employee->net_salary) }}</td>
-                    @php ($min_inponible = $title->table_header2 * 2)
-                    <td>{{ Util::format_number($min_inponible) }} </td>   
-                    @php ($dif_impuesto = $employee->net_salary - $min_inponible)
-                    @if ($dif_impuesto < 0)
-                        @php ($dif_impuesto = 0)
-                    @endif
-                    <td>{{ Util::format_number($dif_impuesto) }} </td>
-                    @php ($idf = $dif_impuesto * 13 / 100)
-                    <td>{{ round($idf) }} </td>
-                    <td>{{ ( $employee->discount_rc_iva > 0 )? Util::format_number($employee->discount_rc_iva) : '' }} </td>
-                    @if ($employee->net_salary >= 8000)
-                        @php ($sal_min_13 = $min_inponible * 13 / 100)
-                    @else
-                        @php ($sal_min_13 = $idf)
-                    @endif
-                    <td>{{ round($sal_min_13) }} </td>
-                    @php ($fisco = $idf - $employee->discount_rc_iva - $sal_min_13 )
-                    <td>{{ ($fisco >= 0)? round($fisco) : 0 }} </td>
-                    @php ($dep = $employee->discount_rc_iva + $sal_min_13 - $idf)
-                    @if ($dep < 0)
-                        @php ($dep = 0)
-                    @endif
-                    <td>{{ round($dep) }} </td>
+                    @php ($tribute = Payroll::tribute_calculation($employee))
+
+                    <td>{{ Util::format_number($employee->net_salary) }} </td>
+                    <td>{{ Util::format_number($tribute->min_disponible) }}</td>
+                    <td>{{ Util::format_number($tribute->dif_salario_min_disponible) }}</td>
+                    <td>{{ round($tribute->idf) }}</td>
+                    <td>{{ Util::format_number($tribute->iva_110) }}</td>
+                    <td>{{ round($tribute->min_disponible_13) }}</td>
+                    <td>{{ round($tribute->fisco) }}</td>
+                    <td>{{ round($tribute->dependiente) }}</td>
+                    <td>{{ Util::format_number($tribute->saldo_mes_anterior) }}</td>
+                    <td>{{ ($tribute->actualizacion) }}</td>
+                    <td>{{ Util::format_number($tribute->total) }}</td>
+                    <td>{{ Util::format_number($tribute->saldo_favor_dependiente) }}</td>
+                    <td>{{ round($tribute->saldo_utilizado) }}</td>
+                    <td>{{ round($tribute->impuesto_pagar) }}</td>
+                    <td>{{ Util::format_number($tribute->saldo_mes_siguiente) }}</td>
+                    
                 @else
                     @if ($title->report_type == 'H')
                         @if (!$title->management_entity)
