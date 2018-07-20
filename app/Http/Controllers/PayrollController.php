@@ -609,9 +609,9 @@ class PayrollController extends Controller
             $company = Company::select()->first();
 
             $payrolls = Payroll::where('procedure_id', $procedure->id)->get();
-            // if (config('app.debug')) {
-            //     $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->get();
-            // }
+            if (config('app.debug')) {
+                $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->get();
+            }
             foreach ($payrolls as $key => $payroll) {
                 $contract = $payroll->contract;
                 $employee = $contract->employee;
@@ -666,7 +666,6 @@ class PayrollController extends Controller
                 'company' => $company,
                 'title' => (object)array(
                     'year' => $year,
-                    'logo' => File::get(storage_path('app/public/img/logo_base64.txt')),
                 ),
             ]
         );
