@@ -119,14 +119,19 @@ class PayrollController extends Controller
                     
                     $last_payrol = Payroll::orderBy('id','DESC')->first();    
                     $year =  date('y');
-                    if(!isset($last_payrol->code) || $last_payrol->code == "")
+                    if(!isset($last_payrol->code) || $last_payrol->code == "") {
                         $payroll->code = "1-".$year;
+                    }
                     else{
-                        $data = explode('-', $last_payrol->code);
-                        if(!isset($data[1]))
-                            $payroll->code = "1-".$year;                
-                        else 
-                            $payroll->code = ($year!=$data[1]?"1":($data[0]+1))."-".$year;
+                        if ($last_payrol->contract->employee_id == $contract->employee_id && $last_payrol->base_wage == $contract->position->charge->base_wage && $last_payrol->contract->position->name == $contract->position->name) {
+                            $payroll->code = $last_payrol->code;
+                        } else {
+                            $data = explode('-', $last_payrol->code);
+                            if(!isset($data[1]))
+                                $payroll->code = "1-".$year;                
+                            else 
+                                $payroll->code = ($year!=$data[1]?"1":($data[0]+1))."-".$year;
+                        }
                     }
 
                 }
@@ -609,7 +614,7 @@ class PayrollController extends Controller
 
             $payrolls = Payroll::where('procedure_id', $procedure->id)->get();
             if (config('app.debug')) {
-                $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->orderBy('contract_id', 'ASC')->orderBy('id', 'ASC')->get();
+                $payrolls = Payroll::where('procedure_id',$procedure->id)->skip(5)->take(10)->orderBy('contract_id', 'ASC')->orderBy('id', 'ASC')->get();
             }
             foreach ($payrolls as $key => $payroll) {
                 $contract = $payroll->contract;
