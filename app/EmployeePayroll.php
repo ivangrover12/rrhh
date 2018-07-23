@@ -63,7 +63,8 @@ class EmployeePayroll
         $this->position_group_id = $contract->position->position_group->id;
         $this->employer_number = $contract->position->position_group->employer_number->number;
         $this->employer_number_id = $contract->position->position_group->employer_number->id;
-        $this->valid_contract = (is_null($contract->date_end) && $contract->status) ? true : (Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id)->endOfMonth()) || Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id, 30)) && $contract->status);
+        $this->valid_contract = $contract->status;
+        $this->not_expired = (is_null($contract->date_end) && $contract->status) ? true : (Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id)->endOfMonth()) || Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id, 30)) && $contract->status);
     }
 
     public function setZeroAccounts() {

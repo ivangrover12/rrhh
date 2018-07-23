@@ -3,14 +3,14 @@
         <td>{{ contract.identity_card}} {{ contract.city_identity_card }}</td>
         <td>{{ fullName(contract) }}</td>
         <td>{{ contract.account_number}}</td>
-        <td>{{ contract.birth_date}}</td>
-        <td>{{ contract.date_start}}</td>
-        <td>{{ contract.date_end || 'Indefinido' }}</td>
+        <td>{{ contract.birth_date | formatDate }}</td>
+        <td>{{ contract.date_start | formatDate }}</td>
+        <td>{{ contract.date_end | formatDate }}</td>
         <td>{{ contract.charge}}</td>
         <td>{{ contract.position }}</td>
-        <td><input type="number" v-model="unworked_days" :name="`contract-${contract.id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="worked_days+unworked_days"></td>
+        <td><input type="number" v-model="unworkedDays" :name="`contract-${contract.id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="workedDays+unworkedDays" required></td>
         <td>
-            <input type="hidden" v-model="worked_days" :name="`contract-${contract.id}[]`" class="form-control" min="0" max="30" readonly>{{ worked_days }}
+            <input type="hidden" v-model="workedDays" :name="`contract-${contract.id}[]`" class="form-control" min="0" max="30" readonly>{{ workedDays }}
         </td>
         <td>{{ baseWage | currency }}</td>
         <td>{{ quotable | currency }}</td>
@@ -34,7 +34,7 @@ export default {
   props:['cont','contract', 'procedure'],
   data(){
     return{
-        unworked_days: 0,
+        unworkedDays: 0,
         baseWage: this.contract.base_wage,
         delay: 0,
         rcIva: 0,
@@ -57,42 +57,42 @@ export default {
       },
   },
   computed:{
-      worked_days() {
-        let payroll_date = {
+      workedDays() {
+        let payrollDate = {
             year: this.procedure.year,
             month: this.procedure.month_id,
         }
 
-        let date_start = {
+        let dateStart = {
             day: new Date(this.contract.date_start).getDate() + 1,
             year: new Date(this.contract.date_start).getFullYear(),
             month: new Date(this.contract.date_start).getMonth() + 1,
         }
 
-        let date_end = {
+        let dateEnd = {
             day: new Date(this.contract.date_end).getDate() + 1,
             year: new Date(this.contract.date_end).getFullYear(),
             month: new Date(this.contract.date_end).getMonth() + 1,
         }
 
-        let worked_days = 0;
+        let workedDays = 0;
 
         if (this.contract.date_end == null) {
-            worked_days = 30;
-        } else if (date_start.year <= payroll_date.year && date_start.month == payroll_date.month) {
-            worked_days = 30 + 1 - date_start.day;
-        } else if (date_end.year >= payroll_date.year && date_end.month == payroll_date.month) {
-            worked_days = date_end.day;
-        } else if ((date_start.year <= payroll_date.year && date_start.month < payroll_date.month) || (date_end.year >= payroll_date.year && date_end.month > payroll_date.month)) {
-            worked_days = 30;
+            workedDays = 30;
+        } else if (dateStart.year <= payrollDate.year && dateStart.month == payrollDate.month) {
+            workedDays = 30 + 1 - dateStart.day;
+        } else if (dateEnd.year >= payrollDate.year && dateEnd.month == payrollDate.month) {
+            workedDays = dateEnd.day;
+        } else if ((dateStart.year <= payrollDate.year && dateStart.month < payrollDate.month) || (dateEnd.year >= payrollDate.year && dateEnd.month > payrollDate.month)) {
+            workedDays = 30;
         } else {
-            worked_days = 0;
+            workedDays = 0;
         }
 
-        if (this.unworked_days > worked_days) {
+        if (this.unworkedDays > workedDays) {
             return 0;
         } else {
-            return (worked_days - this.unworked_days);
+            return (workedDays - this.unworkedDays);
         }
 
         return 30;
@@ -104,7 +104,7 @@ export default {
           return this.calculateTotalDiscountLaw() + parseFloat(this.delay || 0 ) + parseFloat(this.rcIva || 0);
       },
       quotable()  {
-          return (this.baseWage/30)*(30 - this.unworked_days);
+          return (this.baseWage/30)*(30 - this.unworkedDays);
       },
       salary(){
           return this.quotable - this.calculateTotalDiscountLaw();
