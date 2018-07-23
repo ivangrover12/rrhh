@@ -52,7 +52,7 @@
         </div>
 
         <div class="header-left">
-            <img src="{{ $title->logo }}" id="header-image">
+            <img id="header-image" src="{{ public_path().'/images/logo.png'}}">
         </div>
 
         <table align="center">
