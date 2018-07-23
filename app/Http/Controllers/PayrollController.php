@@ -605,12 +605,11 @@ class PayrollController extends Controller
             $employees = array();
             $total_discounts = new TotalPayrollEmployee();
             $total_contributions = new TotalPayrollEmployer();
-
             $company = Company::select()->first();
 
             $payrolls = Payroll::where('procedure_id', $procedure->id)->get();
             if (config('app.debug')) {
-                $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->get();
+                $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->orderBy('contract_id', 'ASC')->orderBy('id', 'ASC')->get();
             }
             foreach ($payrolls as $key => $payroll) {
                 $contract = $payroll->contract;
