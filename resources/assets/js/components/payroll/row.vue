@@ -25,7 +25,10 @@
         <td><input type="text" class="form-control" :name="`contract-${contract.id}[]`" v-model="rcIva"></td>
         <td><input type="text" class="form-control" :name="`contract-${contract.id}[]`" v-model="delay"></td>
         <td> {{ totalDiscounts | currency }} </td>
-        <td> {{ total | currency}} </td>
+        <td> 
+        {{ total | currency}} 
+        <input type="hidden" class="form-control" :name="`contract-${contract.id}[]`">
+        </td>
     </tr>
 </template>
 
@@ -104,7 +107,7 @@ export default {
           return this.calculateTotalDiscountLaw() + parseFloat(this.delay || 0 ) + parseFloat(this.rcIva || 0);
       },
       quotable()  {
-          return (this.baseWage/30)*(30 - this.unworkedDays);
+          return (this.baseWage/30) * this.worked_days;
       },
       salary(){
           return this.quotable - this.calculateTotalDiscountLaw();
