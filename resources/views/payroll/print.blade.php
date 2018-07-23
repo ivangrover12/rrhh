@@ -162,7 +162,7 @@
                     <td>{{ $employee->ci_ext }}</td>
                     <td class="name">{{ $employee->full_name }}</td>
                 @if ($title->report_type == 'T')
-                    @php ($tribute = Payroll::tribute_calculation($employee))
+                    @php ($tribute = (object)Payroll::tribute_calculation($employee->payroll_id))
 
                     <td>{{ Util::format_number($employee->net_salary) }} </td>
                     <td>{{ Util::format_number($tribute->min_disponible) }}</td>
@@ -225,9 +225,12 @@
                         <td>{{ Util::format_number($employee->contribution_employer_housing) }}</td>
                         <td>{{ Util::format_number($employee->total_contributions) }}</td>
                     @endif
-                @endif                
+                @endif
                 </tr>
             @endforeach
+            @if ($title->report_type == 'T')
+
+            @else
                 <tr class="total">
                 @switch ($title->report_type)
                     @case ('H')
@@ -283,6 +286,7 @@
                     <td class="footer">{{ Util::format_number($total_contributions->total_contributions) }}</td>
                 @endif
                 </tr>
+            @endif
             </tbody>
         </table>
     </body>
