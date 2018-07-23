@@ -13,6 +13,10 @@ class EmployeePayroll
         $employee = $contract->employee;
 
         // Common data
+        $this->employee_id = $employee->id;
+        $this->month_id = $payroll->procedure->month_id;
+        $this->payroll_id = $payroll->id;
+        
         $this->nua_cua = $employee->nua_cua;
         $this->ci = $employee->identity_card;
         $this->id_ext = $employee->city_identity_card->shortened;
