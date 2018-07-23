@@ -605,7 +605,6 @@ class PayrollController extends Controller
             $employees = array();
             $total_discounts = new TotalPayrollEmployee();
             $total_contributions = new TotalPayrollEmployer();
-
             $company = Company::select()->first();
 
             $payrolls = Payroll::where('procedure_id', $procedure->id)->get();
