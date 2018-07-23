@@ -153,6 +153,7 @@ class PayrollController extends Controller
                 $total_discounts = $total_discount_law + floatval($value[3]);
                 $payroll->total_discounts = $total_discounts;
                 $payroll->payable_liquid = $quotable - $total_discounts;
+                $payroll->next_month_balance = floatval($value[4]);
 
                 $payroll->save();
             }
@@ -942,32 +943,34 @@ class PayrollController extends Controller
                             ->first();
         return $payroll;        
     }
-    public static function tribute_calculation ($employee) 
-    {
+    public static function tribute_calculation ($payroll_id) 
+    { 
         $sal_min_nal = 2000;
 
+        $payroll = Payroll::find($payroll_id);
+
         $min_disponible = $sal_min_nal * 2;        
-        $dif_salario_min_disponible = $employee->net_salary - $min_disponible;
+        $dif_salario_min_disponible = $payroll->net_salary - $min_disponible;
         if ($dif_salario_min_disponible < 0) {
             $dif_salario_min_disponible = 0;
-        }        
+        }
         $idf = $dif_salario_min_disponible * 13 / 100;        
         if ($idf > 520) {
             $min_disponible_13 = 520;
         } else {
             $min_disponible_13 = $idf;
         }
-        $saldo_favor = $idf - $employee->discount_rc_iva - $min_disponible_13;
+        $saldo_favor = $idf - $payroll->discount_rc_iva - $min_disponible_13;
         $fisco = 0;
         $dependiente = 0;
-        if (($employee->discount_rc_iva - $min_disponible_13) < $idf) {
-            $fisco = $idf - ($employee->discount_rc_iva + $min_disponible_13);
+        if (($payroll->discount_rc_iva - $min_disponible_13) < $idf) {
+            $fisco = $idf - ($payroll->discount_rc_iva + $min_disponible_13);
         }
-        if (($employee->discount_rc_iva - $min_disponible_13) > $idf) {
-            $dependiente = ($employee->discount_rc_iva + $min_disponible_13) -$idf;
+        if (($payroll->discount_rc_iva - $min_disponible_13) > $idf) {
+            $dependiente = ($payroll->discount_rc_iva + $min_disponible_13) -$idf;
         }  
        
-        $mes_anterior = (new static)->previous_month( $employee->employee_id, $employee->month_id );
+        $mes_anterior = (new static)->previous_month( $payroll->contract->employee_id, $payroll->procedure->month_id );
         if (is_object($mes_anterior)) {
             $saldo_mes_anterior = $mes_anterior->next_month_balance;
         } else {
@@ -976,7 +979,7 @@ class PayrollController extends Controller
         
         
         $actualizacion = 0;
-        if ($employee->net_salary >= 8000) {
+        if ($payroll->net_salary >= 8000) {
             $actualizacion = 1.002193919;
         }
         $total = $saldo_mes_anterior + $actualizacion;
@@ -987,16 +990,17 @@ class PayrollController extends Controller
             $saldo_utilizado = $fisco;
         }
         $impuesto_pagar = $fisco - $saldo_utilizado;
-        $saldo_mes_siguiente = $saldo_favor_dependiente - $saldo_utilizado;
+        if ($payroll->next_month_balance == 0) {
+            $saldo_mes_siguiente = $saldo_favor_dependiente - $saldo_utilizado;
+        } else {
+            $saldo_mes_siguiente = $payroll->next_month_balance;
+        }
 
-        $payroll = Payroll::find($employee->payroll_id);
-        $payroll->next_month_balance = $saldo_mes_siguiente;
-        $payroll->update();
-
+  
         $tribute['min_disponible'] = $min_disponible;
         $tribute['dif_salario_min_disponible'] = $dif_salario_min_disponible;
         $tribute['idf'] = $idf;
-        $tribute['iva_110'] = $employee->discount_rc_iva;
+        $tribute['iva_110'] = $payroll->discount_rc_iva;
         $tribute['min_disponible_13'] = $min_disponible_13;
         $tribute['fisco'] = $fisco;
         $tribute['dependiente'] = $dependiente;
@@ -1007,8 +1011,6 @@ class PayrollController extends Controller
         $tribute['saldo_utilizado'] = $saldo_utilizado;
         $tribute['impuesto_pagar'] = $impuesto_pagar;
         $tribute['saldo_mes_siguiente'] = $saldo_mes_siguiente;
-
-
-        return (object)$tribute;
+        return $tribute;
     }
 }
