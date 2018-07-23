@@ -61,6 +61,7 @@ class ContractController extends Controller
             ->leftJoin('positions', 'contracts.position_id', '=', 'positions.id')
             ->leftJoin('charges', 'positions.charge_id', '=', 'charges.id')
             ->orderBy('employees.last_name', 'asc')
+            ->orderBy('contracts.date_start', 'asc')
             ->get();
         $total = $contracts->count();
         return response()->json(['contracts' => $contracts->toArray(), 'total' => $total]);

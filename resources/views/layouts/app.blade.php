@@ -45,7 +45,11 @@
 <script src="{!! asset('js/app.js') !!}" type="text/javascript"></script>
 <script src="{!! asset('js/datatables.min.js') !!}" type="text/javascript"></script>
 
+<<<<<<< HEAD
+{{-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> --}}
+=======
 
+>>>>>>> dee5d87e169f9a0120edeeff2f88711fb3a1aec0
 <script>
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();

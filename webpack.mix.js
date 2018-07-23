@@ -15,4 +15,5 @@ mix.js('resources/assets/js/app.js', 'public/js')
    .sass('resources/assets/sass/app.scss', 'public/css')
    .styles([
        'resources/assets/css/payroll-print.css'
-    ], 'public/css/all.css');
+    ], 'public/css/all.css')
+   .copy('resources/assets/img', 'public/images');
