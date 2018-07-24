@@ -935,21 +935,34 @@ class PayrollController extends Controller
         return Response::make($content, 200, $headers);
 
     }
-    public function show_payroll_month ($employee_id=0, $month=0) 
+    public static function show_payroll_month ($procedure_id) 
     {
-        $result = Payroll::join('procedures', 'payrolls.procedure_id', '=', 'procedures.id')
+        $procedure = Procedure::find($procedure_id);
+        $result = null;
+        if ($procedure != null) {
+            $result = Payroll::join('procedures', 'payrolls.procedure_id', '=', 'procedures.id')
                             ->join('contracts', 'payrolls.contract_id', '=', 'contracts.id')
-                            ->where('contracts.employee_id', $employee_id)
-                            ->where('procedures.month_id', $month )
+                            ->where('procedures.month_id', $procedure->month_id )
                             ->first();
+        }
         return $result;
     } 
+    public function show_payroll_previous_month ($employee_id, $procedure_id) {
+        $procedure = Procedure::where('id', '<', $procedure_id)->orderBy('id','desc')->first();
+        $result = 0;
+        if ($procedure != null) {
+            $result = Payroll::join('procedures', 'payrolls.procedure_id', '=', 'procedures.id')
+                                ->join('contracts', 'payrolls.contract_id', '=', 'contracts.id')
+                                ->where('contracts.employee_id', $employee_id)
+                                ->where('procedures.month_id', $procedure->month_id )
+                                ->first();
+        }
+        return $result;
+    }
 
     public static function tribute_calculation ($salary, $rciva, $mes_anterior) 
     { 
         $sal_min_nal = 2000;
-
-        //$payroll = Payroll::find($payroll_id);
 
         $min_disponible = $sal_min_nal * 2;        
         $dif_salario_min_disponible = $salary - $min_disponible;
@@ -971,13 +984,6 @@ class PayrollController extends Controller
         if (($rciva - $min_disponible_13) > $idf) {
             $dependiente = ($rciva + $min_disponible_13) -$idf;
         }  
-       
-        /*$mes_anterior = (new static)->previous_month( $payroll->contract->employee_id, $payroll->procedure->month_id );
-        if (is_object($mes_anterior)) {
-            $saldo_mes_siguiente_anterior = $mes_anterior->next_month_balance;
-        } else {
-            $saldo_mes_siguiente_anterior = 0;
-        }*/
         $saldo_mes_anterior = $mes_anterior;        
         $actualizacion = 0;
         if ($salary >= 8000) {
@@ -993,12 +999,6 @@ class PayrollController extends Controller
         $impuesto_pagar = $fisco - $saldo_utilizado;
 
         $saldo_mes_siguiente = $saldo_favor_dependiente - $saldo_utilizado;
-        /*if ($payroll->next_month_balance == 0) {
-            $saldo_mes_siguiente = $saldo_favor_dependiente - $saldo_utilizado;
-        } else {
-            $saldo_mes_siguiente = $payroll->next_month_balance;
-        }*/
-
   
         $tribute['min_disponible'] = $min_disponible;
         $tribute['dif_salario_min_disponible'] = $dif_salario_min_disponible;

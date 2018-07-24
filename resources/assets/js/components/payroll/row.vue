@@ -61,7 +61,7 @@ export default {
       },
       getPreviousMoth(contract){
         axios
-          .get("/payroll/show_payroll_month/" + contract.employee_id + "/" + (this.procedure.month_id - 1))
+          .get("/payroll/show_payroll_previous_month/" + contract.employee_id + "/" + this.procedure.id)
           .then(response => {
             this.previousMonth = response.data.next_month_balance;
           })
