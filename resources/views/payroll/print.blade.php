@@ -156,15 +156,31 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($employees as $i => $employee)
+            @php ($total_net_salary = 0)
+            @php ($total_min_disponible = 0)
+            @php ($total_dif_salario_min_disponible = 0)
+            @php ($total_idf = 0)
+            @php ($total_iva_110 = 0)
+            @php ($total_min_disponible_13 = 0)
+            @php ($total_fisco = 0)
+            @php ($total_dependiente = 0)
+            @php ($total_saldo_mes_anterior = 0)
+            @php ($total_actualizacion = 0)
+            @php ($total_total = 0)
+            @php ($total_saldo_favor_dependiente = 0)
+            @php ($total_saldo_utilizado = 0)
+            @php ($total_impuesto_pagar = 0)
+            @php ($total_saldo_mes_siguiente = 0)
+
+            @foreach ($employees as $i => $employee)
                 <tr>
                     <td>{{ ++$i }}</td>
                     <td>{{ $employee->ci_ext }}</td>
                     <td class="name">{{ $employee->full_name }}</td>
                 @if ($title->report_type == 'T')
-                    @php ($tribute = (object)Payroll::tribute_calculation($employee->payroll_id))
+                    @php ($tribute = Payroll::tribute_calculation($employee->net_salary, $employee->discount_rc_iva, $employee->previous_month_balance))
 
-                    <td>{{ Util::format_number($employee->net_salary) }} </td>
+                    <td>{{ Util::format_number($employee->net_salary) }}</td>
                     <td>{{ Util::format_number($tribute->min_disponible) }}</td>
                     <td>{{ Util::format_number($tribute->dif_salario_min_disponible) }}</td>
                     <td>{{ round($tribute->idf) }}</td>
@@ -179,7 +195,21 @@
                     <td>{{ round($tribute->saldo_utilizado) }}</td>
                     <td>{{ round($tribute->impuesto_pagar) }}</td>
                     <td>{{ Util::format_number($tribute->saldo_mes_siguiente) }}</td>
-                    
+                    @php ($total_net_salary = $total_net_salary + $employee->net_salary)
+                    @php ($total_min_disponible = $total_min_disponible + $tribute->min_disponible)
+                    @php ($total_dif_salario_min_disponible = $total_dif_salario_min_disponible + $tribute->dif_salario_min_disponible)
+                    @php ($total_idf = $total_idf + $tribute->idf)
+                    @php ($total_iva_110 = $total_iva_110 + $tribute->iva_110)
+                    @php ($total_min_disponible_13 = $total_min_disponible_13 + $tribute->min_disponible_13)
+                    @php ($total_fisco = $total_fisco + $tribute->fisco)
+                    @php ($total_dependiente = $total_dependiente + $tribute->dependiente)
+                    @php ($total_saldo_mes_anterior = $total_saldo_mes_anterior + $tribute->saldo_mes_anterior)
+                    @php ($total_actualizacion = $total_actualizacion + $tribute->actualizacion)
+                    @php ($total_total = $total_total + $tribute->total)
+                    @php ($total_saldo_favor_dependiente = $total_saldo_favor_dependiente + $tribute->saldo_favor_dependiente)
+                    @php ($total_saldo_utilizado = $total_saldo_utilizado + $tribute->saldo_utilizado)
+                    @php ($total_impuesto_pagar = $total_impuesto_pagar + $tribute->impuesto_pagar)
+                    @php ($total_saldo_mes_siguiente = $total_saldo_mes_siguiente + $tribute->saldo_mes_siguiente)
                 @else
                     @if ($title->report_type == 'H')
                         @if (!$title->management_entity)
@@ -228,9 +258,7 @@
                 @endif
                 </tr>
             @endforeach
-            @if ($title->report_type == 'T')
-
-            @else
+            
                 <tr class="total">
                 @switch ($title->report_type)
                     @case ('H')
@@ -251,9 +279,9 @@
                         @break
                     @case ('T')
                         @if ($title->position_group)
-                            @php ($table_footer_space1 = 6)
+                            @php ($table_footer_space1 = 2)
                         @else
-                            @php ($table_footer_space1 = 7)
+                            @php ($table_footer_space1 = 3)
                         @endif
                         @break
                 @endswitch
@@ -285,8 +313,25 @@
                     <td class="footer">{{ Util::format_number($total_contributions->contribution_employer_housing) }}</td>
                     <td class="footer">{{ Util::format_number($total_contributions->total_contributions) }}</td>
                 @endif
+                @if ($title->report_type == 'T')
+                    <td class="footer"> {{ Util::format_number($total_net_salary) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_min_disponible) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_dif_salario_min_disponible) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_idf) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_iva_110) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_min_disponible_13) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_fisco) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_dependiente) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_saldo_mes_anterior) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_actualizacion) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_total) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_saldo_favor_dependiente) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_saldo_utilizado) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_impuesto_pagar) }} </td>
+                    <td class="footer"> {{ Util::format_number($total_saldo_mes_siguiente) }} </td>
+                @endif
                 </tr>
-            @endif
+            
             </tbody>
         </table>
     </body>
