@@ -73,9 +73,9 @@ class TicketController extends Controller
         }
         
         $grouped_payrolls = Payroll::where('procedure_id', $procedure->id)->get()->groupBy('code')->all();
-        if (config('app.debug')) {
-            $grouped_payrolls = Payroll::where('procedure_id', $procedure->id)->skip(5)->take(10)->get()->groupBy('code')->all();
-        }
+        // if (config('app.debug')) {
+        //     $grouped_payrolls = Payroll::where('procedure_id', $procedure->id)->skip(5)->take(10)->get()->groupBy('code')->all();
+        // }
 
         $payrolls = array();
 
