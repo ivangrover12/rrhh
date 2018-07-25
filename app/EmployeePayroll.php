@@ -40,9 +40,6 @@ class EmployeePayroll
         $this->management_entity_id = $employee->management_entity->id;
         $this->unworked_days = $payroll->unworked_days;
         $this->worked_days = $this->workedDays($payroll);
-
-        // OVT data
-        Log::error($employee->id);
         $this->ovt = (object) [
             'insurance_company_id' => $employee->insurance_company->ovt_id,
             'management_entity_id' => $employee->management_entity->ovt_id,
