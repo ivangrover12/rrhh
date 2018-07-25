@@ -129,7 +129,7 @@
                                     @endforeach                    
                                 </select>    
                                 <br>
-                                <button type="submit" class="btn btn-success pull-right"> guardar</button>
+                                <button type="submit" class="btn btn-success pull-right"> Guardar</button>
                         </fieldset>
                     </div>
                 </form>
