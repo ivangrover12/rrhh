@@ -1,7 +1,9 @@
 @extends('layouts.app') 
 @section('title','Listado de contratos') 
+@section('styles')
+<link rel="stylesheet" type="text/css" href="{{ asset('css/swich.css') }} ">
+@endsection
 @section('content')
-
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-6">
