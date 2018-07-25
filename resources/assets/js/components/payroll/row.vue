@@ -25,9 +25,9 @@
         <td><input type="text" class="form-control" :name="`contract-${contract.id}[]`" v-model="rcIva"></td>
         <td><input type="text" class="form-control" :name="`contract-${contract.id}[]`" v-model="delay"></td>
         <td> {{ totalDiscounts | currency }} </td>
-        <td> 
-        {{ total | currency}} 
-        <input type="hidden" class="form-control" :name="`contract-${contract.id}[]`">
+        <td> {{ total | currency}} </td>
+        <td>
+          <input type="text" class="form-control" :name="`contract-${contract.id}[]`" :value="previousMonth">{{ getPreviousMoth(contract) }}
         </td>
     </tr>
 </template>
@@ -41,6 +41,7 @@ export default {
         baseWage: this.contract.base_wage,
         delay: 0,
         rcIva: 0,
+        previousMonth: 0,
     }
   },
   created(){
@@ -58,6 +59,16 @@ export default {
       calculateTotalDiscountLaw(){
         return this.calculateDiscount(this.procedure.discount_old)+this.calculateDiscount(this.procedure.discount_common_risk)+this.calculateDiscount(this.procedure.discount_commission)+this.calculateDiscount(this.procedure.discount_solidary)+this.calculateDiscount(this.procedure.discount_national);
       },
+      getPreviousMoth(contract){
+        axios
+          .get("/payroll/show_payroll_previous_month/" + contract.employee_id + "/" + this.procedure.id)
+          .then(response => {
+            this.previousMonth = response.data.next_month_balance;
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
   },
   computed:{
       workedDays() {

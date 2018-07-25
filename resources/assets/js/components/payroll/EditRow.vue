@@ -26,7 +26,8 @@
         <td><input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" v-model="delay"></td>
         <td> {{ totalDiscounts | currency }} </td>
         <td> {{ total | currency}} </td>
-        <td> <input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" :value="nexMonth"> {{ nextMonthBalance(payroll) }} </td>
+        <td> 
+          <input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" :value="previousMonth"> {{ previousMonthBalance(payroll) }} </td>
     </tr>
 </template>
 
@@ -40,7 +41,7 @@ export default {
         baseWage: this.payroll.base_wage,
         delay: this.payroll.discount_faults,
         rcIva: this.payroll.discount_rc_iva,
-        nexMonth: 0,
+        previousMonth: 0,
     }
   },
   created(){
@@ -58,19 +59,8 @@ export default {
       calculateTotalDiscountLaw(){
         return this.calculateDiscount(this.procedure.discount_old)+this.calculateDiscount(this.procedure.discount_common_risk)+this.calculateDiscount(this.procedure.discount_commission)+this.calculateDiscount(this.procedure.discount_solidary)+this.calculateDiscount(this.procedure.discount_national);
       },
-      nextMonthBalance(payroll) {
-        if (payroll.next_month_balance == 0) {
-          axios
-            .get("/payroll/tribute_calculation/" + payroll.id)
-            .then(response => {
-              this.nexMonth = response.data.saldo_mes_siguiente;
-            })
-            .catch(error => {
-              console.log(error);
-            });
-        } else {
-          this.nexMonth = payroll.next_month_balance;
-        }
+      previousMonthBalance(payroll) {
+        this.previousMonth = payroll.previous_month_balance;
       }
   },
   computed:{

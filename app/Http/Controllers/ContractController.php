@@ -8,6 +8,7 @@ use Illuminate\View\View;
 use App\PositionGroup;
 use App\Employee;
 use App\Position;
+use App\Payroll;
 use App\ContractJobSchedule;
 use App\JobSchedule;
 use Validator;
@@ -45,7 +46,7 @@ class ContractController extends Controller
             $row[] = $contract->position->position_group->name;
             $row[] = date("d-m-Y", strtotime($contract->date_start));
             if(!is_null($contract->date_end)) {
-                $row[] = (strtotime($contract->date_end) > strtotime ( '-4 day' , strtotime (date('Y-m-d')) ) && strtotime($contract->date_end) < strtotime ( '+4 day' , strtotime (date('Y-m-d')))?'<span class="bg-warning p-xs b-r-sm">'.date("d-m-Y", strtotime($contract->date_end)).'</span>':date("d-m-Y", strtotime($contract->date_end)));    
+                $row[] = date("d-m-Y", strtotime($contract->date_end));    
             } else {
                 $row[] = '-';
             }        
@@ -55,17 +56,30 @@ class ContractController extends Controller
                 $row[] = "
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."'><i class='fa fa-eye'></i>&nbsp;Ver</a>
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."/edit'><i class='fa fa-pencil'></i>&nbsp;Editar</a>
+                    <a class='btn btn-primary' type='button' href='contract/".$contract->id."/edit'><i class='fa fa-pencil'></i>&nbsp;Editar</a>
                     ";
             } else {
                 $row[] = "
+                    <div class='btn-group' style=''>
+                        <button data-toggle='dropdown' class='btn btn-primary dropdown-toggle'>Imprimir</button>
+                        <ul class='dropdown-menu bg-primary'>
+                            <li>
+                                <a class='dropdown-item' 
+                    onclick='printJS({printable:\"".route('print_high_insurance', [$contract->id])."\", type:\"pdf\", showModal:true, modalMessage: \"Generando documento por favor espere un momento.\"})'><i class='fa fa-print'></i> Afiliacion al seguro</a>
+                            </li>
+                            <li>
+                                <a class='dropdown-item' 
+                    onclick='printJS({printable:\"".route('print_low_insurance', [$contract->id])."\", type:\"pdf\", showModal:true, modalMessage: \"Generando documento por favor espere un momento.\"})'><i class='fa fa-print'> </i>baja del asegurado</a>
+                            </li>
+                            <li>
+                                <a class='dropdown-item'
+                    onclick='printJS({printable:\"".route('print_contract', [$contract->id])."\", type:\"pdf\", showModal:true, modalMessage: \"Generando documento por favor espere un momento.\"})'><i class='fa fa-print'></i> contrato</a>
+                            </li>                            
+                        </ul>
+                    </div>
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."'><i class='fa fa-eye'></i>&nbsp;Ver</a>
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."/edit'><i class='fa fa-pencil'></i>&nbsp;Editar</a>
-                    <button class='btn btn-primary' type='button' data-toggle='tooltip' data-placement='top' title='Afiliacion y reingreso del trabajador' 
-                    onclick='printJS({printable:\"".route('print_high_insurance', [$contract->id])."\", type:\"pdf\", showModal:true, modalMessage: \"Generando documento por favor espere un momento.\"})'><i class='fa fa-print'></i></button>
-                    <button class='btn btn-primary' type='button' data-toggle='tooltip' data-placement='top' title='Aviso de baja del asegurado' 
-                    onclick='printJS({printable:\"".route('print_low_insurance', [$contract->id])."\", type:\"pdf\", showModal:true, modalMessage: \"Generando documento por favor espere un momento.\"})'><i class='fa fa-print'></i></button>
-                    <button class='btn btn-primary' type='button' data-toggle='tooltip' data-placement='top' title='Imprimir contrato' 
-                    onclick='printJS({printable:\"".route('print_contract', [$contract->id])."\", type:\"pdf\", showModal:true, modalMessage: \"Generando documento por favor espere un momento.\"})'><i class='fa fa-print'></i></button>
+                    <a class='btn btn-primary delete' type='button' href='#' data='".$contract->id."'><i class='fa fa-close'></i>&nbsp;Eliminar</a>
                     ";
             }
             
@@ -242,8 +256,13 @@ class ContractController extends Controller
     }
     public function delete(int $id) 
     {
-        Contract::find($id)->delete();
-        return redirect('contract')->with('success', 'Eliminado correctamente');
+        $payroll = Payroll::where('contract_id', $id)->first();
+        if ($payroll == null) {
+            Contract::find($id)->delete();
+            return redirect('contract')->with('success', 'Eliminado correctamente');
+        } else {
+            return redirect('contract')->with('error', 'No se pudo eliminar');            
+        }        
     }
     public function print(int $id)
     { 

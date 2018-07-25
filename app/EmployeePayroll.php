@@ -17,6 +17,7 @@ class EmployeePayroll
         $this->employee_id = $employee->id;
         $this->month_id = $payroll->procedure->month_id;
         $this->payroll_id = $payroll->id;
+        $this->previous_month_balance = $payroll->previous_month_balance;
         $this->nua_cua = $employee->nua_cua;
         $this->ci = $employee->identity_card;
         $this->id_ext = $employee->city_identity_card->shortened;
