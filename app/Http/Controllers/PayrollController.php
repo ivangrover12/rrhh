@@ -64,15 +64,11 @@ class PayrollController extends Controller
 
         //add more validations
         if ($year <= Carbon::now()->year && in_array(strtolower($month), $months)) {
-            $procedure = Procedure::select('procedures.id')
-                ->leftJoin("months", 'months.id', '=', 'procedures.month_id')
-                ->whereRaw("lower(months.name) like '" . strtolower($month) . "'")
-                ->where('year', '=', $year)
-                ->first();
-                if (!$procedure) {
-                    return "procedure not found";
-                }
-                $procedure =  Procedure::with('month')->find($procedure->id);
+            $procedure = Procedure::select('procedures.id')->leftJoin("months", 'months.id', '=', 'procedures.month_id')->whereRaw("lower(months.name) like '" . strtolower($month) . "'")->where('year', '=', $year)->first();
+            if (!$procedure) {
+                return "procedure not found";
+            }
+            $procedure =  Procedure::with('month')->find($procedure->id);
             return view('payroll.create', compact('year', 'month', 'procedure'));
         }else {
             return 'error';
