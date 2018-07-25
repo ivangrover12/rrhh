@@ -16,4 +16,5 @@ mix.js('resources/assets/js/app.js', 'public/js')
    .styles([
        'resources/assets/css/payroll-print.css'
     ], 'public/css/all.css')
-   .copy('resources/assets/img', 'public/images');
+   .copy('resources/assets/img', 'public/images')
+   .copy('resources/assets/css/swich.css', 'public/css');
