@@ -1,0 +1,45 @@
+.onoffswitch2 {
+    position: relative; width: 103px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox2 {
+    display: none;
+}
+.onoffswitch-label2 {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #999999; border-radius: 5px;
+}
+.onoffswitch-inner2 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+.onoffswitch-inner2:before, .onoffswitch-inner2:after {
+    display: block; float: left; width: 50%; height: 20px; padding: 0; line-height: 20px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+.onoffswitch-inner2:before {
+    content: "Vigentes";
+    padding-left: 10px;
+    background-color: #18A689; color: #FFFFFF;
+}
+.onoffswitch-inner2:after {
+    content: "Concluidos";
+    padding-right: 10px;
+    background-color: #EEEEEE; color: #999999;
+    text-align: right;
+}
+.onoffswitch-switch2 {
+    display: block; width: 22px; margin: 1px;
+    background: #FFFFFF;
+    position: absolute; top: 0; bottom: 0;
+    right: 79px;
+    border: 2px solid #999999; border-radius: 5px;
+    transition: all 0.3s ease-in 0s; 
+}
+.onoffswitch-checkbox2:checked + .onoffswitch-label2 .onoffswitch-inner2 {
+    margin-left: 0;
+}
+.onoffswitch-checkbox2:checked + .onoffswitch-label2 .onoffswitch-switch2 {
+    right: 0px; 
+}

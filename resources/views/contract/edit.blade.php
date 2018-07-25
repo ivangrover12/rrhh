@@ -53,7 +53,7 @@
                             <div class="form-group row">
                                 <div class="col-md-4">Cargo: <span class="text-danger">*</span></div>
                                 <div class="col-md-8">
-                                    <input type="hidden" name="position_id" id="position_id" class="form-control" value=" {{ $contract->position_id }} " />
+                                    <input type="hidden" name="position_id" id="position_id" class="form-control" value=" {{ $contract->position_id }} "/>
                                     <input type="text" id="position" placeholder="Cargo" class="form-control" value=" {{ $contract->position->name }} " />
                                     <div class="text-danger">{{ $errors->first('position_id') }}</div>                               
                                 </div>
@@ -61,14 +61,14 @@
                             <div class="form-group row">
                                 <div class="col-md-4">Fecha de inicio <span class="text-danger">*</span></div>
                                 <div class="col-md-8">
-                                    <input type="date" name="date_start" value="{{ $contract->date_start }}" class="form-control">
+                                    <input type="date" id="date_start" name="date_start" value="{{ $contract->date_start }}" class="form-control" onchange="calc()">
                                     <div class="text-danger">{{ $errors->first('date_start') }}</div>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-4">Fecha de fin <span class="text-danger">*</span></div>
                                 <div class="col-md-8">
-                                    <input type="date" name="date_end" value="{{ $contract->date_end }}" class="form-control">
+                                    <input type="date" id="date_end" name="date_end" value="{{ $contract->date_end }}" class="form-control" onchange="calc()">
                                     <div class="text-danger">{{ $errors->first('date_end') }}</div>
                                 </div>
                             </div>
@@ -100,7 +100,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4">Numero de convocatoria </div>
+                                <div class="col-md-4">Referencia de convocatoria </div>
                                 <div class="col-md-8">
                                     <input type="text" name="numer_announcement" value="{{ $contract->numer_announcement }}" class="form-control">
                                 </div>
@@ -170,6 +170,28 @@
                             </div>
                         </form>
                     </div>
+                    <div class="col-md-3">
+                        <div class="alert alert-info">
+                            <span class="alert-link">Empleado: </span><span id="emp"> {{$employee->fullName()}}</span><br>
+                            <span class="alert-link">Cargo: </span><span id="pos"> {{ $contract->position->name }}</span><br>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Mes</th>
+                                        <th>Dias trabajados</th>
+                                        <th>Salario</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table_calc"></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2"><span class="alert-link">Total </span></td>
+                                        <td id="total_ganado">*</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -185,7 +207,26 @@
         },
         afterSelect: function(item) {
             $('#position_id').val(item.id);
+            $("#pos").text(item.name);
+            calc();
         }
     });
+    function calc() {
+        $.get( "/contract/month_salary_calculation", { date_ini: $("#date_start").val(), 
+                                                        date_end: $("#date_end").val(),
+                                                        position_id: $("#position_id").val() } )
+            .done(function( data ) {
+                $("#table_calc").empty();
+                total = 0;
+                for(var dato of data){     
+                    salary = (Math.round( dato.salary * 100 )/100 ).toString();               
+                    $("#table_calc").append('<tr><td>' + dato.month + '</td><td>' + dato.day + '</td><td>Bs. ' + salary + '</td></tr>');
+                    total = total + parseFloat(salary);                    
+                }
+                total = (Math.round( total * 100 )/100 ).toString();   
+                $("#total_ganado").text('Bs. ' + total);
+            });
+    }
+    calc();
 </script>
 @endsection
