@@ -166,7 +166,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12" align="right">
-                                <button type="submit" class="btn btn-primary">guardar</button>
+                                <button type="submit" class="btn btn-primary">Guardar</button>
                             </div>
                         </form>
                     </div>

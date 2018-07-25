@@ -136,7 +136,7 @@
                         </select>
                     </fieldset>
                     <br>
-                    <button type="submit" class="btn btn-success pull-right">Resgistrar</button>
+                    <button type="submit" class="btn btn-success pull-right">Registrar</button>
                 </div>
             </form>
         </div>
