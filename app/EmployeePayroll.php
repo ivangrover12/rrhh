@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use App\Helpers\Util;
 
@@ -17,7 +18,6 @@ class EmployeePayroll
         $this->month_id = $payroll->procedure->month_id;
         $this->payroll_id = $payroll->id;
         $this->previous_month_balance = $payroll->previous_month_balance;
-        
         $this->nua_cua = $employee->nua_cua;
         $this->ci = $employee->identity_card;
         $this->id_ext = $employee->city_identity_card->shortened;
@@ -40,6 +40,12 @@ class EmployeePayroll
         $this->management_entity_id = $employee->management_entity->id;
         $this->unworked_days = $payroll->unworked_days;
         $this->worked_days = $this->workedDays($payroll);
+        $this->ovt = (object) [
+            'insurance_company_id' => $employee->insurance_company->ovt_id,
+            'management_entity_id' => $employee->management_entity->ovt_id,
+            'contract_mode' => $employee->lastContract()->ovt_contract_mode,
+            'contract_type' => $employee->lastContract()->ovt_contract_type,
+        ];
 
         // Payable template
         $this->discount_old = null;
@@ -50,6 +56,7 @@ class EmployeePayroll
         $this->total_amount_discount_law = null;
         $this->net_salary = null;
         $this->discount_rc_iva = null;
+        $this->discount_faults = null;
         $this->total_amount_discount_institution = null;
         $this->total_discounts = null;
         $this->payable_liquid = null;
@@ -68,8 +75,7 @@ class EmployeePayroll
         $this->position_group_id = $contract->position->position_group->id;
         $this->employer_number = $contract->position->position_group->employer_number->number;
         $this->employer_number_id = $contract->position->position_group->employer_number->id;
-        $this->valid_contract = $contract->status;
-        $this->not_expired = (is_null($contract->date_end) && $contract->status) ? true : (Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id)->endOfMonth()) || Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id, 30)) && $contract->status);
+        $this->valid_contract = (is_null($contract->date_end) || $contract->status) ? true : (Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id)->endOfMonth()) || Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id, 30)) || $contract->status);
     }
 
     public function setZeroAccounts() {
@@ -84,6 +90,7 @@ class EmployeePayroll
         $this->discount_commission = 0;
         $this->net_salary = 0;
         $this->discount_rc_iva = 0;
+        $this->discount_faults = 0;
         $this->total_amount_discount_institution = 0;
         $this->total_discounts = 0;
         $this->total_amount_discount_institution = 0;
@@ -106,8 +113,9 @@ class EmployeePayroll
         $this->total_amount_discount_law = $this->discount_old + $this->discount_common_risk + $this->discount_commission + $this->discount_solidary + $this->discount_national;
         $this->net_salary = $this->quotable - $this->total_amount_discount_law;
         $this->discount_rc_iva = $payroll->discount_rc_iva;
+        $this->discount_faults = $payroll->discount_faults;
         $this->total_amount_discount_institution = $payroll->total_amount_discount_institution;
-        $this->total_discounts = $this->total_amount_discount_law + $this->total_amount_discount_institution + $this->discount_rc_iva;
+        $this->total_discounts = $this->total_amount_discount_law + $this->discount_rc_iva + $this->discount_faults;
         $this->payable_liquid = round(($this->quotable - $this->total_discounts), 2);
     }
 

@@ -64,15 +64,11 @@ class PayrollController extends Controller
 
         //add more validations
         if ($year <= Carbon::now()->year && in_array(strtolower($month), $months)) {
-            $procedure = Procedure::select('procedures.id')
-                ->leftJoin("months", 'months.id', '=', 'procedures.month_id')
-                ->whereRaw("lower(months.name) like '" . strtolower($month) . "'")
-                ->where('year', '=', $year)
-                ->first();
-                if (!$procedure) {
-                    return "procedure not found";
-                }
-                $procedure =  Procedure::with('month')->find($procedure->id);
+            $procedure = Procedure::select('procedures.id')->leftJoin("months", 'months.id', '=', 'procedures.month_id')->whereRaw("lower(months.name) like '" . strtolower($month) . "'")->where('year', '=', $year)->first();
+            if (!$procedure) {
+                return "procedure not found";
+            }
+            $procedure =  Procedure::with('month')->find($procedure->id);
             return view('payroll.create', compact('year', 'month', 'procedure'));
         }else {
             return 'error';
@@ -119,14 +115,19 @@ class PayrollController extends Controller
                     
                     $last_payrol = Payroll::orderBy('id','DESC')->first();    
                     $year =  date('y');
-                    if(!isset($last_payrol->code) || $last_payrol->code == "")
+                    if(!isset($last_payrol->code) || $last_payrol->code == "") {
                         $payroll->code = "1-".$year;
+                    }
                     else{
-                        $data = explode('-', $last_payrol->code);
-                        if(!isset($data[1]))
-                            $payroll->code = "1-".$year;                
-                        else 
-                            $payroll->code = ($year!=$data[1]?"1":($data[0]+1))."-".$year;
+                        if ($last_payrol->contract->employee_id == $contract->employee_id && $last_payrol->base_wage == $contract->position->charge->base_wage && $last_payrol->contract->position->name == $contract->position->name) {
+                            $payroll->code = $last_payrol->code;
+                        } else {
+                            $data = explode('-', $last_payrol->code);
+                            if(!isset($data[1]))
+                                $payroll->code = "1-".$year;                
+                            else 
+                                $payroll->code = ($year!=$data[1]?"1":($data[0]+1))."-".$year;
+                        }
                     }
 
                 }
@@ -619,8 +620,14 @@ class PayrollController extends Controller
                 $contract = $payroll->contract;
                 $employee = $contract->employee;
 
+                $rehired = (Payroll::where('code', $payroll->code)->count() > 1) ? true : false;
+
                 $e = new EmployeePayroll($payroll, $procedure);
-                
+
+                if ($rehired) {
+                    $e->setValidContact(true);
+                }
+
                 if (($valid_contracts && !$e->valid_contract) || (($management_entity != 0) && ($e->management_entity_id != $management_entity)) || (($position_group != 0) && ($e->position_group_id != $position_group)) || ($employer_number && ($e->employer_number_id != $employer_number)) || (!$consultant && $e->consultant) || ($consultant && !$e->consultant) || ($with_account && !$employee->account_number)) {
                     $e->setZeroAccounts();
                 } else {
@@ -877,7 +884,6 @@ class PayrollController extends Controller
 
     }
 
-
     public function print_ovt($year, $month)
     {
         $month = Month::where('id', $month)->select()->first();
@@ -889,7 +895,8 @@ class PayrollController extends Controller
             ], 404);
         }
 
-        $employees = $this->getFormattedData($year, $month->id, 0, 0, 0, 0, 0, 0)->data['employees'];$total_employees = count($employees);
+        $employees = $this->getFormattedData($year, $month->id, 0, 0, 0, 0, 0, 0)->data['employees'];
+        $total_employees = count($employees);
         
         // return response()->json($employees);
 
@@ -898,28 +905,7 @@ class PayrollController extends Controller
         $content .= implode(',', ["Nro","Tipo de documento de identidad","Número de documento de identidad","Lugar de expedición","Fecha de nacimiento","Apellido Paterno","Apellido Materno","Nombres","País de nacionalidad","Sexo","Jubilado","¿Aporta a la AFP?","¿Persona con discapacidad?","Tutor de persona con discapacidad","Fecha de ingreso","Fecha de retiro","Motivo retiro","Caja de salud","AFP a la que aporta","NUA/CUA","Sucursal o ubicación adicional","Clasificación laboral","Cargo","Modalidad de contrato","Tipo contrato","Días pagados","Horas pagadas","Haber Básico","Bono de antigüedad","Horas extra","Monto horas extra","Horas recargo nocturno","Monto horas extra nocturnas","Horas extra dominicales","Monto horas extra dominicales","Domingos trabajados","Monto domingo trabajado","Nro. dominicales","Salario dominical","Bono producción","Subsidio frontera","Otros bonos y pagos","RC-IVA","Aporte Caja Salud","Aporte AFP","Otros descuentos","\n"]);
 
         foreach ($employees as $i => $e) {
-            if ($e->insurance_company_id == 2) {
-                $e->insurance_company_id = 7;
-            } else {
-                $e->insurance_company_id = 1;
-            }
-            if ($e->management_entity_id == 1) {
-                $e->management_entity_id = 2;
-            } else {
-                $e->management_entity_id = 1;
-            }
-            if ($e->date_end) {
-                $e->contract_mode = 5;
-            } else {
-                $e->contract_mode = 1;
-            }
-            if (strtoupper($e->position) == "Profesional de Trabajo Social") {
-                $e->contract_type = 2;
-            } else {
-                $e->contract_type = 1;
-            }
-
-            $content .= implode(',', [++$i,"CI",$e->ci,$e->id_ext,$e->birth_date,$e->last_name,$e->mothers_last_name,$e->name,"BOLIVIA",$e->gender,"0","1","0","0",$e->date_start,"","",$e->insurance_company_id,$e->management_entity_id,$e->nua_cua,"1","",mb_strtoupper(str_replace(",", " ", $e->position)),$e->contract_mode,$e->contract_type,$e->worked_days,"8",$e->quotable,"0","","","","","","","","","","","","","","",$e->discount_old,$e->total_amount_discount_law,$e->total_amount_discount_institution]);
+            $content .= implode(',', [++$i,"CI",$e->ci,$e->id_ext,$e->birth_date,$e->last_name,$e->mothers_last_name,$e->name,"BOLIVIA",$e->gender,"0","1","0","0",$e->date_start,"","",$e->ovt->insurance_company_id,$e->ovt->management_entity_id,$e->nua_cua,"1","",mb_strtoupper(str_replace(",", " ", $e->position)),$e->ovt->contract_mode,$e->ovt->contract_type,$e->worked_days,"8",round($e->quotable, 2),"0","","","","","","","","","","","","","","",round($e->discount_old, 2),round($e->total_amount_discount_law, 2),round($e->discount_faults, 2)]);
 
             if ($i < ($total_employees)) {
                 $content .= "\n";
