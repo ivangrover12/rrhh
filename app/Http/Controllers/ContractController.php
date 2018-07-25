@@ -14,6 +14,7 @@ use App\JobSchedule;
 use Validator;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controller\Insurance;
+use App\Helpers\Util;
 class ContractController extends Controller
 {
     /**
@@ -359,5 +360,35 @@ class ContractController extends Controller
             $newcontract->save();
         }
         return redirect('contract')->with('success', 'Contratos renovados correctamente');
+    }
+    public function month_salary_calculation () 
+    {
+        $ini = explode('-', request('date_ini'));
+        $fin = explode('-', request('date_end'));
+        $position = Position::find(request('position_id')); 
+        
+        for ($i = (int)$ini[1]; $i <= (int)$fin[1]; $i++) {
+            $day = 30;
+            $salary = $position->charge->base_wage;
+            $salary_day = $salary / 30;
+            if($i == (int)$ini[1]) {
+                if((int)$ini[2] >= 30) {
+                    $day = 1;
+                } else {
+                    $day = 30 - $ini[2] + 1;                    
+                }
+                $salary = $salary_day * $day;
+            }
+            if($i == (int)$fin[1]) {
+                if((int)$fin[2] >= 30) {
+                    $day = 30;    
+                } else {
+                    $day = (int)$fin[2];
+                }
+                $salary = $salary_day * $day;
+            }
+            $data[] = ['month'=> Util::getMonthEs($i),'day'=>$day,'salary'=>$salary];
+        }
+        return $data;
     }
 }
