@@ -46,7 +46,7 @@
                   <th>Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes</th>
                   <th>Total descuentos</th>
                   <th>Liquido Pagable</th>
-                  <th>Saldo disponible para el siguiente mes (Form A-3 Tributario)</th>
+                  <th>Saldo mes anterior (Form A-3 Tributario)</th>
                 </tr>
               </template>
               <template slot="tbody">

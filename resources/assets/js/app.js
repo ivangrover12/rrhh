@@ -23,7 +23,7 @@ Vue.use(VueCurrencyFilter,
 
 Vue.filter('formatDate', (value) => {
   if (value) {
-    return moment(String(value)).format('MM/DD/YYYY');
+    return moment(String(value)).format('DD/MM/YYYY');
   } else {
     return 'Indefinido';
   }
