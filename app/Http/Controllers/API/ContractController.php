@@ -57,12 +57,26 @@ class ContractController extends Controller
         // ->whereRaw($request->year. " BETWEEN  extract(year from contracts.date_start::date) and  extract(year from contracts.date_end::date)")
         ->where(function ($query) use ($request, $month) {
             $query
-            ->where('contracts.status', true)
-            ->whereYear('contracts.date_end', '>=', $request->year)
-            ->whereMonth('contracts.date_end', '>=', $month->id)
-            ->orWhere('contracts.status', false)
-            ->whereYear('contracts.date_start', '<=', $request->year)
-            ->whereMonth('contracts.date_start', '<=', $month->id);
+            ->where(function ($q) use ($request, $month) {
+                $q
+                ->where('contracts.status', false)
+                ->whereYear('contracts.date_end', $request->year)
+                ->whereMonth('contracts.date_end', $month->id);
+            })
+            ->orWhere(function ($q) use ($request, $month) {
+                $q
+                ->where('contracts.status', true)
+                ->whereYear('contracts.date_start', $request->year)
+                ->whereMonth('contracts.date_start', $month->id);
+            })
+            ->orWhere(function ($q) use ($request, $month) {
+                $q
+                ->where('contracts.status', true)
+                ->whereYear('contracts.date_start', '<=', $request->year)
+                ->whereMonth('contracts.date_start', '<', $month->id)
+                ->whereYear('contracts.date_end', '>=', $request->year)
+                ->whereMonth('contracts.date_end', '>', $month->id);
+            });
         })
         ->orWhere(function ($query) use ($request, $month) {
             $query
