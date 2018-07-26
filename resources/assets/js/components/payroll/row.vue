@@ -120,14 +120,14 @@ export default {
 
         return 30;
       },
-      total(){
-          return this.quotable - this.totalDiscounts;
-      },
       totalDiscounts(){
           return this.calculateTotalDiscountLaw() + parseFloat(this.delay || 0 ) + parseFloat(this.rcIva || 0);
       },
       quotable()  {
-          return (this.baseWage/30) * this.worked_days;
+          return (this.baseWage/30) * this.workedDays;
+      },
+      total(){
+          return this.quotable - this.totalDiscounts;
       },
       salary(){
           return this.quotable - this.calculateTotalDiscountLaw();
