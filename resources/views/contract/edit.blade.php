@@ -73,6 +73,20 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <div class="col-md-4"> Tipo de contratación <span class="text-danger">*</span></div>
+                                <div class="col-md-8">
+                                    <select name="contract_type" class="form-control">
+                                        @foreach ($contract_type as $type)
+                                            @if ($contract->contracts_type_id == $type->id) 
+                                                <option value="{{ $type->id }} " selected="true">{{ $type->name }} </option>
+                                            @else
+                                                <option value="{{ $type->id }} ">{{ $type->name }} </option>
+                                            @endif                                            
+                                        @endforeach
+                                    </select>
+                                </div> 
+                            </div>
+                            <div class="form-group row">
                                 <div class="col-md-4"> Numero de contrato </div>
                                 <div class="col-md-8">
                                     <input type="text" name="number_contract" id="number_contract" class="form-control" value=" {{ $contract->number_contract }} " />
@@ -156,6 +170,14 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <div class="col-md-4">
+                                    Descripción
+                                </div>
+                                <div class="col-md-8">
+                                    <textarea name="description" class="form-control">{{ $contract->description }} </textarea>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <div class="col-md-4">Contrato Vigente:</div>
                                 <div class="col-md-8">
                                     @if ($contract->status)
@@ -174,6 +196,7 @@
                         <div class="alert alert-info">
                             <span class="alert-link">Empleado: </span><span id="emp"> {{$employee->fullName()}}</span><br>
                             <span class="alert-link">Cargo: </span><span id="pos"> {{ $contract->position->name }}</span><br>
+                            <span class="alert-link">Haber Basico: </span> Bs. <span id="sal">{{ $contract->position->charge->base_wage }} </span><br>
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -208,6 +231,7 @@
         afterSelect: function(item) {
             $('#position_id').val(item.id);
             $("#pos").text(item.name);
+            $("#sal").text(item.base_wage);
             calc();
         }
     });
@@ -219,11 +243,11 @@
                 $("#table_calc").empty();
                 total = 0;
                 for(var dato of data){     
-                    salary = (Math.round( dato.salary * 100 )/100 ).toString();               
+                    salary = (Math.round( parseFloat(dato.salary) * 100 )/100 ).toFixed(2);
                     $("#table_calc").append('<tr><td>' + dato.month + '</td><td>' + dato.day + '</td><td>Bs. ' + salary + '</td></tr>');
-                    total = total + parseFloat(salary);                    
+                    total = total + parseFloat(salary);
                 }
-                total = (Math.round( total * 100 )/100 ).toString();   
+                total = (Math.round( total * 100 ) / 100 ).toFixed(2);
                 $("#total_ganado").text('Bs. ' + total);
             });
     }
