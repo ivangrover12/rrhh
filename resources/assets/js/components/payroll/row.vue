@@ -2,19 +2,31 @@
     <tr>
         <td>{{ contract.identity_card}} {{ contract.city_identity_card }}</td>
         <td>{{ fullName(contract) }}</td>
-        <td>{{ contract.account_number}}</td>
-        <td>{{ contract.birth_date | formatDate }}</td>
-        <td>{{ contract.date_start | formatDate }}</td>
-        <td>{{ contract.date_end | formatDate }}</td>
-        <td>{{ contract.charge}}</td>
-        <td>{{ contract.position }}</td>
-        <td><input type="number" v-model="unworkedDays" :name="`contract-${contract.id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="workedDays+unworkedDays" required></td>
         <td>
             <input type="hidden" v-model="workedDays" :name="`contract-${contract.id}[]`" class="form-control" min="0" max="30" readonly>{{ workedDays }}
         </td>
+        <td>
+            <input type="number" v-model="unworkedDays" :name="`contract-${contract.id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="workedDays+unworkedDays" required>
+        </td>
+        <td>
+            <input type="text" class="form-control" :name="`contract-${contract.id}[]`" v-model="rcIva">
+        </td>
+        <td>
+            <input type="text" class="form-control" :name="`contract-${contract.id}[]`" v-model="delay">
+        </td>
+        <td>
+          <input type="text" class="form-control" :name="`contract-${contract.id}[]`" :value="previousMonth">{{ getPreviousMoth(contract) }}
+        </td>
+        <!-- <td>{{ contract.account_number}}</td>
+        <td>{{ contract.birth_date | formatDate }}</td> -->
+        <td>{{ contract.date_start | formatDate }}</td>
+        <td>{{ contract.date_end | formatDate }}</td>
         <td>{{ baseWage | currency }}</td>
         <td>{{ quotable | currency }}</td>
-        <td>{{ contract.management_entity}}</td>
+        <td> {{ total | currency}} </td>
+        <td>{{ contract.charge}}</td>
+        <td>{{ contract.position }}</td>
+        <!-- <td>{{ contract.management_entity}}</td> -->
         <td>{{ calculateDiscount(procedure.discount_old) | currency }}</td>
         <td>{{ calculateDiscount(procedure.discount_common_risk) | currency }}</td>
         <td>{{ calculateDiscount(procedure.discount_commission) | currency }}</td>
@@ -22,13 +34,7 @@
         <td>{{ calculateDiscount(procedure.discount_national) | currency }}</td>
         <td>{{ calculateTotalDiscountLaw() | currency }}</td>
         <td>{{ salary | currency}}</td>
-        <td><input type="text" class="form-control" :name="`contract-${contract.id}[]`" v-model="rcIva"></td>
-        <td><input type="text" class="form-control" :name="`contract-${contract.id}[]`" v-model="delay"></td>
         <td> {{ totalDiscounts | currency }} </td>
-        <td> {{ total | currency}} </td>
-        <td>
-          <input type="text" class="form-control" :name="`contract-${contract.id}[]`" :value="previousMonth">{{ getPreviousMoth(contract) }}
-        </td>
     </tr>
 </template>
 

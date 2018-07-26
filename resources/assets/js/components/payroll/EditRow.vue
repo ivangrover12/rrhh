@@ -2,19 +2,31 @@
     <tr>
         <td>{{ payroll.identity_card}} {{ payroll.city_identity_card }}</td>
         <td>{{ fullName(payroll) }}</td>
-        <td>{{ payroll.account_number}}</td>
-        <td>{{ payroll.birth_date | formatDate }}</td>
-        <td>{{ payroll.contract.date_start | formatDate }}</td>
-        <td>{{ payroll.contract.date_end | formatDate }}</td>
-        <td>{{ payroll.charge}}</td>
-        <td>{{ payroll.position }}</td>
-        <td><input type="number" v-model="unworkedDays" :name="`contract-${payroll.contract_id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="workedDays+unworkedDays" required></td>
         <td>
             <input type="hidden" v-model="workedDays" :name="`contract-${payroll.contract_id}[]`" class="form-control" min="0" max="30" readonly>{{ workedDays }}
         </td>
+        <td>
+            <input type="number" v-model="unworkedDays" :name="`contract-${payroll.contract_id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="workedDays+unworkedDays" required>
+        </td>
+        <td>
+            <input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" v-model="rcIva">
+        </td>
+        <td>
+            <input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" v-model="delay">
+        </td>
+        <td>
+            <input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" :value="previousMonth"> {{ previousMonthBalance(payroll) }}
+        </td>
+        <!-- <td>{{ payroll.account_number}}</td>
+        <td>{{ payroll.birth_date | formatDate }}</td> -->
+        <td>{{ payroll.contract.date_start | formatDate }}</td>
+        <td>{{ payroll.contract.date_end | formatDate }}</td>
         <td>{{ baseWage | currency }}</td>
         <td>{{ quotable | currency }}</td>
-        <td>{{ payroll.management_entity}}</td>
+        <td> {{ total | currency}} </td>
+        <td>{{ payroll.charge}}</td>
+        <td>{{ payroll.position }}</td>
+        <!-- <td>{{ payroll.management_entity}}</td> -->
         <td>{{ calculateDiscount(procedure.discount_old) | currency }}</td>
         <td>{{ calculateDiscount(procedure.discount_common_risk) | currency }}</td>
         <td>{{ calculateDiscount(procedure.discount_commission) | currency }}</td>
@@ -22,12 +34,7 @@
         <td>{{ calculateDiscount(procedure.discount_national) | currency }}</td>
         <td>{{ calculateTotalDiscountLaw() | currency }}</td>
         <td>{{ salary | currency}}</td>
-        <td><input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" v-model="rcIva"></td>
-        <td><input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" v-model="delay"></td>
         <td> {{ totalDiscounts | currency }} </td>
-        <td> {{ total | currency}} </td>
-        <td> 
-          <input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" :value="previousMonth"> {{ previousMonthBalance(payroll) }} </td>
     </tr>
 </template>
 
