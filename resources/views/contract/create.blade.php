@@ -61,7 +61,7 @@
                                 </div>                                
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4"> Fecha de Conclusión <span class="text-danger">*</span></div>
+                                <div class="col-md-4"> Fecha de Conclusión/Disolución <span class="text-danger">*</span></div>
                                 <div class="col-md-8">
                                     <input type="date" id="date_end" name="date_end" class="form-control" onchange="calc()">
                                     <div class="text-danger">{{ $errors->first('date_end') }}</div>

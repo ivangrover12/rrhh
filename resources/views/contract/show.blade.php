@@ -73,7 +73,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4">Fecha de fin</div>
+                                <div class="col-md-4">Fecha de Conclusion/Disolución</div>
                                 <div class="col-md-8">
                                     <input type="date" id="date_end" name="date_end" value="{{ $contract->date_end }}" class="form-control" disabled>
                                 </div>
