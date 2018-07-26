@@ -72,6 +72,8 @@ export default {
   },
   computed:{
       workedDays() {
+        let lastDayOfMonth = new Date(2018, this.procedure.month_id+1, 0).getDate();
+
         let payrollDate = {
             year: this.procedure.year,
             month: this.procedure.month_id,
@@ -93,6 +95,13 @@ export default {
 
         if (this.contract.date_end == null) {
             workedDays = 30;
+        } else if (dateStart.year == dateEnd.year && dateStart.month == dateEnd.month) {
+            if (dateEnd.day == lastDayOfMonth && (lastDayOfMonth < 30 || lastDayOfMonth > 30)) {
+                workedDays = 30 - dateStart.day;
+            } else {
+                workedDays = dateEnd.day - dateStart.day;
+            }
+            workedDays += 1;
         } else if (dateStart.year <= payrollDate.year && dateStart.month == payrollDate.month) {
             workedDays = 30 + 1 - dateStart.day;
         } else if (dateEnd.year >= payrollDate.year && dateEnd.month == payrollDate.month) {
