@@ -25,7 +25,7 @@
         <td>{{ quotable | currency }}</td>
         <td> {{ total | currency}} </td>
         <td>{{ contract.charge}}</td>
-        <td>{{ contract.position }}</td>
+        <td class="chargeCol">{{ contract.position }}</td>
         <!-- <td>{{ contract.management_entity}}</td> -->
         <td>{{ calculateDiscount(procedure.discount_old) | currency }}</td>
         <td>{{ calculateDiscount(procedure.discount_common_risk) | currency }}</td>
