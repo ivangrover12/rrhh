@@ -149,6 +149,8 @@ class EmployeePayroll
     {
         $contract = $payroll->contract;
 
+        $last_day_of_month = Carbon::create($payroll_date->year, $payroll_date->month)->endOfMonth()->day;
+
         $payroll_date = (object)[
             "year" =>  $payroll->procedure->year,
             "month" => $payroll->procedure->month_id,
@@ -170,6 +172,13 @@ class EmployeePayroll
 
         if ($contract->date_end == null) {
             $worked_days = 30;
+        } else if ($dateStart->year == $dateEnd->year && $dateStart->month == $dateEnd->month) {
+            if ($date_end->day == $last_day_of_month && ($last_day_of_month < 30 || $last_day_of_month > 30)) {
+                $workded_days = 30 - $date_start->day;
+            } else {
+                $workedDays = $dateEnd->day - $dateStart->day;
+            }
+            $workded_days += 1;
         } elseif ($date_start->year <= $payroll_date->year && $date_start->month == $payroll_date->month) {
             $worked_days = 30 + 1 - $date_start->day;
         } elseif ($date_end->year >= $payroll_date->year && $date_end->month == $payroll_date->month) {
