@@ -24,17 +24,21 @@
                 <tr>
                   <th class="first-column">C.I.</th>
                   <th>Trabajador</th>
-                  <th>Cuenta Bancaria</th>
-                  <th>Fecha de Nacimiento</th>
+                  <th># de dias Trabajados</th>
+                  <th># de dias NO Trabajados</th>
+                  <th>RC-IVA 13%</th>
+                  <th>Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes</th>
+                  <th>Saldo mes anterior (Form A-3 Tributario)</th>
+                  <!-- <th>Cuenta Bancaria</th>
+                  <th>Fecha de Nacimiento</th> -->
                   <th>Inicio de Contrato</th>
                   <th>Fin de Contrato</th>
-                  <th>Puesto</th>
-                  <th>Cargo</th>                
-                  <th># de dias NO Trabajados</th>
-                  <th># de dias Trabajados</th>
                   <th>Haber basico</th>
                   <th>Total Ganado</th>
-                  <th>AFP</th>
+                  <th>Liquido Pagable</th>
+                  <th>Puesto</th>
+                  <th>Cargo</th>
+                  <!-- <th>AFP</th> -->
                   <th>Descuento Renta vejez 10 %</th>
                   <th>Descuento Riesgo común 1,71 %</th>
                   <th>Descuento Comisión 0 ,5 %</th>
@@ -42,11 +46,7 @@
                   <th>Descuento Aporte Nacional solidario 1 %</th>
                   <th>Total descuentos de ley</th>
                   <th>Sueldo Neto</th>
-                  <th>RC-IVA 13%</th>
-                  <th>Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes</th>
                   <th>Total descuentos</th>
-                  <th>Liquido Pagable</th>
-                  <th>Saldo mes anterior (Form A-3 Tributario)</th>
                 </tr>
               </template>
               <template slot="tbody">
