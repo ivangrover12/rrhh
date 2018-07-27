@@ -1,21 +1,21 @@
 <template>
     <tr>
         <td>{{ this.cont+1 }}</td>
-        <td>{{ fullName(contract) }}</td>
+        <td class="nameBox">{{ fullName(contract) }}</td>
         <td>
             <input type="hidden" v-model="workedDays" :name="`contract-${contract.id}[]`" min="0" max="30" readonly>{{ workedDays }}
         </td>
-        <td style="text-align:center;">
-            <input style="width:5em;" type="number" v-model="unworkedDays" :name="`contract-${contract.id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="workedDays+unworkedDays" required>
+        <td>
+            <input type="number" v-model="unworkedDays" :name="`contract-${contract.id}[]`" class="form-control inputBox" placeholder="dias NO trabajados" min="0" :max="workedDays+unworkedDays" required>
         </td>
         <td>
-            <input type="text" class="form-control" :name="`contract-${contract.id}[]`" v-model="rcIva">
+            <input  style="width:5em;" type="text" class="form-control inputBox" :name="`contract-${contract.id}[]`" v-model="rcIva">
         </td>
         <td>
-            <input type="text" class="form-control" :name="`contract-${contract.id}[]`" v-model="delay">
+            <input type="text" class="form-control inputBox" :name="`contract-${contract.id}[]`" v-model="delay">
         </td>
         <td>
-          <input type="text" class="form-control" :name="`contract-${contract.id}[]`" :value="previousMonth">{{ getPreviousMoth(contract) }}
+          <input type="text" class="form-control inputBox" :name="`contract-${contract.id}[]`" :value="previousMonth">{{ getPreviousMoth(contract) }}
         </td>
         <td> {{ total | currency}} </td>
         <td> {{ totalDiscounts | currency }} </td>
