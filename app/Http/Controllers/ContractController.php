@@ -122,6 +122,12 @@ class ContractController extends Controller
      */
     public function store(Request $request)
     {
+        $existContract = Contract::where('employee_id', $request->employee_id)
+                                    ->where('status', true)
+                                    ->first();
+        if($existContract) {
+            return redirect('contract')->with('error', 'Este empleado ya tiene un contrato vigente');
+        }
         $messages = [
             'required' => 'Campo obligatorio',
             'unique' => 'Este valor ya existe'
@@ -152,7 +158,7 @@ class ContractController extends Controller
         $contract->cite_performance = $request->cite_performance;
         $contract->description = $request->description;        
         $contract->number_contract = $request->number_contract;
-        $contract->status = true;        
+        $contract->status = true;
         $contract->save();
 
         $schedules = JobSchedule::all();

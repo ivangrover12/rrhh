@@ -24,7 +24,6 @@ Route::group(['middleware' => 'auth'], function(){
   
     Route::get('payroll/addmonth','PayrollController@addmonth');
     Route::get('payroll/show_payroll_month/{id}','PayrollController@show_payroll_month');
-    Route::get('payroll/show_payroll_previous_month/{id}/{procedure}','PayrollController@show_payroll_previous_month');
     Route::get('payroll/tribute_calculation/{id}','PayrollController@tribute_calculation');
     Route::get('payroll','PayrollController@index');
     Route::get('payroll/{year}/{month}','PayrollController@create')->name('create_payroll');
