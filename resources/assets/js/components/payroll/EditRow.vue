@@ -1,21 +1,21 @@
 <template>
     <tr>
         <td>{{ this.cont+1 }}</td>
-        <td>{{ fullName(payroll) }}</td>
+        <td class="nameBox">{{ fullName(payroll) }}</td>
         <td>
             <input type="hidden" v-model="workedDays" :name="`contract-${payroll.contract_id}[]`" min="0" max="30" readonly>{{ workedDays }}
         </td>
         <td>
-            <input type="number" v-model="unworkedDays" :name="`contract-${payroll.contract_id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="workedDays+unworkedDays" required>
+            <input type="number" v-model="unworkedDays" :name="`contract-${payroll.contract_id}[]`" class="form-control inputBox" placeholder="dias NO trabajados" min="0" :max="workedDays+unworkedDays" required>
         </td>
         <td>
-            <input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" v-model="rcIva">
+            <input type="text" class="form-control inputBox" :name="`contract-${payroll.contract_id}[]`" v-model="rcIva">
         </td>
         <td>
-            <input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" v-model="delay">
+            <input type="text" class="form-control inputBox" :name="`contract-${payroll.contract_id}[]`" v-model="delay">
         </td>
         <td>
-            <input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" :value="previousMonth"> {{ previousMonthBalance(payroll) }}
+            <input type="text" class="form-control inputBox" :name="`contract-${payroll.contract_id}[]`" :value="previousMonth"> {{ previousMonthBalance(payroll) }}
         </td>
         <td> {{ total | currency}} </td>
         <td> {{ totalDiscounts | currency }} </td>
@@ -26,7 +26,7 @@
 
 <script>
 export default {
-  props:['payroll', 'procedure'],
+  props:['cont', 'payroll', 'procedure'],
   data(){
     return{
         unworkedDays: this.payroll.unworked_days,

@@ -3,5 +3,6 @@ try {
   
     require( 'datatables.net');
     require( 'datatables.net-bs');
+    require( 'datatables.net-fixedcolumns');
   } catch (e) { }
   
