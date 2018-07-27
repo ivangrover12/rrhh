@@ -33,7 +33,7 @@ export default {
         baseWage: this.contract.base_wage,
         delay: 0,
         rcIva: 0,
-        previousMonth: 0,
+        previousMonth: this.contract.next_month_balance,
     }
   },
   created(){
@@ -52,12 +52,7 @@ export default {
         return this.calculateDiscount(this.procedure.discount_old)+this.calculateDiscount(this.procedure.discount_common_risk)+this.calculateDiscount(this.procedure.discount_commission)+this.calculateDiscount(this.procedure.discount_solidary)+this.calculateDiscount(this.procedure.discount_national);
       },
       getPreviousMoth(contract){
-        // axios.get("/payroll/show_payroll_previous_month/" + contract.employee_id + "/" + this.procedure.id).then(response => {
-        //     this.previousMonth = response.data.next_month_balance;
-        // })
-        // .catch(error => {
-        //     console.log(error);
-        // });
+        this.previousMonth = contract.next_month_balance;
       }
   },
   computed:{
