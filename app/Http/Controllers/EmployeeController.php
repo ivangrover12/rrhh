@@ -167,32 +167,20 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [];
-        $double_ci = false;
-        $ci = Employee::where('identity_card',$request->identity_card)->first();
-        if(isset($ci->id))
-            $double_ci = true;
-        $biz_rules = [
-            'double_ci' =>  $double_ci?'required':'',
+        $messages = [
+            'required' => 'Campo obligatorio',
+            'unique' => 'Este valor ya existe'
         ];
-        $rules=array_merge($rules,$biz_rules);
-        $array_rules = [
-            'employee_type_id'  =>  'required',
-            'city_identity_card_id' =>  'required',
-            'city_birth_id' =>  'required',
+        $validator = Validator::make($request->all(), [
+            'identity_card' => 'required|unique:employees',
             'first_name'    =>  'required',
-            'last_name' =>  'required',
-            'identity_card' =>  'required',
-            'birth_date'    =>  'required',            
-        ];
-        $rules=array_merge($rules,$array_rules);
+        ],$messages);
 
-        $validator = Validator::make($request->all(),$rules);
-        if($validator->fails()){            
-            return redirect(asset('employee/create'))
-                ->withErrors($validator)
-                ->withInput();            
-        }       
+        if ($validator->fails()) {
+            return redirect('employee/create')
+                        ->withErrors($validator)
+                        ->withInput();
+        }    
         $employee = new Employee();
         $employee->employee_type_id = $request->employee_type_id;
         $employee->city_identity_card_id = $request->city_identity_card_id;
@@ -268,33 +256,20 @@ class EmployeeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Employee $employee)
-    {            
-        $rules = [];
-        $double_ci = false;
-        $ci = Employee::where('id','!=',$employee->id)->where('identity_card',$request->identity_card)->first();
-        
-        if(isset($ci->id))
-            $double_ci = true;
-        $biz_rules = [
-            'double_ci' =>  $double_ci?'required':'',
+    {   
+        $messages = [
+            'required' => 'Campo obligatorio',
+            'unique' => 'Este valor ya existe'
         ];
-        $rules=array_merge($rules,$biz_rules);
-        $array_rules = [
-            'employee_type_id'  =>  'required',
-            'city_identity_card_id' =>  'required',
-            'city_birth_id' =>  'required',
+        $validator = Validator::make($request->all(), [
             'first_name'    =>  'required',
-            'last_name' =>  'required',
-            'identity_card' =>  'required',
-            'birth_date'    =>  'required',            
-        ];
-        $rules=array_merge($rules,$array_rules);        
-        $validator = Validator::make($request->all(),$rules);
-        if($validator->fails()){            
+        ],$messages);
+
+        if ($validator->fails()) {
             return redirect(asset('employee/'.$employee->id.'/edit'))
-                ->withErrors($validator)
-                ->withInput();            
-        }       
+                    ->withErrors($validator)
+                    ->withInput();
+        }     
         
         $employee->employee_type_id = $request->employee_type_id;
         $employee->city_identity_card_id = $request->city_identity_card_id;
@@ -315,7 +290,7 @@ class EmployeeController extends Controller
         $employee->street = $request->street;
         $employee->number = $request->number;
         $employee->save();
-        return redirect('employee');
+        return redirect('employee')->with('success', 'Editado correctamente');
     }
 
     /**
