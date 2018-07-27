@@ -20,3 +20,4 @@ composer.lock
 .env
 storage/debugbar/
 public/css/
+public/mix-manifest.json
