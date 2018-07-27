@@ -102,7 +102,7 @@ class PayrollController extends Controller
             $procedure->save();
         }else{
             $procedure = Procedure::find($procedure->id);
-        }        
+        }
         // Procedure::where('year', $request->year)->where('month', $request)
         foreach ($request->all() as $key => $value) {
             if (strpos($key, 'contract-') !== false) {
@@ -933,18 +933,6 @@ class PayrollController extends Controller
         }
         return $result;
     } 
-    public function show_payroll_previous_month ($employee_id, $procedure_id) {
-        $procedure = Procedure::where('id', '<', $procedure_id)->orderBy('id','desc')->first();
-        $result = 0;
-        if ($procedure != null) {
-            $result = Payroll::join('procedures', 'payrolls.procedure_id', '=', 'procedures.id')
-                                ->join('contracts', 'payrolls.contract_id', '=', 'contracts.id')
-                                ->where('contracts.employee_id', $employee_id)
-                                ->where('procedures.month_id', $procedure->month_id )
-                                ->first();
-        }
-        return $result;
-    }
 
     public static function tribute_calculation ($salary, $rciva, $mes_anterior) 
     { 
