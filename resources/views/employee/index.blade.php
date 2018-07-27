@@ -96,18 +96,12 @@
                 }
             },
             "initComplete": function(settings, json) {
-
-                /*var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
-
-                elems.forEach(function(html) {
-                  var switchery = new Switchery(html,{size: 'small'});
-                });*/
-
                 var api = this.api();
                 api.$('td .status').click( function () {
                     $.get("employee/status/" + $(this).val());
                 });
-            }
+            },
+            stateSave: true
         });
 
 

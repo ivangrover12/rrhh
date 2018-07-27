@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Contract;
+use App\Employee;
 use App\Procedure;
 use Carbon\Carbon;
 use App\Month;
@@ -109,13 +110,16 @@ class ContractController extends Controller
                     ->where('payrolls.procedure_id','=', $previousProcedureId)
                  ;  
             })
-        //->Join('payrolls', 'contracts.id', '=', 'payrolls.contract_id')
         /* ---- */
         ->orderBy('employees.last_name', 'asc')
         ->orderBy('contracts.date_start', 'asc')
         ->get();
-        $total = $contracts->count();
-        return response()->json(['contracts' => $contracts->toArray(), 'total' => $total]);
+        $total_contracts = $contracts->count();
+        $employees = Employee::join('contracts', 'employees.id', '=', 'contracts.employee_id')
+                        ->where('contracts.status', true)
+                        ->get();
+        $total_employees = $employees->count();
+        return response()->json(['contracts' => $contracts->toArray(), 'total' => $total_contracts, 'total_employees' => $total_employees]);
     }
 
     /**

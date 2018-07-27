@@ -2,7 +2,7 @@
   <div id="app">
     <div class="ibox" id="panel">
       <div class="ibox-title">
-        <h5>Lista de Empleados ({{ total }})</h5>
+        <h5>Total Empleados ({{ total_employees }}) | Total Contratos ({{ total }})</h5>
         <div class="ibox-tools">
           <a class="fullscreen-link" id="btnFullScreen">
             <i class="fa fa-expand"></i>
@@ -65,6 +65,7 @@ export default {
   data: function() {
     return {
       total: 0,
+      total_employees: 0,
       contracts: [],
       payrolls: []
     };
@@ -81,6 +82,7 @@ export default {
         .then(response => {
           this.payrolls = response.data.payrolls;
           this.total = response.data.total;
+          this.total_employees = response.data.total_employees;
           this.allItems = response.data.payrolls;
           return new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -105,6 +107,7 @@ export default {
         .then(response => {
           this.contracts = response.data.contracts;
           this.total = response.data.total;
+          this.total_employees = response.data.total_employees;
           this.allItems = response.data.contracts;
           return new Promise((resolve, reject) => {
             setTimeout(() => {

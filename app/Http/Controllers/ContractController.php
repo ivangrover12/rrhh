@@ -63,7 +63,7 @@ class ContractController extends Controller
             } else {
                 $row[] = "
                     <div class='btn-group' style=''>
-                        <button data-toggle='dropdown' class='btn btn-primary dropdown-toggle'>Imprimir</button>
+                        <button data-toggle='dropdown' class='btn btn-primary dropdown-toggle'>Imprimir <i class='fa fa-caret-down'></i></button>
                         <ul class='dropdown-menu bg-primary'>
                             <li>
                                 <a class='dropdown-item' 

@@ -53,7 +53,11 @@ class PayrollController extends Controller
             $payroll->management_entity = $employee->management_entity->name;
         }
         $total = $payrolls->count();
-        return response()->json(['payrolls' => $payrolls->toArray(), 'total' => $total]);
+        $employees = Employee::join('contracts', 'employees.id', '=', 'contracts.employee_id')
+                        ->where('contracts.status', true)
+                        ->get();
+        $total_employees = $employees->count();
+        return response()->json(['payrolls' => $payrolls->toArray(), 'total' => $total, 'total_employees' => $total_employees]);
     }
 
     /**

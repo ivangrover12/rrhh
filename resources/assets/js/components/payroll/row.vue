@@ -1,7 +1,7 @@
 <template>
     <tr>
         <td>{{ this.cont+1 }}</td>
-        <td class="nameBox">{{ fullName(contract) }}</td>
+        <td><span type="button" class="btn btn-outline btn-link nameBox" data-toggle="tooltip" data-placement="right" data-html="true" :title="positionSalary">{{ fullName(contract) }}</span></td>
         <td>
             <input type="hidden" v-model="workedDays" :name="`contract-${contract.id}[]`" min="0" max="30" readonly>{{ workedDays }}
         </td>
@@ -34,6 +34,7 @@ export default {
         delay: 0,
         rcIva: 0,
         previousMonth: this.contract.next_month_balance,
+        positionSalary: `Cargo: ${this.contract.position} \n<br> Haber Basico: ${this.contract.base_wage}`
     }
   },
   created(){
