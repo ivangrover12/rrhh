@@ -39,7 +39,7 @@ class EmployeePayroll
         $this->management_entity = $employee->management_entity->name;
         $this->management_entity_id = $employee->management_entity->id;
         $this->unworked_days = $payroll->unworked_days;
-        $this->worked_days = $this->workedDays($payroll);
+        $this->worked_days = $this->worked_days($payroll);
         $this->ovt = (object) [
             'insurance_company_id' => $employee->insurance_company->ovt_id,
             'management_entity_id' => $employee->management_entity->ovt_id,
@@ -128,14 +128,14 @@ class EmployeePayroll
         $this->total_contributions = round(($this->contribution_insurance_company + $this->contribution_professional_risk + $this->contribution_employer_solidary + $this->contribution_employer_housing), 2);
     }
 
-    public function setWorkedDays($worked_days, $payroll)
+    public function setWorked_days($worked_days, $payroll)
     {
         $this->worked_days = $worked_days;
         $this->employeeDiscounts($payroll);
         $this->employerContribution($payroll);
     }
 
-    public function getWorkedDays()
+    public function getWorked_days()
     {
         return $this->worked_days;
     }
@@ -145,7 +145,7 @@ class EmployeePayroll
         $this->valid_contract = $valid_contract;
     }
 
-    private function workedDays($payroll)
+    private function worked_days($payroll)
     {
         $contract = $payroll->contract;
 
@@ -171,13 +171,13 @@ class EmployeePayroll
 
         if ($contract->date_end == null) {
             $worked_days = 30;
-        } else if ($dateStart->year == $dateEnd->year && $dateStart->month == $dateEnd->month) {
+        } else if ($date_start->year == $date_end->year && $date_start->month == $date_end->month) {
             if ($date_end->day == $last_day_of_month && ($last_day_of_month < 30 || $last_day_of_month > 30)) {
-                $workded_days = 30 - $date_start->day;
+                $worked_days = 30 - $date_start->day;
             } else {
-                $workedDays = $dateEnd->day - $dateStart->day;
+                $worked_days = $date_end->day - $date_start->day;
             }
-            $workded_days += 1;
+            $worked_days += 1;
         } elseif ($date_start->year <= $payroll_date->year && $date_start->month == $payroll_date->month) {
             $worked_days = 30 + 1 - $date_start->day;
         } elseif ($date_end->year >= $payroll_date->year && $date_end->month == $payroll_date->month) {
