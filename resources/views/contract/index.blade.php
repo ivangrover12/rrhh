@@ -43,7 +43,7 @@
                     <div class="col-md-2">
                         
                         <div class="col-lg-6" align="right">
-                            <span class="label p-xs">Ver Contratos</span>
+                            <strong>Ver Contratos</strong>
                         </div>
                         <div class="col-lg-6">
                             <div class="onoffswitch2">
@@ -72,7 +72,7 @@
                                     <th style="text-align: center;">
                                         <span id="label-status">Vigentes</span>
                                     </th>
-                                    <th width="300">Acci&oacute;n</th>
+                                    <th width="350">Acci&oacute;n</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -148,7 +148,8 @@
 
                 });
                 
-            }            
+            },
+            stateSave: true            
         });        
         $("#status").change(function() {
             if ($("#status").is(':checked')) {

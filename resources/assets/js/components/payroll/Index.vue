@@ -2,7 +2,7 @@
   <div id="app">
     <div class="ibox " >
       <div class="ibox-title">
-        <h5>Lista de Empleados ({{ total }})</h5>
+        <h5>Total Empleados ({{ total_employees }}) | Total Contratos ({{ total }})</h5>
         <div class="ibox-tools">
           <a class="collapse-link">
             <i class="fa fa-chevron-up"></i>
@@ -60,6 +60,7 @@ export default {
   data: function() {
     return {
       total: 0,
+      total_employees: 0,
       contracts: [],
       payrolls: []
     };
@@ -76,6 +77,7 @@ export default {
         .then(response => {
           this.payrolls = response.data.payrolls;
           this.total = response.data.total;
+          this.total_employees = response.data.total_employees;
           this.allItems = response.data.payrolls;
         })
         .catch(error => {
@@ -92,6 +94,7 @@ export default {
         .then(response => {
           this.contracts = response.data.contracts;
           this.total = response.data.total;
+          this.total_employees = response.data.total_employees;
           this.allItems = response.data.contracts;
         })
         .catch(error => {
