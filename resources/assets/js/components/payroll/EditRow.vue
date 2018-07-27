@@ -1,6 +1,7 @@
 <template>
     <tr>
-        <td>{{ payroll.identity_card}} {{ payroll.city_identity_card }}</td>
+        <!-- <td>{{ payroll.identity_card}} {{ payroll.city_identity_card }}</td> -->
+        <td>{{ this.cont+1 }}</td>
         <td>{{ fullName(payroll) }}</td>
         <td>
             <input type="hidden" v-model="workedDays" :name="`contract-${payroll.contract_id}[]`" class="form-control" min="0" max="30" readonly>{{ workedDays }}
@@ -19,22 +20,22 @@
         </td>
         <!-- <td>{{ payroll.account_number}}</td>
         <td>{{ payroll.birth_date | formatDate }}</td> -->
+        <td> {{ total | currency}} </td>
+        <td> {{ totalDiscounts | currency }} </td>
         <td>{{ payroll.contract.date_start | formatDate }}</td>
         <td>{{ payroll.contract.date_end | formatDate }}</td>
-        <td>{{ baseWage | currency }}</td>
-        <td>{{ quotable | currency }}</td>
-        <td> {{ total | currency}} </td>
-        <td>{{ payroll.charge}}</td>
-        <td class="chargeCol">{{ payroll.position }}</td>
+        <!-- <td>{{ baseWage | currency }}</td>
+        <td>{{ quotable | currency }}</td> -->
+        <!-- <td>{{ payroll.charge}}</td>
+        <td class="chargeCol">{{ payroll.position }}</td> -->
         <!-- <td>{{ payroll.management_entity}}</td> -->
-        <td>{{ calculateDiscount(procedure.discount_old) | currency }}</td>
+        <!-- <td>{{ calculateDiscount(procedure.discount_old) | currency }}</td>
         <td>{{ calculateDiscount(procedure.discount_common_risk) | currency }}</td>
         <td>{{ calculateDiscount(procedure.discount_commission) | currency }}</td>
         <td>{{ calculateDiscount(procedure.discount_solidary) | currency }}</td>
         <td>{{ calculateDiscount(procedure.discount_national) | currency }}</td>
         <td>{{ calculateTotalDiscountLaw() | currency }}</td>
-        <td>{{ salary | currency}}</td>
-        <td> {{ totalDiscounts | currency }} </td>
+        <td>{{ salary | currency}}</td> -->
     </tr>
 </template>
 

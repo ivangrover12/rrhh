@@ -9,7 +9,7 @@
           </a>
         </div>
       </div>
-      <div class="ibox-content" style="height:600px">
+      <div class="ibox-content">
         <div class="" id="parent">
           <div class="box">
             <vue-scrolling-table
@@ -18,34 +18,34 @@
               :sync-header-scroll="syncHeaderScroll"
               :sync-footer-scroll="syncFooterScroll"
               :dead-area-color="deadAreaColor"
-              :class="{ freezeFirstColumn:freezeFirstColumn }" class="table table-striped table-bordered table-hover zui-table">
+              :class="{ freezeFirstColumn:freezeFirstColumn }" class="table table-striped table-bordered table-hover">
               <template slot="thead">
                 <tr>
-                  <th>C.I.</th>
+                  <th>N°</th>
                   <th>Trabajador</th>
-                  <th># de dias Trabajados</th>
-                  <th># de dias NO Trabajados</th>
+                  <th>Días Trabajados</th>
+                  <th>Dias NO Trabajados</th>
                   <th>RC-IVA 13%</th>
-                  <th>Desc. Atrasos, Abandonos, Faltas</th>
-                  <th>Saldo Mes Anterior (Tributario A-3)</th>
+                  <th>Descuentos</th>
+                  <th>Saldo Tributario</th>
                   <!-- <th>Cuenta Bancaria</th>
                   <th>Fecha de Nacimiento</th> -->
-                  <th>Inicio de Contrato</th>
-                  <th>Fin de Contrato</th>
-                  <th>Haber basico</th>
-                  <th>Total Ganado</th>
                   <th>Liquido Pagable</th>
-                  <th>Puesto</th>
-                  <th class="chargeCol">Cargo</th>
+                  <th>Total descuentos</th>
+                  <th>Inicio Contrato</th>
+                  <th>Fin Contrato</th>
+                  <!-- <th>Haber básico</th> -->
+                  <!-- <th>Total Ganado</th> -->
+                  <!-- <th>Puesto</th> -->
+                  <!-- <th class="chargeCol">Cargo</th> -->
                   <!-- <th>AFP</th> -->
-                  <th>Desc. Renta vejez 10%</th>
+                  <!-- <th>Desc. Renta vejez 10%</th>
                   <th>Desc. Riesgo común 1,71%</th>
                   <th>Desc. Comisión 0,5%</th>
                   <th>Desc. Aporte solidario 0,5%</th>
                   <th>Desc. Aporte Nacional Solidario 1%</th>
                   <th>Total descuentos de ley</th>
-                  <th>Sueldo Neto</th>
-                  <th>Total descuentos</th>
+                  <th>Sueldo Neto</th> -->
                 </tr>
               </template>
               <template slot="tbody">
@@ -168,6 +168,9 @@ table.freezeFirstColumn tbody th:first-child {
   position: -webkit-sticky;
   left: 0;
   box-shadow: 0 0 2px -1px slategray;
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
 }
 table.freezeFirstColumn thead td:nth-child(2),
 table.freezeFirstColumn tbody td:nth-child(2),
@@ -175,10 +178,10 @@ table.freezeFirstColumn thead th:nth-child(2),
 table.freezeFirstColumn tbody th:nth-child(2) {
   position: sticky;
   position: -webkit-sticky;
-  left: 130px;
-  width: 250px;
-  min-width: 250px;
-  max-width: 250px;
+  left: 40px;
+  width: 160px;
+  min-width: 160px;
+  max-width: 160px;
   box-shadow: 3px 0 2px -1px slategray;
 }
 * {
