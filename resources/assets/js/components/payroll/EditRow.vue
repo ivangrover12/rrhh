@@ -2,19 +2,31 @@
     <tr>
         <td>{{ payroll.identity_card}} {{ payroll.city_identity_card }}</td>
         <td>{{ fullName(payroll) }}</td>
-        <td>{{ payroll.account_number}}</td>
-        <td>{{ payroll.birth_date }}</td>
-        <td>{{ payroll.contract.date_start }}</td>
-        <td>{{ payroll.contract.date_end || 'Indefinido' }}</td>
-        <td>{{ payroll.charge}}</td>
-        <td>{{ payroll.position }}</td>
-        <td><input type="number" v-model="unworked_days" :name="`contract-${payroll.contract_id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="worked_days+unworked_days"></td>
         <td>
-            <input type="hidden" v-model="worked_days" :name="`contract-${payroll.contract_id}[]`" class="form-control" min="0" max="30" readonly>{{ worked_days }}
+            <input type="hidden" v-model="workedDays" :name="`contract-${payroll.contract_id}[]`" class="form-control" min="0" max="30" readonly>{{ workedDays }}
         </td>
+        <td>
+            <input type="number" v-model="unworkedDays" :name="`contract-${payroll.contract_id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="workedDays+unworkedDays" required>
+        </td>
+        <td>
+            <input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" v-model="rcIva">
+        </td>
+        <td>
+            <input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" v-model="delay">
+        </td>
+        <td>
+            <input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" :value="previousMonth"> {{ previousMonthBalance(payroll) }}
+        </td>
+        <!-- <td>{{ payroll.account_number}}</td>
+        <td>{{ payroll.birth_date | formatDate }}</td> -->
+        <td>{{ payroll.contract.date_start | formatDate }}</td>
+        <td>{{ payroll.contract.date_end | formatDate }}</td>
         <td>{{ baseWage | currency }}</td>
         <td>{{ quotable | currency }}</td>
-        <td>{{ payroll.management_entity}}</td>
+        <td> {{ total | currency}} </td>
+        <td>{{ payroll.charge}}</td>
+        <td class="chargeCol">{{ payroll.position }}</td>
+        <!-- <td>{{ payroll.management_entity}}</td> -->
         <td>{{ calculateDiscount(procedure.discount_old) | currency }}</td>
         <td>{{ calculateDiscount(procedure.discount_common_risk) | currency }}</td>
         <td>{{ calculateDiscount(procedure.discount_commission) | currency }}</td>
@@ -22,10 +34,7 @@
         <td>{{ calculateDiscount(procedure.discount_national) | currency }}</td>
         <td>{{ calculateTotalDiscountLaw() | currency }}</td>
         <td>{{ salary | currency}}</td>
-        <td><input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" v-model="rcIva"></td>
-        <td><input type="text" class="form-control" :name="`contract-${payroll.contract_id}[]`" v-model="delay"></td>
         <td> {{ totalDiscounts | currency }} </td>
-        <td> {{ total | currency}} </td>
     </tr>
 </template>
 
@@ -34,11 +43,12 @@ export default {
   props:['payroll', 'procedure'],
   data(){
     return{
-        unworked_days: this.payroll.unworked_days,
+        unworkedDays: this.payroll.unworked_days,
         di: null,
         baseWage: this.payroll.base_wage,
         delay: this.payroll.discount_faults,
         rcIva: this.payroll.discount_rc_iva,
+        previousMonth: 0,
     }
   },
   created(){
@@ -56,11 +66,13 @@ export default {
       calculateTotalDiscountLaw(){
         return this.calculateDiscount(this.procedure.discount_old)+this.calculateDiscount(this.procedure.discount_common_risk)+this.calculateDiscount(this.procedure.discount_commission)+this.calculateDiscount(this.procedure.discount_solidary)+this.calculateDiscount(this.procedure.discount_national);
       },
-
+      previousMonthBalance(payroll) {
+        this.previousMonth = payroll.previous_month_balance;
+      }
   },
   computed:{
-      worked_days() {
-        return this.payroll.worked_days - this.unworked_days;
+      workedDays() {
+        return this.payroll.worked_days - this.unworkedDays;
       },
       total(){
           return this.quotable - this.totalDiscounts;
@@ -69,7 +81,7 @@ export default {
           return this.calculateTotalDiscountLaw() + parseFloat(this.delay || 0 ) + parseFloat(this.rcIva || 0);
       },
       quotable()  {
-          return (this.baseWage/30)*(30 - this.unworked_days);
+          return (this.baseWage/30)*this.workedDays;
       },
       salary(){
           return this.quotable - this.calculateTotalDiscountLaw();

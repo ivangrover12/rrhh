@@ -9,7 +9,7 @@ require('./inspinia');
 require("print-js");
 window.Vue = require('vue');
 
-
+import moment from 'moment';
 import VueCurrencyFilter from "vue-currency-filter";
 Vue.use(VueCurrencyFilter,
 {
@@ -21,6 +21,13 @@ Vue.use(VueCurrencyFilter,
   symbolSpacing: true
 })
 
+Vue.filter('formatDate', (value) => {
+  if (value) {
+    return moment(String(value)).format('DD/MM/YYYY');
+  } else {
+    return 'Indefinido';
+  }
+});
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

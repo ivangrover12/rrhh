@@ -23,6 +23,9 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('employee/{employee}/payroll','PayrollController@employee_payroll');
   
     Route::get('payroll/addmonth','PayrollController@addmonth');
+    Route::get('payroll/show_payroll_month/{id}','PayrollController@show_payroll_month');
+    Route::get('payroll/show_payroll_previous_month/{id}/{procedure}','PayrollController@show_payroll_previous_month');
+    Route::get('payroll/tribute_calculation/{id}','PayrollController@tribute_calculation');
     Route::get('payroll','PayrollController@index');
     Route::get('payroll/{year}/{month}','PayrollController@create')->name('create_payroll');
     Route::get('payroll/{year}/{month}/edit','PayrollController@edit')->name('edit_payroll');
@@ -41,6 +44,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::post('contract/renovate', 'ContractController@renovate');
     Route::get('contract/print/{id}', 'ContractController@print')->name('print_contract');
     Route::get('contract/delete/{id}', 'ContractController@delete')->name('delete_contract');
+    Route::get('contract/month_salary_calculation', 'ContractController@month_salary_calculation');    
     Route::resource('contract','ContractController');
     
     /*  tickets */

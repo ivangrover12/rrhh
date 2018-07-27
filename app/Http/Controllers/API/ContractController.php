@@ -52,16 +52,47 @@ class ContractController extends Controller
             'charges.base_wage',
             'charges.name as charge'
         )
+        // ->where('contracts.status', true)
+        // ->whereRaw($number_month->month. " BETWEEN  extract(month from contracts.date_start::date) and  extract(month from contracts.date_end::date)")
+        // ->whereRaw($request->year. " BETWEEN  extract(year from contracts.date_start::date) and  extract(year from contracts.date_end::date)")
+        ->where(function ($query) use ($request, $month) {
+            $query
+            ->where(function ($q) use ($request, $month) {
+                $q
+                ->where('contracts.status', false)
+                ->whereYear('contracts.date_end', $request->year)
+                ->whereMonth('contracts.date_end', $month->id);
+            })
+            ->orWhere(function ($q) use ($request, $month) {
+                $q
+                ->where('contracts.status', true)
+                ->whereYear('contracts.date_start', $request->year)
+                ->whereMonth('contracts.date_start', $month->id);
+            })
+            ->orWhere(function ($q) use ($request, $month) {
+                $q
+                ->where('contracts.status', true)
+                ->whereYear('contracts.date_start', '<=', $request->year)
+                ->whereMonth('contracts.date_start', '<', $month->id)
+                ->whereYear('contracts.date_end', '>=', $request->year)
+                ->whereMonth('contracts.date_end', '>', $month->id);
+            });
+        })
+        ->orWhere(function ($query) use ($request, $month) {
+            $query
             ->where('contracts.status', true)
-            // ->whereRaw($number_month->month. " BETWEEN  extract(month from contracts.date_start::date) and  extract(month from contracts.date_end::date)")
-            // ->whereRaw($request->year. " BETWEEN  extract(year from contracts.date_start::date) and  extract(year from contracts.date_end::date)")
-            ->leftJoin('employees', 'contracts.employee_id', '=', 'employees.id')
-            ->leftJoin('cities', 'cities.id', '=', 'employees.city_identity_card_id')
-            ->leftJoin('management_entities', 'employees.management_entity_id', '=', 'management_entities.id')
-            ->leftJoin('positions', 'contracts.position_id', '=', 'positions.id')
-            ->leftJoin('charges', 'positions.charge_id', '=', 'charges.id')
-            ->orderBy('employees.last_name', 'asc')
-            ->get();
+            ->whereYear('contracts.date_start', '<=', $request->year)
+            ->whereMonth('contracts.date_start', '<=', $month->id)
+            ->where('contracts.date_end', null);
+        })
+        ->leftJoin('employees', 'contracts.employee_id', '=', 'employees.id')
+        ->leftJoin('cities', 'cities.id', '=', 'employees.city_identity_card_id')
+        ->leftJoin('management_entities', 'employees.management_entity_id', '=', 'management_entities.id')
+        ->leftJoin('positions', 'contracts.position_id', '=', 'positions.id')
+        ->leftJoin('charges', 'positions.charge_id', '=', 'charges.id')
+        ->orderBy('employees.last_name', 'asc')
+        ->orderBy('contracts.date_start', 'asc')
+        ->get();
         $total = $contracts->count();
         return response()->json(['contracts' => $contracts->toArray(), 'total' => $total]);
     }

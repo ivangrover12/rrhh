@@ -8,11 +8,14 @@ use Illuminate\View\View;
 use App\PositionGroup;
 use App\Employee;
 use App\Position;
+use App\Payroll;
 use App\ContractJobSchedule;
+use App\ContractType;
 use App\JobSchedule;
 use Validator;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controller\Insurance;
+use App\Helpers\Util;
 class ContractController extends Controller
 {
     /**
@@ -45,7 +48,7 @@ class ContractController extends Controller
             $row[] = $contract->position->position_group->name;
             $row[] = date("d-m-Y", strtotime($contract->date_start));
             if(!is_null($contract->date_end)) {
-                $row[] = (strtotime($contract->date_end) > strtotime ( '-4 day' , strtotime (date('Y-m-d')) ) && strtotime($contract->date_end) < strtotime ( '+4 day' , strtotime (date('Y-m-d')))?'<span class="bg-warning p-xs b-r-sm">'.date("d-m-Y", strtotime($contract->date_end)).'</span>':date("d-m-Y", strtotime($contract->date_end)));    
+                $row[] = date("d-m-Y", strtotime($contract->date_end));    
             } else {
                 $row[] = '-';
             }        
@@ -55,17 +58,30 @@ class ContractController extends Controller
                 $row[] = "
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."'><i class='fa fa-eye'></i>&nbsp;Ver</a>
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."/edit'><i class='fa fa-pencil'></i>&nbsp;Editar</a>
+                    <a class='btn btn-primary' type='button' href='contract/".$contract->id."/edit'><i class='fa fa-pencil'></i>&nbsp;Editar</a>
                     ";
             } else {
                 $row[] = "
+                    <div class='btn-group' style=''>
+                        <button data-toggle='dropdown' class='btn btn-primary dropdown-toggle'>Imprimir</button>
+                        <ul class='dropdown-menu bg-primary'>
+                            <li>
+                                <a class='dropdown-item' 
+                    onclick='printJS({printable:\"".route('print_high_insurance', [$contract->id])."\", type:\"pdf\", showModal:true, modalMessage: \"Generando documento por favor espere un momento.\"})'><i class='fa fa-print'></i> Afiliacion al seguro</a>
+                            </li>
+                            <li>
+                                <a class='dropdown-item' 
+                    onclick='printJS({printable:\"".route('print_low_insurance', [$contract->id])."\", type:\"pdf\", showModal:true, modalMessage: \"Generando documento por favor espere un momento.\"})'><i class='fa fa-print'> </i>baja del asegurado</a>
+                            </li>
+                            <li>
+                                <a class='dropdown-item'
+                    onclick='printJS({printable:\"".route('print_contract', [$contract->id])."\", type:\"pdf\", showModal:true, modalMessage: \"Generando documento por favor espere un momento.\"})'><i class='fa fa-print'></i> contrato</a>
+                            </li>
+                        </ul>
+                    </div>
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."'><i class='fa fa-eye'></i>&nbsp;Ver</a>
                     <a class='btn btn-primary' type='button' href='contract/".$contract->id."/edit'><i class='fa fa-pencil'></i>&nbsp;Editar</a>
-                    <button class='btn btn-primary' type='button' data-toggle='tooltip' data-placement='top' title='Afiliacion y reingreso del trabajador' 
-                    onclick='printJS({printable:\"".route('print_high_insurance', [$contract->id])."\", type:\"pdf\", showModal:true, modalMessage: \"Generando documento por favor espere un momento.\"})'><i class='fa fa-print'></i></button>
-                    <button class='btn btn-primary' type='button' data-toggle='tooltip' data-placement='top' title='Aviso de baja del asegurado' 
-                    onclick='printJS({printable:\"".route('print_low_insurance', [$contract->id])."\", type:\"pdf\", showModal:true, modalMessage: \"Generando documento por favor espere un momento.\"})'><i class='fa fa-print'></i></button>
-                    <button class='btn btn-primary' type='button' data-toggle='tooltip' data-placement='top' title='Imprimir contrato' 
-                    onclick='printJS({printable:\"".route('print_contract', [$contract->id])."\", type:\"pdf\", showModal:true, modalMessage: \"Generando documento por favor espere un momento.\"})'><i class='fa fa-print'></i></button>
+                    <a class='btn btn-primary delete' type='button' href='#' data='".$contract->id."'><i class='fa fa-close'></i>&nbsp;Eliminar</a>
                     ";
             }
             
@@ -83,11 +99,17 @@ class ContractController extends Controller
     {
         $employees = Employee::where('status', true)->get();
         $position_groups = PositionGroup::get();
-        $position = Position::get();
+        $position = Position::select('positions.id', 'positions.name', 'charges.base_wage')
+                                ->join('charges', 'positions.charge_id', '=', 'charges.id')
+                                ->get();
+        $schedules = JobSchedule::all();
+        $contract_type = ContractType::all();
         $data = [
             'employees' => $employees,
             'position_groups'    =>  $position_groups,
-            'position' => $position
+            'position' => $position,
+            'schedules' => $schedules,
+            'contract_type' => $contract_type
         ];
         return view('contract.create',$data);
     }
@@ -121,19 +143,24 @@ class ContractController extends Controller
         $contract->position_id = $request->position_id;
         $contract->date_start = $request->date_start;
         $contract->date_end = $request->date_end;
-        
-        /*$lastcontract = Contract::orderBy('id','desc')->first();
-        $numberarray = explode('/', $lastcontract->number_contract);
-        if ($numberarray[1] == date('Y')) {
-            $number = $numberarray[0] + 1;
-        } else {
-            $number = 1;
-        }*/        
-        //$contract->number_contract = $number.'/'.date('Y');
+        $contract->contracts_type_id = $request->contract_type;
         $contract->number_contract = $request->number_contract;
-        $contract->contracts_type_id = 2;
-        $contract->status = true;
+        $contract->number_insurance = $request->number_insurance;
+        $contract->cite_rrhh = $request->cite_rrhh;
+        $contract->cite_rrhh_date = $request->cite_rrhh_date;
+        $contract->numer_announcement = $request->numer_announcement;
+        $contract->cite_performance = $request->cite_performance;
+        $contract->description = $request->description;        
+        $contract->number_contract = $request->number_contract;
+        $contract->status = true;        
         $contract->save();
+
+        $schedules = JobSchedule::all();
+        $sched_id = explode('|', $request->schedule);
+        $contract->schedules()->attach($schedules[$sched_id[0]-1]);
+        if (isset($sched_id[1])) {
+            $contract->schedules()->attach($schedules[$sched_id[1]-1]);
+        }
         return redirect('contract')->with('success', 'Creado correctamente');
     }
 
@@ -145,8 +172,10 @@ class ContractController extends Controller
      */
     public function show(Contract $contract)
     {
+        $schedules = JobSchedule::all();
         $data = [
-            'contract'  =>  $contract
+            'contract'  =>  $contract,
+            'schedules' => $schedules
         ];
         return view('contract.show',$data);
     }
@@ -162,16 +191,19 @@ class ContractController extends Controller
         $schedules = JobSchedule::all();
         $employee = $contract->employee;
         $position_groups = PositionGroup::get();
-        $position = Position::get();
+        $position = Position::select('positions.id', 'positions.name', 'charges.base_wage')
+                                ->join('charges', 'positions.charge_id', '=', 'charges.id')
+                                ->get();
         $schedules = JobSchedule::all();
-
+        $contract_type = ContractType::all();
         $data = [
             'contract' => $contract,
             'employee' => $employee,
             'employees' => Employee::where('status', true)->get(),
             'position_groups' => $position_groups,
             'position' => $position,
-            'schedules' => $schedules
+            'schedules' => $schedules,
+            'contract_type' => $contract_type
         ];
         return view('contract.edit',$data);
     }
@@ -211,7 +243,8 @@ class ContractController extends Controller
         $contract->cite_rrhh = $request->cite_rrhh;
         $contract->cite_rrhh_date = $request->cite_rrhh_date;
         $contract->numer_announcement = $request->numer_announcement;
-        $contract->cite_performance = $request->cite_performance;  
+        $contract->cite_performance = $request->cite_performance;
+        $contract->description = $request->description;
         if ($request->status == 'on') {
             $contract->status = true;
         }else{
@@ -242,8 +275,13 @@ class ContractController extends Controller
     }
     public function delete(int $id) 
     {
-        Contract::find($id)->delete();
-        return redirect('contract')->with('success', 'Eliminado correctamente');
+        $payroll = Payroll::where('contract_id', $id)->first();
+        if ($payroll == null) {
+            Contract::find($id)->delete();
+            return redirect('contract')->with('success', 'Eliminado correctamente');
+        } else {
+            return redirect('contract')->with('error', 'No se pudo eliminar');            
+        }        
     }
     public function print(int $id)
     { 
@@ -340,5 +378,40 @@ class ContractController extends Controller
             $newcontract->save();
         }
         return redirect('contract')->with('success', 'Contratos renovados correctamente');
+    }
+    public function month_salary_calculation () 
+    {
+        $ini = explode('-', request('date_ini'));
+        $fin = explode('-', request('date_end'));
+        $position = Position::find(request('position_id')); 
+        
+        for ($i = (int)$ini[1]; $i <= (int)$fin[1]; $i++) {
+            $day = 30;
+            $salary = $position->charge->base_wage;
+            $salary_day = $salary / 30;
+            if($i == (int)$ini[1]) {
+                if((int)$ini[2] >= 30) {
+                    $day = 1;
+                } else {
+                    $day = 30 - $ini[2] + 1;                    
+                }
+                $salary = $salary_day * $day;
+            }
+            if($i == (int)$fin[1]) {
+                if((int)$fin[2] >= 30) {
+                    $day = 30;    
+                } else {
+                    $day = (int)$fin[2];
+                }
+                $salary = $salary_day * $day;
+            }
+            if((int)$ini[1] == (int)$fin[1] && (int)$ini[0] == (int)$fin[0] ){
+                if(((int)$fin[2] - (int)$ini[2]) < 30) {
+                    $day = '[error]debe ser de al menos un mes';
+                }
+            }
+            $data[] = ['month'=> Util::getMonthEs($i),'day'=>$day,'salary'=>$salary];
+        }
+        return $data;
     }
 }

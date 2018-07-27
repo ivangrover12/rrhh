@@ -14,7 +14,7 @@ class AddIdToContractsTable extends Migration
     public function up()
     {
         Schema::table('contracts', function (Blueprint $table) {
-            $table->bigInteger('contracts_type_id')->unsigned()->nullable();
+            $table->bigInteger('contracts_type_id')->unsigned()->default(2);
             $table->foreign('contracts_type_id')->references('id')->on('contract_types');
             $table->bigInteger('consultancy_id')->unsigned()->nullable();
             $table->foreign('consultancy_id')->references('id')->on('consultancy');

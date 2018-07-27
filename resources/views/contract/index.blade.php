@@ -1,7 +1,9 @@
 @extends('layouts.app') 
 @section('title','Listado de contratos') 
+@section('styles')
+<link rel="stylesheet" type="text/css" href="{{ asset('css/swich.css') }} ">
+@endsection
 @section('content')
-
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-6">
@@ -32,15 +34,35 @@
         <div class="col-lg-12">
             @include('layouts.flash-message')
             <div class="ibox ">
-                <div class="ibox-title">
-                    
+                <div class="ibox-title" style="height: 80px">
+                    <div class="col-md-10">
+                        <div class="col-lg-12"><span class="badge badge-warning">&nbsp;&nbsp;</span> El contrato vence hoy</div>
+                        <div class="col-lg-12"><span class="badge badge-danger">&nbsp;&nbsp;</span> El contrato ya vencio</div>
+                        
+                    </div>
+                    <div class="col-md-2">
+                        
+                        <div class="col-lg-6" align="right">
+                            <span class="label p-xs">Ver Contratos</span>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="onoffswitch2">
+                                <input type="checkbox" name="onoffswitch2" class="onoffswitch-checkbox2" id="status" checked>
+                                <label class="onoffswitch-label2" for="status">
+                                    <span class="onoffswitch-inner2"></span>
+                                    <span class="onoffswitch-switch2"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                            
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
-                        <table id="contract-table" class="table table-striped table-bordered" id="contract-table" style="width:100%">
+                        <table id="contract-table" class="table table-bordered" id="contract-table" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>CI</th>
+                                    <th class="abc">CI</th>
                                     <th>Funcionario</th>
                                     <th>Cargo</th>
                                     <th>Puesto</th>
@@ -49,7 +71,6 @@
                                     <th>Tipo</th>
                                     <th style="text-align: center;">
                                         <span id="label-status">Vigentes</span>
-                                        <input type="checkbox" name="" id="status" checked="true" style="transform: scale(1.5);">
                                     </th>
                                     <th width="300">Acci&oacute;n</th>
                                 </tr>
@@ -94,7 +115,40 @@
                     "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
                     "sSortDescending": ": Activar para ordenar la columna de manera descendente"
                 }
-            }
+            },
+            "createdRow": function( row, data, dataIndex){
+                fdata = data[5].split("-");
+                fdata = new Date(fdata[1]+'-'+fdata[0]+'-'+fdata[2]);
+                fhoy = new Date();
+                if( fdata.setHours(0,0,0,0) ==  fhoy.setHours(0,0,0,0)){
+                    $(row).addClass('bg bg-warning');
+                }
+                if( fdata.setHours(0,0,0,0) <  fhoy.setHours(0,0,0,0)){
+                    if (data[7] == '<i class="fa fa-check"></i>') {
+                        $(row).addClass('bg bg-danger');
+                    }
+                }
+            },
+            "initComplete": function () {
+                var api = this.api();
+                api.$('td .delete').click( function () {
+                    var id = $(this).attr("data");
+                    swal({
+                        title: "Esta seguro de eliminar permanentemente este contrato?",
+                        text: "",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Si",
+                        cancelButtonText: "Cancelar",
+                        closeOnConfirm: false
+                    }, function () {
+                        location.assign("/contract/delete/" + id);
+                    });
+
+                });
+                
+            }            
         });        
         $("#status").change(function() {
             if ($("#status").is(':checked')) {

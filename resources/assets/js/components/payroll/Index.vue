@@ -17,35 +17,35 @@
               :scroll-vertical="scrollVertical"
               :sync-header-scroll="syncHeaderScroll"
               :sync-footer-scroll="syncFooterScroll"
-              :include-footer="includeFooter"
               :dead-area-color="deadAreaColor"
               :class="{ freezeFirstColumn:freezeFirstColumn }" class="table table-striped table-bordered table-hover zui-table">
               <template slot="thead">
                 <tr>
-                  <th class="first-column">C.I.</th>
+                  <th>C.I.</th>
                   <th>Trabajador</th>
-                  <th>Cuenta Bancaria</th>
-                  <th>Fecha de Nacimiento</th>
+                  <th># de dias Trabajados</th>
+                  <th># de dias NO Trabajados</th>
+                  <th>RC-IVA 13%</th>
+                  <th>Desc. Atrasos, Abandonos, Faltas</th>
+                  <th>Saldo Mes Anterior (Tributario A-3)</th>
+                  <!-- <th>Cuenta Bancaria</th>
+                  <th>Fecha de Nacimiento</th> -->
                   <th>Inicio de Contrato</th>
                   <th>Fin de Contrato</th>
-                  <th>Puesto</th>
-                  <th>Cargo</th>                
-                  <th># de dias NO Trabajados</th>
-                  <th># de dias Trabajados</th>
                   <th>Haber basico</th>
                   <th>Total Ganado</th>
-                  <th>AFP</th>
-                  <th>Descuento Renta vejez 10 %</th>
-                  <th>Descuento Riesgo común 1,71 %</th>
-                  <th>Descuento Comisión 0 ,5 %</th>
-                  <th>Descuento Aporte solidario del asegurado 0 ,5 %</th>
-                  <th>Descuento Aporte Nacional solidario 1 %</th>
+                  <th>Liquido Pagable</th>
+                  <th>Puesto</th>
+                  <th class="chargeCol">Cargo</th>
+                  <!-- <th>AFP</th> -->
+                  <th>Desc. Renta vejez 10%</th>
+                  <th>Desc. Riesgo común 1,71%</th>
+                  <th>Desc. Comisión 0,5%</th>
+                  <th>Desc. Aporte solidario 0,5%</th>
+                  <th>Desc. Aporte Nacional Solidario 1%</th>
                   <th>Total descuentos de ley</th>
                   <th>Sueldo Neto</th>
-                  <th>RC-IVA 13%</th>
-                  <th>Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes</th>
                   <th>Total descuentos</th>
-                  <th>Liquido Pagable</th>
                 </tr>
               </template>
               <template slot="tbody">
@@ -167,6 +167,7 @@ table.freezeFirstColumn tbody th:first-child {
   position: sticky;
   position: -webkit-sticky;
   left: 0;
+  box-shadow: 0 0 2px -1px slategray;
 }
 table.freezeFirstColumn thead td:nth-child(2),
 table.freezeFirstColumn tbody td:nth-child(2),
@@ -175,6 +176,10 @@ table.freezeFirstColumn tbody th:nth-child(2) {
   position: sticky;
   position: -webkit-sticky;
   left: 130px;
+  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
+  box-shadow: 3px 0 2px -1px slategray;
 }
 * {
   font-family: sans-serif;
@@ -226,5 +231,12 @@ table.freezeFirstColumn tbody th:nth-child(2) {
     position: absolute;  
     width: 10000px;
     z-index: -1;
+  }
+
+  table tbody tr .chargeCol,
+  table thead tr .chargeCol {
+    width: 350px;
+    min-width: 350px;
+    max-width: 350px;
   }
 </style>
