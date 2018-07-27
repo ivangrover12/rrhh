@@ -1,13 +1,12 @@
 <template>
     <tr>
-        <!-- <td>{{ contract.identity_card}} {{ contract.city_identity_card }}</td> -->
         <td>{{ this.cont+1 }}</td>
         <td>{{ fullName(contract) }}</td>
         <td>
-            <input type="hidden" v-model="workedDays" :name="`contract-${contract.id}[]`" class="form-control" min="0" max="30" readonly>{{ workedDays }}
+            <input type="hidden" v-model="workedDays" :name="`contract-${contract.id}[]`" min="0" max="30" readonly>{{ workedDays }}
         </td>
-        <td>
-            <input type="number" v-model="unworkedDays" :name="`contract-${contract.id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="workedDays+unworkedDays" required>
+        <td style="text-align:center;">
+            <input style="width:5em;" type="number" v-model="unworkedDays" :name="`contract-${contract.id}[]`" class="form-control" placeholder="dias NO trabajados" min="0" :max="workedDays+unworkedDays" required>
         </td>
         <td>
             <input type="text" class="form-control" :name="`contract-${contract.id}[]`" v-model="rcIva">
@@ -18,24 +17,10 @@
         <td>
           <input type="text" class="form-control" :name="`contract-${contract.id}[]`" :value="previousMonth">{{ getPreviousMoth(contract) }}
         </td>
-        <!-- <td>{{ contract.account_number}}</td>
-        <td>{{ contract.birth_date | formatDate }}</td> -->
         <td> {{ total | currency}} </td>
         <td> {{ totalDiscounts | currency }} </td>
         <td>{{ contract.date_start | formatDate }}</td>
         <td>{{ contract.date_end | formatDate }}</td>
-        <!-- <td>{{ baseWage | currency }}</td> -->
-        <!-- <td>{{ quotable | currency }}</td> -->
-        <!-- <td>{{ contract.charge}}</td> -->
-        <!-- <td class="chargeCol">{{ contract.position }}</td> -->
-        <!-- <td>{{ contract.management_entity}}</td> -->
-        <!-- <td>{{ calculateDiscount(procedure.discount_old) | currency }}</td>
-        <td>{{ calculateDiscount(procedure.discount_common_risk) | currency }}</td>
-        <td>{{ calculateDiscount(procedure.discount_commission) | currency }}</td>
-        <td>{{ calculateDiscount(procedure.discount_solidary) | currency }}</td>
-        <td>{{ calculateDiscount(procedure.discount_national) | currency }}</td>
-        <td>{{ calculateTotalDiscountLaw() | currency }}</td>
-        <td>{{ salary | currency}}</td> -->
     </tr>
 </template>
 
@@ -67,14 +52,12 @@ export default {
         return this.calculateDiscount(this.procedure.discount_old)+this.calculateDiscount(this.procedure.discount_common_risk)+this.calculateDiscount(this.procedure.discount_commission)+this.calculateDiscount(this.procedure.discount_solidary)+this.calculateDiscount(this.procedure.discount_national);
       },
       getPreviousMoth(contract){
-        axios
-          .get("/payroll/show_payroll_previous_month/" + contract.employee_id + "/" + this.procedure.id)
-          .then(response => {
-            this.previousMonth = response.data.next_month_balance;
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        // axios.get("/payroll/show_payroll_previous_month/" + contract.employee_id + "/" + this.procedure.id).then(response => {
+        //     this.previousMonth = response.data.next_month_balance;
+        // })
+        // .catch(error => {
+        //     console.log(error);
+        // });
       }
   },
   computed:{
