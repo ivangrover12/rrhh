@@ -262,6 +262,7 @@ class EmployeeController extends Controller
             'unique' => 'Este valor ya existe'
         ];
         $validator = Validator::make($request->all(), [
+            'identity_card' => 'required|unique:employees,identity_card,' . $employee->id,
             'first_name'    =>  'required',
         ],$messages);
 

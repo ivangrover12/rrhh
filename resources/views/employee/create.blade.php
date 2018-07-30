@@ -54,7 +54,7 @@
                             <fieldset>
                                 <legend>Datos personales</legend>
                                 Cedula de Identidad: <span class="text-danger">*</span>
-                                <input type="text" class="form-control" name="identity_card">
+                                <input type="text" class="form-control" name="identity_card" value="{{ old('username') }}">
                                 <div class="text-danger">{{ $errors->first('identity_card') }}</div>
                                 <br>
                                 Expedici&oacute;n

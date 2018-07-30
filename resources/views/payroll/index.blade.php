@@ -57,7 +57,7 @@
                                     Planillas
                                     <span class="caret"></span>
                                 </button>
-                                <ul class="dropdown-menu" style="overflow-x: hidden; max-height: 35em; height: auto;">
+                                <ul class="dropdown-menu" style="overflow-x: hidden; max-height: 23em; height: auto;">
                                     @for ($i = 1; $i <= 2; $i++)
                                         @php ($t = ($i == 1) ? 'H' : 'P')
                                         <li><a href="#" onclick="printJS({printable:'{!! route('print_pdf_payroll', [$procedure->year, $procedure->month->id, 'report_type='.$t, 'report_name=B-'.$i, 'valid_contracts=1', 'consultant=0', 'with_account=1']) !!}', type:'pdf', showModal:true, modalMessage: 'Generando documento por favor espere un momento.'})">B-{{ $i }} ({{ $t }}.)</a></li>

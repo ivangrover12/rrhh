@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Contract;
+use App\Employee;
+use App\Procedure;
 use Carbon\Carbon;
 use App\Month;
 use App\Helpers\Util;
@@ -18,10 +20,21 @@ class ContractController extends Controller
      */
     public function index(Request $request)
     {
-        $month = Month::whereRaw("lower(name) like '" . strtolower($request->month) . "'")->first();
+        $month = Month::whereRaw("lower(name) like '" . strtolower($request->month) . "'")->first();        
+        
         if (!$month) {
             return "month not found";
         }
+
+        $aux_month = $month->id -1;
+        $aux_year = $request->year;
+        if ($aux_month == 0) {
+            $aux_month = 12;
+            $aux_year = $request->year -1;
+        }
+        $previousProcedure = Procedure::where('month_id', $aux_month)->where('year', $aux_year)->first();
+        $previousProcedureId = $previousProcedure->id;
+
         $number_month = Util::geMonth($month->name);
         $offset = $request->offset ?? 0;
         $limit = $request->limit ?? 10;
@@ -50,7 +63,8 @@ class ContractController extends Controller
             'management_entities.name as management_entity',
             'positions.name as position',
             'charges.base_wage',
-            'charges.name as charge'
+            'charges.name as charge',
+            'payrolls.next_month_balance'
         )
         // ->where('contracts.status', true)
         // ->whereRaw($number_month->month. " BETWEEN  extract(month from contracts.date_start::date) and  extract(month from contracts.date_end::date)")
@@ -90,11 +104,22 @@ class ContractController extends Controller
         ->leftJoin('management_entities', 'employees.management_entity_id', '=', 'management_entities.id')
         ->leftJoin('positions', 'contracts.position_id', '=', 'positions.id')
         ->leftJoin('charges', 'positions.charge_id', '=', 'charges.id')
+        /*   Mes anterior   */
+        ->Join('payrolls', function ($join) use($previousProcedureId) {
+            $join->on('payrolls.contract_id', '=', 'contracts.id')
+                    ->where('payrolls.procedure_id','=', $previousProcedureId)
+                 ;  
+            })
+        /* ---- */
         ->orderBy('employees.last_name', 'asc')
         ->orderBy('contracts.date_start', 'asc')
         ->get();
-        $total = $contracts->count();
-        return response()->json(['contracts' => $contracts->toArray(), 'total' => $total]);
+        $total_contracts = $contracts->count();
+        $employees = Employee::join('contracts', 'employees.id', '=', 'contracts.employee_id')
+                        ->where('contracts.status', true)
+                        ->get();
+        $total_employees = $employees->count();
+        return response()->json(['contracts' => $contracts->toArray(), 'total' => $total_contracts, 'total_employees' => $total_employees]);
     }
 
     /**
