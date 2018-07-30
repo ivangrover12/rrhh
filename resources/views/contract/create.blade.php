@@ -54,20 +54,6 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4"> Fecha de Inicio <span class="text-danger">*</span></div>
-                                <div class="col-md-8">
-                                    <input type="date" id="date_start" name="date_start" class="form-control" onchange="calc()">
-                                    <div class="text-danger">{{ $errors->first('date_start') }}</div>
-                                </div>                                
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4"> Fecha de Conclusión/Disolución <span class="text-danger">*</span></div>
-                                <div class="col-md-8">
-                                    <input type="date" id="date_end" name="date_end" class="form-control" onchange="calc()">
-                                    <div class="text-danger">{{ $errors->first('date_end') }}</div>
-                                </div>                                
-                            </div>
-                            <div class="form-group row">
                                 <div class="col-md-4"> Tipo de contratación <span class="text-danger">*</span></div>
                                 <div class="col-md-8">
                                     <select name="contract_type" class="form-control">
@@ -77,6 +63,20 @@
                                     </select>
                                 </div> 
                             </div>
+                            <div class="form-group row">
+                                <div class="col-md-4"> Fecha de Inicio <span class="text-danger">*</span></div>
+                                <div class="col-md-8">
+                                    <input type="date" id="date_start" name="date_start" class="form-control" onchange="calc()">
+                                    <div class="text-danger">{{ $errors->first('date_start') }}</div>
+                                </div>                                
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-4"> Fecha de Conclusión </div>
+                                <div class="col-md-8">
+                                    <input type="date" id="date_end" name="date_end" class="form-control" onchange="calc()">
+                                    <div class="text-danger">{{ $errors->first('date_end') }}</div>
+                                </div>                                
+                            </div>                            
                             <div class="form-group row">
                                 <div class="col-md-4"> Numero de contrato </div>
                                 <div class="col-md-8">

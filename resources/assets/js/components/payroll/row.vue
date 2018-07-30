@@ -34,7 +34,7 @@ export default {
         delay: 0,
         rcIva: 0,
         previousMonth: this.contract.next_month_balance,
-        positionSalary: `Cargo: ${this.contract.position} \n<br> Haber Basico: ${this.contract.base_wage}`
+        positionSalary: `Cargo: ${this.contract.position} \n<br> Haber Basico: Bs. ${this.contract.base_wage}`
     }
   },
   created(){
