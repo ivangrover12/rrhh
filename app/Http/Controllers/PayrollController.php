@@ -612,7 +612,7 @@ class PayrollController extends Controller
             $total_contributions = new TotalPayrollEmployer();
             $company = Company::select()->first();
 
-            $payrolls = Payroll::where('procedure_id', $procedure->id)->get();
+            $payrolls = Payroll::where('procedure_id', $procedure->id)->orderBy('id')->get();
             /*if (config('app.debug')) {
                 $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->orderBy('contract_id', 'ASC')->orderBy('id', 'ASC')->get();
             }*/
