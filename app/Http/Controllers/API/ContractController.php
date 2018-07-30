@@ -66,26 +66,27 @@ class ContractController extends Controller
             'charges.name as charge',
             'payrolls.next_month_balance'
         )
-        // ->where('contracts.status', true)
-        // ->whereRaw($number_month->month. " BETWEEN  extract(month from contracts.date_start::date) and  extract(month from contracts.date_end::date)")
-        // ->whereRaw($request->year. " BETWEEN  extract(year from contracts.date_start::date) and  extract(year from contracts.date_end::date)")
         ->where(function ($query) use ($request, $month) {
             $query
             ->where(function ($q) use ($request, $month) {
                 $q
-                ->where('contracts.status', false)
+                ->where('contracts.date_retirement', null)
                 ->whereYear('contracts.date_end', $request->year)
                 ->whereMonth('contracts.date_end', $month->id);
             })
             ->orWhere(function ($q) use ($request, $month) {
                 $q
-                ->where('contracts.status', true)
+                ->where('contracts.date_retirement', '!=', null)
+                ->whereYear('contracts.date_retirement', $request->year)
+                ->whereMonth('contracts.date_retirement', $month->id);
+            })
+            ->orWhere(function ($q) use ($request, $month) {
+                $q
                 ->whereYear('contracts.date_start', $request->year)
                 ->whereMonth('contracts.date_start', $month->id);
             })
             ->orWhere(function ($q) use ($request, $month) {
                 $q
-                ->where('contracts.status', true)
                 ->whereYear('contracts.date_start', '<=', $request->year)
                 ->whereMonth('contracts.date_start', '<', $month->id)
                 ->whereYear('contracts.date_end', '>=', $request->year)
@@ -95,6 +96,7 @@ class ContractController extends Controller
         ->orWhere(function ($query) use ($request, $month) {
             $query
             ->where('contracts.status', true)
+            ->where('contracts.date_retirement', '!=', null)
             ->whereYear('contracts.date_start', '<=', $request->year)
             ->whereMonth('contracts.date_start', '<=', $month->id)
             ->where('contracts.date_end', null);
@@ -105,11 +107,10 @@ class ContractController extends Controller
         ->leftJoin('positions', 'contracts.position_id', '=', 'positions.id')
         ->leftJoin('charges', 'positions.charge_id', '=', 'charges.id')
         /*   Mes anterior   */
-        ->Join('payrolls', function ($join) use($previousProcedureId) {
+        ->leftJoin('payrolls', function ($join) use($previousProcedureId) {
             $join->on('payrolls.contract_id', '=', 'contracts.id')
-                    ->where('payrolls.procedure_id','=', $previousProcedureId)
-                 ;  
-            })
+            ->where('payrolls.procedure_id','=', $previousProcedureId);
+        })
         /* ---- */
         ->orderBy('employees.last_name', 'asc')
         ->orderBy('contracts.date_start', 'asc')
