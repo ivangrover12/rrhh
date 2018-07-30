@@ -59,20 +59,6 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4">Fecha de inicio <span class="text-danger">*</span></div>
-                                <div class="col-md-8">
-                                    <input type="date" id="date_start" name="date_start" value="{{ $contract->date_start }}" class="form-control" onchange="calc()">
-                                    <div class="text-danger">{{ $errors->first('date_start') }}</div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">Fecha de Conclusión/Disolución <span class="text-danger">*</span></div>
-                                <div class="col-md-8">
-                                    <input type="date" id="date_end" name="date_end" value="{{ $contract->date_end }}" class="form-control" onchange="calc()">
-                                    <div class="text-danger">{{ $errors->first('date_end') }}</div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
                                 <div class="col-md-4"> Tipo de contratación <span class="text-danger">*</span></div>
                                 <div class="col-md-8">
                                     <select name="contract_type" class="form-control">
@@ -86,6 +72,34 @@
                                     </select>
                                 </div> 
                             </div>
+                            <div class="form-group row">
+                                <div class="col-md-4">Fecha de inicio <span class="text-danger">*</span></div>
+                                <div class="col-md-8">
+                                    <input type="date" id="date_start" name="date_start" value="{{ $contract->date_start }}" class="form-control" onchange="calc()">
+                                    <div class="text-danger">{{ $errors->first('date_start') }}</div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-4">Fecha de Conclusión </div>
+                                <div class="col-md-8">
+                                    <input type="date" id="date_end" name="date_end" value="{{ $contract->date_end }}" class="form-control" onchange="calc()">
+                                    <div class="text-danger">{{ $errors->first('date_end') }}</div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-4">Fecha de Retiro/Disolución </div>
+                                <div class="col-md-8">
+                                    <input type="date" name="date_retirement" value="{{ $contract->date_retirement }}" class="form-control">
+                                    <div class="text-danger">{{ $errors->first('date_retirement') }}</div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-4">Motivo de Retiro/Disolución </div>
+                                <div class="col-md-8">
+                                    <input type="text" name="retirement_reason" value="{{ $contract->retirement_reason }}" class="form-control" placeholder="Ej: Por renuncia">
+                                    <div class="text-danger">{{ $errors->first('retirement_reason') }}</div>
+                                </div>
+                            </div>                         
                             <div class="form-group row">
                                 <div class="col-md-4"> Numero de contrato </div>
                                 <div class="col-md-8">
@@ -171,7 +185,7 @@
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-4">
-                                    Descripción
+                                    Descripción del contrato
                                 </div>
                                 <div class="col-md-8">
                                     <textarea name="description" class="form-control">{{ $contract->description }} </textarea>

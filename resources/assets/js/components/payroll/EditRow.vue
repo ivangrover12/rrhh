@@ -1,7 +1,7 @@
 <template>
     <tr>
         <td>{{ this.cont+1 }}</td>
-        <td class="nameBox">{{ fullName(payroll) }}</td>
+        <td><span type="button" class="btn btn-outline btn-link nameBox" data-toggle="tooltip" data-placement="right" data-html="true" :title="positionSalary">{{ fullName(payroll) }}</span></td>
         <td>
             <input type="hidden" v-model="workedDays" :name="`contract-${payroll.contract_id}[]`" min="0" max="30" readonly>{{ workedDays }}
         </td>
@@ -35,6 +35,7 @@ export default {
         delay: this.payroll.discount_faults,
         rcIva: this.payroll.discount_rc_iva,
         previousMonth: 0,
+        positionSalary: `Cargo: ${this.payroll.position} \nHaber Basico: Bs. ${this.payroll.base_wage}`
     }
   },
   created(){
@@ -58,7 +59,7 @@ export default {
   },
   computed:{
       workedDays() {
-        return this.payroll.worked_days - this.unworkedDays;
+        return this.payroll.worked_days + this.payroll.unworked_days - this.unworkedDays;
       },
       total(){
           return this.quotable - this.totalDiscounts;

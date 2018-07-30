@@ -21,10 +21,16 @@
               <th>Días Trab.</th>
               <th>Dias NO Trab.</th>
               <th>RC-IVA 13%</th>
-              <th>Descuentos</th>
-              <th>Saldo Tributario</th>
+              <th>
+                <span type="button" class="btn btn-outline btn-link" data-toggle="tooltip" data-placement="right" data-html="true" data-selector="true" :title="discount">Descuentos</span>
+              </th>
+              <th>
+                <span type="button" class="btn btn-outline btn-link" data-toggle="tooltip" data-placement="right" data-html="true" data-selector="true" :title="previous_balance">Saldo Tributario</span>
+              </th>
               <th>Liquido Pagable</th>
-              <th>Total descuentos</th>
+              <th>
+                <span type="button" class="btn btn-outline btn-link" data-toggle="tooltip" data-placement="right" data-html="true" data-selector="true" :title="total_discount">Total descuentos</span>
+              </th>
               <th>Inicio Contrato</th>
               <th>Fin Contrato</th>
             </tr>
@@ -67,7 +73,10 @@ export default {
       total: 0,
       total_employees: 0,
       contracts: [],
-      payrolls: []
+      payrolls: [],
+      discount: `Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes`,
+      previous_balance: `Saldo tributario del mes anterior (Planilla tributaria. A-3)`,
+      total_discount: `Renta vejez 10 %, Riesgo común 1,71 %, Comisión 0 ,5 %, Aporte solidario del asegurado 0 ,5 %, Aporte Nacional solidario 1 % y Descuentos por Atrasos, Abandonos, Faltas y Licencia S/G Haberes`
     };
   },
   created() {

@@ -154,17 +154,16 @@ class EmployeePayroll
             "month" => $payroll->procedure->month_id,
         ];
 
-        $date_start = (object)[
-            "day" =>  Carbon::parse($contract->date_start)->day,
-            "year" =>  Carbon::parse($contract->date_start)->year,
-            "month" => Carbon::parse($contract->date_start)->month,
-        ];
+        $date_start = Carbon::parse($contract->date_start);
 
-        $date_end = (object)[
-            "day" =>  Carbon::parse($contract->date_end)->day,
-            "year" =>  Carbon::parse($contract->date_end)->year,
-            "month" => Carbon::parse($contract->date_end)->month,
-        ];
+        $date_end = Carbon::parse($contract->date_end);
+
+        if ($contract->date_retirement != null) {
+            $date_retirement = Carbon::parse($contract->date_retirement);
+            if ($date_retirement->year == $payroll_date->year && $date_retirement->month == $payroll_date->month) {
+                $date_end = $date_retirement;
+            }
+        }
 
         $last_day_of_month = Carbon::create($payroll_date->year, $payroll_date->month)->endOfMonth()->day;        
         $worked_days = 0;
@@ -173,13 +172,13 @@ class EmployeePayroll
             $worked_days = 30;
         } else if ($date_start->year == $date_end->year && $date_start->month == $date_end->month) {
             if ($date_end->day == $last_day_of_month && ($last_day_of_month < 30 || $last_day_of_month > 30)) {
-                $worked_days = 30 - $date_start->day;
+                $worked_days = 30 - $date_start->day + 1;
             } else {
                 $worked_days = $date_end->day - $date_start->day;
             }
             $worked_days += 1;
         } elseif ($date_start->year <= $payroll_date->year && $date_start->month == $payroll_date->month) {
-            $worked_days = 30 + 1 - $date_start->day;
+            $worked_days = 30 - $date_start->day + 1;
         } elseif ($date_end->year >= $payroll_date->year && $date_end->month == $payroll_date->month) {
             $worked_days = $date_end->day;
         } elseif (($date_start->year <= $payroll_date->year && $date_start->month < $payroll_date->month) || ($date_end->year >= $payroll_date->year && $date_end->month > $payroll_date->month)) {
