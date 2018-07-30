@@ -25,7 +25,7 @@
                 <span type="button" class="btn btn-outline btn-link" data-toggle="tooltip" data-placement="right" data-html="true" :title="discount">Descuentos</span>
               </th>
               <th>
-                <span type="button" class="btn btn-outline btn-link" data-toggle="tooltip" data-placement="right" data-html="true" data-selector="false" :title="previous_balance">Saldo Tributario</span>
+                <span type="button" class="btn btn-outline btn-link" data-toggle="tooltip" data-placement="right" data-html="true" data-selector="true" :title="previous_balance">Saldo Tributario</span>
               </th>
               <th>Liquido Pagable</th>
               <th>Total descuentos</th>
