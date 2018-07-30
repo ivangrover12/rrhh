@@ -67,23 +67,30 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <div class="col-md-4">Tipo de contratacion</div>
+                                <div class="col-md-8">
+                                    <input type="text" id="date_end" name="date_end" value="{{ $contract->contracttype->name }}" class="form-control" disabled>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <div class="col-md-4">Fecha de inicio</div>
                                 <div class="col-md-8">
                                     <input type="date" id="date_start" name="date_start" value="{{ $contract->date_start }}" class="form-control" disabled>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4">Fecha de Conclusion/Disolución</div>
+                                <div class="col-md-4">Fecha de Conclusion</div>
                                 <div class="col-md-8">
                                     <input type="date" id="date_end" name="date_end" value="{{ $contract->date_end }}" class="form-control" disabled>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4">Tipo de contratacion</div>
+                                <div class="col-md-4">Fecha de Retiro/Disolución</div>
                                 <div class="col-md-8">
-                                    <input type="text" id="date_end" name="date_end" value="{{ $contract->contracttype->name }}" class="form-control" disabled>
+                                    <input type="date" id="date_end" name="date_end" value="{{ $contract->date_retirement }}" class="form-control" disabled>
                                 </div>
                             </div>
+                            
                             <div class="form-group row">
                                 <div class="col-md-4"> Numero de Contrato </div>
                                 <div class="col-md-8">
