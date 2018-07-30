@@ -136,7 +136,6 @@ class ContractController extends Controller
             'employee_id' => 'required',
             'position_id' => 'required',
             'date_start' => 'required',
-            'date_end'  => 'required'
         ],$messages);
 
         if ($validator->fails()) {
@@ -147,9 +146,13 @@ class ContractController extends Controller
         $contract = new Contract();
         $contract->employee_id = $request->employee_id;
         $contract->position_id = $request->position_id;
-        $contract->date_start = $request->date_start;
-        $contract->date_end = $request->date_end;
+        $contract->date_start = $request->date_start;        
         $contract->contracts_type_id = $request->contract_type;
+        if ($request->contract_type == 1) {
+            $contract->date_end = $request->date_end;
+        } else {
+            $contract->date_end = $request->date_end;
+        }
         $contract->number_contract = $request->number_contract;
         $contract->number_insurance = $request->number_insurance;
         $contract->cite_rrhh = $request->cite_rrhh;
@@ -230,7 +233,6 @@ class ContractController extends Controller
         $validator = Validator::make($request->all(), [
             'position_id' => 'required',
             'date_start' => 'required',
-            'date_end'  => 'required',
             'schedule' => 'required'
         ],$messages);
 
@@ -243,7 +245,14 @@ class ContractController extends Controller
         $contract->employee_id = $contract->employee_id;
         $contract->position_id = $request->position_id;
         $contract->date_start = $request->date_start;
-        $contract->date_end = $request->date_end;
+        $contract->contracts_type_id = $request->contract_type;
+        if ($request->contract_type == 1) {
+            $contract->date_end = $request->date_end;
+        } else {
+            $contract->date_end = $request->date_end;
+        }
+        $contract->date_retirement = $request->date_retirement;
+        $contract->retirement_reason = $request->retirement_reason;
         $contract->number_contract = $request->number_contract;
         $contract->number_insurance = $request->number_insurance;
         $contract->cite_rrhh = $request->cite_rrhh;
@@ -366,20 +375,7 @@ class ContractController extends Controller
             $newcontract->date_start = $request->date_start;
             $newcontract->date_end = $request->date_end;
             $newcontract->number_insurance = $oldcontract->number_insurance;
-
-            /*$lastcontract = Contract::orderBy('id','desc')->first();
-            $numberarray = explode('/', $lastcontract->number_contract);
-            if ($numberarray[1] == date('Y')) {
-                $number = $numberarray[0] + 1;
-            } else {
-                $number = 1;
-            }
-            $newcontract->number_contract = $number.'/'.date('Y');*/
-
             $newcontract->contracts_type_id = 3;
-            //$newcontract->cite_rrhh = $request->input($value.'_cite_rrhh');
-            //$newcontract->cite_rrhh_date = $request->input($value.'_date_cite_rrhh');
-            //$newcontract->cite_performance = $request->input($value.'_cite_performance');
             $newcontract->status = true;
             $newcontract->save();
         }
