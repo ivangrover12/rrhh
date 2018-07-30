@@ -59,7 +59,7 @@ export default {
   },
   computed:{
       workedDays() {
-        return this.payroll.worked_days - this.unworkedDays;
+        return this.payroll.worked_days + this.payroll.unworked_days - this.unworkedDays;
       },
       total(){
           return this.quotable - this.totalDiscounts;
