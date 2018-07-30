@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use App\Helpers\Util;
 
@@ -35,6 +34,7 @@ class EmployeePayroll
         $this->position = $contract->position->name;
         $this->date_start = Util::getDate($contract->date_start);
         $this->date_end = is_null($contract->date_end) ? 'Indefinido' : Util::getDate($contract->date_end);
+        $this->date_retirement = is_null($contract->date_retirement) ? null : Util::getDate($contract->date_retirement);
         $this->base_wage = $payroll->base_wage;
         $this->management_entity = $employee->management_entity->name;
         $this->management_entity_id = $employee->management_entity->id;
@@ -158,7 +158,7 @@ class EmployeePayroll
 
         $date_end = Carbon::parse($contract->date_end);
 
-        if ($contract->date_retirement != null) {
+        if ($this->date_retirement != null) {
             $date_retirement = Carbon::parse($contract->date_retirement);
             if ($date_retirement->year == $payroll_date->year && $date_retirement->month == $payroll_date->month) {
                 $date_end = $date_retirement;
