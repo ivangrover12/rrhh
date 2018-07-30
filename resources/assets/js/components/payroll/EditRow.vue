@@ -35,7 +35,7 @@ export default {
         delay: this.payroll.discount_faults,
         rcIva: this.payroll.discount_rc_iva,
         previousMonth: 0,
-        positionSalary: `Cargo: ${this.contract.position} \n<br> Haber Basico: ${this.contract.base_wage}`
+        positionSalary: `Cargo: ${this.payroll.position} \n<br> Haber Basico: ${this.payroll.base_wage}`
     }
   },
   created(){
