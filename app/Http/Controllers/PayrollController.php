@@ -134,11 +134,11 @@ class PayrollController extends Controller
                 $payroll->contract_id = $id;
                 $payroll->procedure_id = $procedure->id;
                 $payroll->name = "Personal Eventual - Mes ".$request->month ." de ".$request->year;
-                $payroll->worked_days = $value[1];
-                $payroll->unworked_days = $value[0];
+                $payroll->worked_days = $value[0];
+                $payroll->unworked_days = $value[1];
                 $base_wage = $contract->position->charge->base_wage ?? 1000;
                 $payroll->base_wage = $base_wage;
-                $quotable = ($base_wage/30)* $value[1];
+                $quotable = ($base_wage/30)* $value[0];
                 $payroll->quotable = $quotable;
                 $payroll->discount_old = ($quotable * $procedure->discount_old)/100;
                 $payroll->discount_common_risk = ($quotable * $procedure->discount_common_risk)/100;
@@ -612,7 +612,7 @@ class PayrollController extends Controller
             $total_contributions = new TotalPayrollEmployer();
             $company = Company::select()->first();
 
-            $payrolls = Payroll::where('procedure_id', $procedure->id)->get();
+            $payrolls = Payroll::where('procedure_id', $procedure->id)->orderBy('id')->get();
             /*if (config('app.debug')) {
                 $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->orderBy('contract_id', 'ASC')->orderBy('id', 'ASC')->get();
             }*/
