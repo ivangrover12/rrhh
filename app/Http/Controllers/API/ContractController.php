@@ -66,6 +66,7 @@ class ContractController extends Controller
             'charges.name as charge',
             'payrolls.next_month_balance'
         )
+        ->where('contracts.contracts_type_id', '!=', 4) //TODO cambiar por name=Consultor en contract_types
         ->where(function ($query) use ($request, $month) {
             $query
             ->where(function ($q) use ($request, $month) {
