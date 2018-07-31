@@ -870,7 +870,7 @@ class PayrollController extends Controller
             $content .= $employee->account_number.Util::fillZerosLeft(strval(Util::format_number($employee->payable_liquid, 2, '', '.')), 12)."1";
 
             if ($i < ($total_employees - 1)) {
-                $content .= "\n";
+                $content .= PHP_EOL;
             }
         }
 
