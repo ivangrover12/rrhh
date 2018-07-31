@@ -4,10 +4,10 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use App\Contract;
 use App\Employee;
 use App\Procedure;
-use Carbon\Carbon;
 use App\Month;
 use App\Helpers\Util;
 
@@ -46,6 +46,7 @@ class ContractController extends Controller
         $mothers_last_name = strtoupper($request->mothers_last_name) ?? '';
         $surname_husband = strtoupper($request->surname_husband) ?? '';
         $identity_card = strtoupper($request->identity_card) ?? '';
+        $request_date = Carbon::create($request->year, $month->id, 1);
         $contracts = Contract::select(
             'contracts.id',
             'contracts.date_start',
@@ -67,44 +68,31 @@ class ContractController extends Controller
             'payrolls.next_month_balance'
         )
         ->where('contracts.contracts_type_id', '!=', 4) //TODO cambiar por name=Consultor en contract_types
-        ->where(function ($query) use ($request, $month) {
+        ->where(function ($query) use ($request_date) {
             $query
-            ->where(function ($q) use ($request, $month) {
-                $q
-                ->where('contracts.date_retirement', null)
-                ->whereYear('contracts.date_end', $request->year)
-                ->whereMonth('contracts.date_end', $month->id);
-            })
-            ->orWhere(function ($q) use ($request, $month) {
-                $q
-                ->where('contracts.date_retirement', '!=', null)
-                ->whereYear('contracts.date_retirement', $request->year)
-                ->whereMonth('contracts.date_retirement', $month->id);
-            })
-            ->orWhere(function ($q) use ($request, $month) {
-                $q
-                ->whereYear('contracts.date_start', $request->year)
-                ->whereMonth('contracts.date_start', $month->id);
-            })
-            ->orWhere(function ($q) use ($request, $month) {
-                $q
-                ->whereYear('contracts.date_start', '<=', $request->year)
-                ->whereMonth('contracts.date_start', '<', $month->id)
-                ->whereYear('contracts.date_end', '>=', $request->year)
-                ->whereMonth('contracts.date_end', '>', $month->id);
-            })
-            ->orWhere(function ($q) use ($request, $month) {
+            ->orWhere(function ($q) use ($request_date) {
                 $q
                 ->whereNull('contracts.date_retirement')
                 ->whereNull('contracts.date_end')
-                ->whereYear('contracts.date_start', '<', $request->year);
+                ->whereDate('contracts.date_start', '<=', $request_date->format('Y-m-d'));
             })
-            ->orWhere(function ($q) use ($request, $month) {
+            ->orWhere(function ($q) use ($request_date) {
+                $q
+                ->whereNotNull('contracts.date_retirement')
+                ->whereYear('contracts.date_retirement', $request_date->year)
+                ->whereMonth('contracts.date_retirement', $request_date->month);
+            })
+            ->orWhere(function ($q) use ($request_date) {
                 $q
                 ->whereNull('contracts.date_retirement')
-                ->whereNull('contracts.date_end')
-                ->whereYear('contracts.date_start', $request->year)
-                ->whereMonth('contracts.date_start', '<=', $month->id);
+                ->whereDate('contracts.date_end', '>=', $request_date->format('Y-m-d'))
+                ->whereDate('contracts.date_start', '<', $request_date->format('Y-m-d'));
+            })
+            ->orWhere(function ($q) use ($request_date) {
+                $q
+                ->whereNull('contracts.date_retirement')
+                ->whereYear('contracts.date_start', $request_date->year)
+                ->whereMonth('contracts.date_start', $request_date->month);
             });
         })
         ->leftJoin('employees', 'contracts.employee_id', '=', 'employees.id')
