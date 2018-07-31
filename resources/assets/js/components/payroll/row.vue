@@ -15,7 +15,7 @@
             <input type="text" class="form-control inputBox" :name="`contract-${contract.id}[]`" v-model="delay">
         </td>
         <td>
-          <input type="text" class="form-control inputBox" :name="`contract-${contract.id}[]`" :value="previousMonth">{{ getPreviousMoth(contract) }}
+          <input type="text" class="form-control inputBox" :name="`contract-${contract.id}[]`" :value="previousMonth">
         </td>
         <td> {{ total | currency}} </td>
         <td> {{ totalDiscounts | currency }} </td>
@@ -33,7 +33,7 @@ export default {
         baseWage: this.contract.base_wage,
         delay: 0,
         rcIva: 0,
-        previousMonth: this.contract.next_month_balance,
+        previousMonth: (this.contract.next_month_balance == null)? 0 : this.contract.next_month_balance,
         positionSalary: `Cargo: ${this.contract.position} \n<br> Haber Basico: Bs. ${this.contract.base_wage}`
     }
   },
@@ -52,9 +52,6 @@ export default {
       calculateTotalDiscountLaw(){
         return this.calculateDiscount(this.procedure.discount_old)+this.calculateDiscount(this.procedure.discount_common_risk)+this.calculateDiscount(this.procedure.discount_commission)+this.calculateDiscount(this.procedure.discount_solidary)+this.calculateDiscount(this.procedure.discount_national);
       },
-      getPreviousMoth(contract){
-        this.previousMonth = contract.next_month_balance;
-      }
   },
   computed:{
       workedDays() {
