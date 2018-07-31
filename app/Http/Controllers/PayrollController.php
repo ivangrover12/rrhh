@@ -621,15 +621,23 @@ class PayrollController extends Controller
                 $employee = $contract->employee;
 
                 $rehired = false;
-                $employee_contracts = array_slice($payroll->contract->employee->contracts()->get()->all(), -2);
+                $employee_contracts = $payroll->contract->employee->contracts()->get()->all();
+
                 if (count($employee_contracts) > 1) {
-                    $last_contract_date = Carbon::parse($employee_contracts[0]->date_end);
-                    $current_contract_date = Carbon::parse($employee_contracts[1]->date_start);
-                    
-                    if ($last_contract_date->year == $current_contract_date->year && $last_contract_date->month == $current_contract_date->month) {
-                        $rehired = true;
+                    foreach ($employee_contracts as $key => $employee_contract) {
+                        if ($key > 0) {
+                            $current_contract_date = Carbon::parse($employee_contract->date_start);
+                            $last_contract_date = Carbon::parse($employee_contracts[$key-1]->date_end);
+                            if ($last_contract_date->year == $current_contract_date->year && $last_contract_date->month == $current_contract_date->month) {
+                                $rehired = true;
+                            }
+                        } else {
+                            
+                        }
                     }
-                } elseif(Payroll::where('code', $payroll->code)->count() > 1) {
+                }
+
+                if(Payroll::where('code', $payroll->code)->count() > 1) {
                     $rehired = true;
                 }
 
@@ -755,6 +763,8 @@ class PayrollController extends Controller
 
         $response = $this->getFormattedData($year, $month->id, $valid_contracts, $consultant, $with_account, $management_entity, $position_group, $employer_number);
 
+        // return response()->json($response);
+
         $response->data['title']->subtitle = '';
         $response->data['title']->management_entity = '';
         $response->data['title']->position_group = '';
@@ -804,7 +814,7 @@ class PayrollController extends Controller
 
         $file_name= implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]).".pdf";
 
-        // return response()->json($response, $response->code);
+
 
         return \PDF::loadView('payroll.print', $response->data)
             ->setOption('page-width', '216')
