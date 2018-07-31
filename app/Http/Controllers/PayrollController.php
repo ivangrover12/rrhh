@@ -620,7 +620,18 @@ class PayrollController extends Controller
                 $contract = $payroll->contract;
                 $employee = $contract->employee;
 
-                $rehired = (Payroll::where('code', $payroll->code)->count() > 1) ? true : false;
+                $rehired = false;
+                $employee_contracts = array_slice($payroll->contract->employee->contracts()->get()->all(), -2);
+                if (count($employee_contracts) > 1) {
+                    $last_contract_date = Carbon::parse($employee_contracts[0]->date_end);
+                    $current_contract_date = Carbon::parse($employee_contracts[1]->date_start);
+                    
+                    if ($last_contract_date->year == $current_contract_date->year && $last_contract_date->month == $current_contract_date->month) {
+                        $rehired = true;
+                    }
+                } elseif(Payroll::where('code', $payroll->code)->count() > 1) {
+                    $rehired = true;
+                }
 
                 $e = new EmployeePayroll($payroll, $procedure);
 
