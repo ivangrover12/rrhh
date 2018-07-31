@@ -92,15 +92,14 @@ class ContractController extends Controller
                 ->whereMonth('contracts.date_start', '<', $month->id)
                 ->whereYear('contracts.date_end', '>=', $request->year)
                 ->whereMonth('contracts.date_end', '>', $month->id);
+            })
+            ->orWhere(function ($q) use ($request, $month) {
+                $q
+                ->whereNull('contracts.date_retirement')
+                ->whereNull('contracts.date_end')
+                ->whereYear('contracts.date_start', '<=', $request->year)
+                ->whereMonth('contracts.date_start', '<=', $month->id);
             });
-        })
-        ->orWhere(function ($query) use ($request, $month) {
-            $query
-            ->where('contracts.status', true)
-            ->where('contracts.date_retirement', '!=', null)
-            ->whereYear('contracts.date_start', '<=', $request->year)
-            ->whereMonth('contracts.date_start', '<=', $month->id)
-            ->where('contracts.date_end', null);
         })
         ->leftJoin('employees', 'contracts.employee_id', '=', 'employees.id')
         ->leftJoin('cities', 'cities.id', '=', 'employees.city_identity_card_id')
