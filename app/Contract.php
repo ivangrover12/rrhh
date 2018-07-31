@@ -14,7 +14,7 @@ class Contract extends Model
 
     public function payrolls()
     {
-        return $this->hasMany(Payroll::class);
+        return $this->hasMany(Payroll::class)->orderBy('created_at');
     }
     public function employee()
     {

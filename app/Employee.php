@@ -51,4 +51,8 @@ class Employee extends Model
         return $this->contracts()->orderBy('date_start', 'DESC')->first();
     }
 
+    public function beforeLastContract()
+    {
+        return $this->contracts()->orderBy('date_start', 'DESC')->skip(1)->first();
+    }
 }
