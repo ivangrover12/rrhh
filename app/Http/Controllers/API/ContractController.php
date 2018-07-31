@@ -97,7 +97,13 @@ class ContractController extends Controller
                 $q
                 ->whereNull('contracts.date_retirement')
                 ->whereNull('contracts.date_end')
-                ->whereYear('contracts.date_start', '<=', $request->year)
+                ->whereYear('contracts.date_start', '<', $request->year);
+            })
+            ->orWhere(function ($q) use ($request, $month) {
+                $q
+                ->whereNull('contracts.date_retirement')
+                ->whereNull('contracts.date_end')
+                ->whereYear('contracts.date_start', $request->year)
                 ->whereMonth('contracts.date_start', '<=', $month->id);
             });
         })
@@ -112,8 +118,9 @@ class ContractController extends Controller
             ->where('payrolls.procedure_id','=', $previousProcedureId);
         })
         /* ---- */
-        ->orderBy('employees.last_name', 'asc')
-        ->orderBy('contracts.date_start', 'asc')
+        ->orderBy('employees.last_name')
+        ->orderBy('employees.id')
+        ->orderBy('contracts.date_start')
         ->get();
         $total_contracts = $contracts->count();
         $employees = Employee::join('contracts', 'employees.id', '=', 'contracts.employee_id')
