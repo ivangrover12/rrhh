@@ -15,7 +15,7 @@
             <input type="text" class="form-control inputBox" :name="`contract-${payroll.contract_id}[]`" v-model="delay">
         </td>
         <td>
-            <input type="text" class="form-control inputBox" :name="`contract-${payroll.contract_id}[]`" :value="previousMonth"> {{ previousMonthBalance(payroll) }}
+            <input type="text" class="form-control inputBox" :name="`contract-${payroll.contract_id}[]`" :value="previousMonth">
         </td>
         <td> {{ total | currency}} </td>
         <td> {{ totalDiscounts | currency }} </td>
@@ -34,7 +34,7 @@ export default {
         baseWage: this.payroll.base_wage,
         delay: this.payroll.discount_faults,
         rcIva: this.payroll.discount_rc_iva,
-        previousMonth: 0,
+        previousMonth: this.payroll.previous_month_balance,
         positionSalary: `Cargo: ${this.payroll.position} \nHaber Basico: Bs. ${this.payroll.base_wage}`
     }
   },
@@ -52,9 +52,6 @@ export default {
       },
       calculateTotalDiscountLaw(){
         return this.calculateDiscount(this.procedure.discount_old)+this.calculateDiscount(this.procedure.discount_common_risk)+this.calculateDiscount(this.procedure.discount_commission)+this.calculateDiscount(this.procedure.discount_solidary)+this.calculateDiscount(this.procedure.discount_national);
-      },
-      previousMonthBalance(payroll) {
-        this.previousMonth = payroll.previous_month_balance;
       }
   },
   computed:{
