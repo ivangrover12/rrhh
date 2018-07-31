@@ -154,10 +154,10 @@ class PayrollController extends Controller
                 $total_discounts = $total_discount_law + floatval($value[3]);
                 $payroll->total_discounts = $total_discounts;
                 $payroll->payable_liquid = $quotable - $total_discounts;
-                $payroll->previous_month_balance = floatval($value[4]);
+                $payroll->previous_month_balance = (int)$value[4];
 
-                $tribute = $this->tribute_calculation(($quotable - $total_discount_law), floatval($value[2]), floatval($value[4]));
-                $payroll->next_month_balance = $tribute->saldo_mes_siguiente;
+                $tribute = $this->tribute_calculation(($quotable - $total_discount_law), floatval($value[2]), (int)$value[4]);
+                $payroll->next_month_balance = (int)$tribute->saldo_mes_siguiente;
 
                 $payroll->save();
             }
