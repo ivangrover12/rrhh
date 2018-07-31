@@ -115,7 +115,7 @@ class EmployeePayroll
         $this->discount_rc_iva = $payroll->discount_rc_iva;
         $this->discount_faults = $payroll->discount_faults;
         $this->total_amount_discount_institution = $payroll->total_amount_discount_institution;
-        $this->total_discounts = $this->total_amount_discount_law + $this->discount_rc_iva + $this->discount_faults;
+        $this->total_discounts = $this->total_amount_discount_law + $this->discount_faults;
         $this->payable_liquid = round(($this->quotable - $this->total_discounts), 2);
     }
 

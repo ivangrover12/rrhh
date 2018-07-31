@@ -107,7 +107,7 @@ export default {
         return 30;
       },
       totalDiscounts(){
-          return this.calculateTotalDiscountLaw() + parseFloat(this.delay || 0 ) + parseFloat(this.rcIva || 0);
+          return this.calculateTotalDiscountLaw() + parseFloat(this.delay || 0 );
       },
       quotable()  {
           return (this.baseWage/30) * this.workedDays;
