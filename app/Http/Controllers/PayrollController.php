@@ -817,7 +817,7 @@ class PayrollController extends Controller
         return \PDF::loadView('payroll.print', $response->data)
             ->setOption('page-width', '216')
             ->setOption('page-height', '330')
-            ->setOption('margin-left', '25')
+            ->setOption('margin-left', '26')
             ->setOption('margin-right', '0')
             ->setOrientation('landscape')
             ->setOption('encoding', 'utf-8')
