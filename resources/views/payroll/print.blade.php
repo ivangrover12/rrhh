@@ -171,10 +171,11 @@
             @php ($total_saldo_utilizado = 0)
             @php ($total_impuesto_pagar = 0)
             @php ($total_saldo_mes_siguiente = 0)
+            @php ($index = 0)
 
             @foreach ($employees as $i => $employee)
                 <tr>
-                    <td>{{ ++$i }}</td>
+                    <td>{{ (($i > 0) && ($employee->employee_id == $employees[$i-1]->employee_id)) ? $index : ++$index }}</td>
                     <td>{{ $employee->ci_ext }}</td>
                     <td class="name">{{ $employee->full_name }}</td>
                 @if ($title->report_type == 'T')
