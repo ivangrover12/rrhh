@@ -13,7 +13,7 @@ return array(
     'image' => array(
         'enabled' => true,
         'binary'  => base_path('vendor/h4cc/wkhtmltoimage-amd64/bin/wkhtmltoimage-amd64'),
-        'timeout' => false,
+        'timeout' => 300,
         'options' => array(),
         'env'     => array(),
     ),

@@ -192,37 +192,4 @@ class EmployeePayroll
             return ($worked_days - $payroll->unworked_days);
         }
     }
-
-    public function addPayroll($payroll)
-    {
-        $this->previous_month_balance += $payroll->previous_month_balance;
-        $this->date_end = $payroll->date_end;
-        $this->date_retirement = $payroll->date_retirement;
-        $this->unworked_days += $payroll->unworked_days;
-        $this->worked_days += $payroll->worked_days;
-
-        // Payable template
-        $this->discount_old += $payroll->discount_old;
-        $this->discount_common_risk += $payroll->discount_common_risk;
-        $this->discount_commission += $payroll->discount_commission;
-        $this->discount_solidary += $payroll->discount_solidary;
-        $this->discount_national += $payroll->discount_national;
-        $this->total_amount_discount_law += $payroll->total_amount_discount_law;
-        $this->net_salary += $payroll->net_salary;
-        $this->discount_rc_iva += $payroll->discount_rc_iva;
-        $this->discount_faults += $payroll->discount_faults;
-        $this->total_amount_discount_institution += $payroll->total_amount_discount_institution;
-        $this->total_discounts += $payroll->total_discounts;
-        $this->payable_liquid += $payroll->payable_liquid;
-
-        // Employer template
-        $this->contribution_insurance_company += $payroll->contribution_insurance_company;
-        $this->contribution_professional_risk += $payroll->contribution_professional_risk;
-        $this->contribution_employer_solidary += $payroll->contribution_employer_solidary;
-        $this->contribution_employer_housing += $payroll->contribution_employer_housing;
-        $this->total_contributions += $payroll->total_contributions;
-
-        // Extra data
-        $this->valid_contract = $payroll->valid_contract;
-    }
 }
