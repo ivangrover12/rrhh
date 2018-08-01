@@ -34,7 +34,7 @@ class PayrollController extends Controller
     {        
         $procedures = Procedure::with('month')->orderBy('year', 'asc')->orderBy('month_id','desc')->get();
         $lastprocedure = Procedure::orderBy('id', 'desc')->first();
-        $positions = PositionGroup::all()->groupBy('employer_number_id');
+        $positions = PositionGroup::all()->groupBy('employer_number_id')->groupBy('code')->all();
         $position_groups = [];
 
         foreach($positions as $i => $value) {
@@ -612,40 +612,29 @@ class PayrollController extends Controller
             $total_contributions = new TotalPayrollEmployer();
             $company = Company::select()->first();
 
-            $payrolls = Payroll::where('procedure_id', $procedure->id)->orderBy('id')->get();
-            /*if (config('app.debug')) {
-                $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->orderBy('contract_id', 'ASC')->orderBy('id', 'ASC')->get();
-            }*/
-            foreach ($payrolls as $key => $payroll) {
-                $contract = $payroll->contract;
-                $employee = $contract->employee;
+            $payroll_codes = Payroll::where('procedure_id', $procedure->id)->orderBy('code')->get()->groupBy('code')->all();
+            if (config('app.debug')) {
+                $payroll_codes = Payroll::where('procedure_id',$procedure->id)->orderBy('code')->take(10)->get()->groupBy('code')->all();
+            }
+            foreach ($payroll_codes as $i => $payroll_code) {
+                $e = null;
+                $payrolls = [];
 
-                $rehired = false;
-                $employee_contracts = $payroll->contract->employee->contracts()->get()->all();
+                foreach ($payroll_code as $j => $payroll) {
+                    $contract = $payroll->contract;
+                    $employee = $contract->employee;
 
-                if (count($employee_contracts) > 1) {
-                    foreach ($employee_contracts as $key => $employee_contract) {
-                        if ($key > 0) {
-                            $current_contract_date = Carbon::parse($employee_contract->date_start);
-                            $last_contract_date = Carbon::parse($employee_contracts[$key-1]->date_end);
-                            if ($last_contract_date->year == $current_contract_date->year && $last_contract_date->month == $current_contract_date->month) {
-                                $rehired = true;
-                            }
-                        } else {
-                            
+                    $payrolls[] = new EmployeePayroll($payroll, $procedure);
+                }
+
+                if (count($payrolls) > 1) {
+                    foreach ($payrolls as $i => $payroll) {
+                        if ($i > 0) {
+                            $payrolls[0]->addPayroll($payroll);
                         }
                     }
                 }
-
-                if(Payroll::where('code', $payroll->code)->count() > 1) {
-                    $rehired = true;
-                }
-
-                $e = new EmployeePayroll($payroll, $procedure);
-
-                if ($rehired) {
-                    $e->setValidContact(true);
-                }
+                $e = $payrolls[0];
 
                 if (($valid_contracts && !$e->valid_contract) || (($management_entity != 0) && ($e->management_entity_id != $management_entity)) || (($position_group != 0) && ($e->position_group_id != $position_group)) || ($employer_number && ($e->employer_number_id != $employer_number)) || (!$consultant && $e->consultant) || ($consultant && !$e->consultant) || ($with_account && !$employee->account_number)) {
                     $e->setZeroAccounts();
@@ -813,8 +802,6 @@ class PayrollController extends Controller
         }
 
         $file_name= implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]).".pdf";
-
-
 
         return \PDF::loadView('payroll.print', $response->data)
             ->setOption('page-width', '216')
