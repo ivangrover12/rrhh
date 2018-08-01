@@ -613,9 +613,9 @@ class PayrollController extends Controller
             $company = Company::select()->first();
 
             $payrolls = Payroll::where('procedure_id', $procedure->id)->orderBy('id')->get();
-            /*if (config('app.debug')) {
+            if (!config('app.debug')) {
                 $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->orderBy('contract_id', 'ASC')->orderBy('id', 'ASC')->get();
-            }*/
+            }
             foreach ($payrolls as $key => $payroll) {
                 $contract = $payroll->contract;
                 $employee = $contract->employee;
@@ -814,11 +814,11 @@ class PayrollController extends Controller
 
         $file_name= implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]).".pdf";
 
-
-
         return \PDF::loadView('payroll.print', $response->data)
             ->setOption('page-width', '216')
             ->setOption('page-height', '330')
+            ->setOption('margin-left', '25')
+            ->setOption('margin-right', '0')
             ->setOrientation('landscape')
             ->setOption('encoding', 'utf-8')
             ->setOption('footer-font-size', 5)
