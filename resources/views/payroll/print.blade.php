@@ -266,7 +266,7 @@
                 @switch ($title->report_type)
                     @case ('H')
                         @if ($title->position_group)
-                            @php ($table_footer_space1 = 9)
+                            @php ($table_footer_space1 = 11)
                         @elseif ($title->management_entity)
                             @php ($table_footer_space1 = 10)
                         @else
