@@ -33,7 +33,7 @@
             </div>
             <div class="ibox-content">
                 <div class="row">
-                    <form method="POST" action="{{asset('contract/renovate')}}">
+                    <form method="POST" action="{{action('ContractController@save_recontract')}}">
                     {{ csrf_field() }}
                     <div class="col-md-8">
                         <div class="bg-info p-xs b-r-sm"> Contratos vigentes con fecha de conclusion del <strong>{{ $fecha1 }}</strong> al <strong>{{ $fecha2 }}</strong></div><br>

@@ -18,4 +18,6 @@ mix.js('resources/assets/js/app.js', 'public/js')
     ], 'public/css/all.css')
    .copy('resources/assets/img', 'public/images')
    .copy('resources/assets/css/swich.css', 'public/css')
-   .copy('resources/assets/css/datatables-fixedcolumns.min.css', 'public/css');
+   .copy('resources/assets/css/datatables-fixedcolumns.min.css', 'public/css')
+   .copy('resources/assets/css/responsive.dataTables.min.css', 'public/css')
+   .copy('resources/assets/js/dataTables.responsive.js', 'public/js');

@@ -1,10 +1,10 @@
 @extends('layouts.app') 
-@section('title','Editar contrato') 
+@section('title','Renovar contrato') 
 @section('content')
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Editar contrato</h2>
+        <h2>Renovar contrato</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="/">Inicio</a>
@@ -13,7 +13,7 @@
                 <a href="/contract">contratos</a>
             </li>            
             <li class="breadcrumb-item active">
-                <strong>editar contrato</strong>
+                <strong>renovar contrato</strong>
             </li>
         </ol>
     </div>
@@ -33,10 +33,11 @@
             </div>
             <div class="ibox-content">
                 <div class="row">
+
                     <div class="col-lg-6">
-                        <form method="POST" action="{{action('ContractController@update', $contract->id)}}">
+                        <form method="POST" action="{{asset('contract/save_recontract')}}">
                             {{ csrf_field() }}
-                            <input name="_method" type="hidden" value="PATCH">
+                            <input type="hidden" name="id" value="{{ $contract->id }} ">
                             <div class="form-group row">
                                 <div class="col-md-4">Empleado</div>
                                 <div class="col-md-8">
@@ -50,22 +51,20 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4">Cargo: <span class="text-danger">*</span></div>
+                                <div class="col-md-4">Cargo: </div>
                                 <div class="col-md-8">
                                     <input type="hidden" name="position_id" id="position_id" class="form-control" value=" {{ $contract->position_id }} "/>
-                                    <input type="text" id="position" placeholder="Cargo" class="form-control" value=" {{ $contract->position->name }} " />
+                                    <input type="text" id="position" placeholder="Cargo" class="form-control" value=" {{ $contract->position->name }} " disabled/>
                                     <div class="text-danger">{{ $errors->first('position_id') }}</div>                               
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4"> Tipo de contratación <span class="text-danger">*</span></div>
+                                <div class="col-md-4"> Tipo de contratación </div>
                                 <div class="col-md-8">
-                                    <select name="contract_type" class="form-control">
+                                    <select name="contract_type" class="form-control" disabled>
                                         @foreach ($contract_type as $type)
-                                            @if ($contract->contracts_type_id == $type->id) 
+                                            @if (3 == $type->id) 
                                                 <option value="{{ $type->id }} " selected="true">{{ $type->name }} </option>
-                                            @else
-                                                <option value="{{ $type->id }} ">{{ $type->name }} </option>
                                             @endif                                            
                                         @endforeach
                                     </select>
@@ -74,35 +73,22 @@
                             <div class="form-group row">
                                 <div class="col-md-4">Fecha de inicio <span class="text-danger">*</span></div>
                                 <div class="col-md-8">
-                                    <input type="date" id="date_start" name="date_start" value="{{ $contract->date_start }}" class="form-control" onchange="calc()">
+                                    <input type="date" id="date_start" name="date_start" min="{{ $contract->date_end }}" class="form-control" onchange="calc()">
                                     <div class="text-danger">{{ $errors->first('date_start') }}</div>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-4">Fecha de Conclusión </div>
                                 <div class="col-md-8">
-                                    <input type="date" id="date_end" name="date_end" value="{{ $contract->date_end }}" class="form-control" onchange="calc()">
+                                    <input type="date" id="date_end" name="date_end" min="{{ $contract->date_end }}" class="form-control" onchange="calc()">
                                     <div class="text-danger">{{ $errors->first('date_end') }}</div>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">Fecha de Retiro/Disolución </div>
-                                <div class="col-md-8">
-                                    <input type="date" name="date_retirement" value="{{ $contract->date_retirement }}" class="form-control">
-                                    <div class="text-danger">{{ $errors->first('date_retirement') }}</div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">Motivo de Retiro/Disolución </div>
-                                <div class="col-md-8">
-                                    <input type="text" name="retirement_reason" value="{{ $contract->retirement_reason }}" class="form-control" placeholder="Ej: Por renuncia">
-                                    <div class="text-danger">{{ $errors->first('retirement_reason') }}</div>
-                                </div>
-                            </div>                         
+                                                    
                             <div class="form-group row">
                                 <div class="col-md-4"> Numero de contrato </div>
                                 <div class="col-md-8">
-                                    <input type="text" name="number_contract" id="number_contract" class="form-control" value=" {{ $contract->number_contract }} " />
+                                    <input type="text" name="number_contract" id="number_contract" class="form-control" placeholder="Ej.: 999/2018" />
                                     <div class="text-danger">{{ $errors->first('number_contract') }}</div>
                                 </div>
                             </div>
@@ -111,25 +97,19 @@
                                 <div class="col-md-8">
                                     <input type="text" name="number_insurance" value="{{ $contract->number_insurance }}" class="form-control">
                                 </div>
-                            </div>                            
+                            </div>                                                 
                             <div class="form-group row">
                                 <div class="col-md-4">Cite de Resursos Humanos </div>
-                                <div class="col-md-4">
-                                    <input type="text" name="cite_rrhh" value="{{ $contract->cite_rrhh }}" class="form-control">
+                                <div class="col-md-8">
+                                    <input type="text" name="cite_rrhh" class="form-control" placeholder="Ej.: RR.HH.-120/2018" />
                                     <div class="text-danger">{{ $errors->first('cite_rrhh') }}</div>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-4">Fecha del cite </div>
                                 <div class="col-md-8">
-                                    <input type="date" name="cite_rrhh_date" value="{{ $contract->cite_rrhh_date }}" class="form-control">
+                                    <input type="date" name="cite_rrhh_date" min="{{ $contract->date_end }}" class="form-control">
                                     <div class="text-danger">{{ $errors->first('cite_rrhh_date') }}</div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">Referencia de convocatoria </div>
-                                <div class="col-md-8">
-                                    <input type="text" name="numer_announcement" value="{{ $contract->numer_announcement }}" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -190,16 +170,6 @@
                                     <textarea name="description" class="form-control">{{ $contract->description }} </textarea>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <div class="col-md-4">Contrato Vigente:</div>
-                                <div class="col-md-8">
-                                    @if ($contract->status)
-                                        <input style="transform: scale(1.5);"  type="checkbox" checked name="status">
-                                    @else
-                                        <input style="transform: scale(1.5);"  type="checkbox" name="status">
-                                    @endif
-                                </div>
-                            </div>
                             <div class="col-md-12" align="right">
                                 <button type="submit" class="btn btn-primary">Guardar</button>
                             </div>
@@ -233,6 +203,7 @@
         </div>
     </div>
 </div>
+
 @endsection
 @section('jss')
 <script type="text/javascript">
