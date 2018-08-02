@@ -22,9 +22,9 @@
             <li>
                 <button onclick="location.href='{{ url('contract/create') }}'" class="btn btn-outline btn-primary  dim " type="button"><i class="fa fa-share"></i> Crear contrato</button>
             </li>
-            <li>
+            <!--<li>
                 <button onclick="location.href='{{ url('contract/checkrenovate') }}'" class="btn btn-outline btn-primary  dim " type="button"><i class="fa fa-share"></i> Renovar contratos</button>
-            </li>
+            </li>-->
         </ul>
     </div>
 </div>
@@ -59,20 +59,29 @@
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
-                        <table id="contract-table" class="table table-bordered" id="contract-table" style="width:100%">
+                        <table id="contract-table" class="table table-bordered display responsive nowrap" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th class="abc">CI</th>
+                                    <th>#</th>
+                                    <th>Opciones</th>
+                                    <th>C.I.</th>
                                     <th>Funcionario</th>
                                     <th>Cargo</th>
                                     <th>Puesto</th>
-                                    <th width="70">Fecha Inicio</th>
-                                    <th width="70">Fecha de Conclusion</th>
-                                    <th>Tipo</th>
-                                    <th style="text-align: center;">
-                                        <span id="label-status">Vigentes</span>
-                                    </th>
-                                    <th width="350">Acci&oacute;n</th>
+                                    <th>Area</th>
+                                    <th>Tipo de Contrato</th>
+                                    <td>Numero Contrato</td>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Conclusion</th>
+                                    <th>Fecha Retiro/Disolucion</th>
+                                    <th>Motivo Retiro/Disolucion</th>
+                                    <th>Numero de Asegurado</th>
+                                    <th>Cite RRHH</th>
+                                    <th>Fecha de Cite RRHH</th>
+                                    <th>Referencia de Convocatoria</th>
+                                    <th>Cite de Desempeño</th>
+                                    <th>Descripcion</th>
+                                    <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -89,8 +98,8 @@
 @section('jss')
 <script>
     $(document).ready(function(){
-
         var table = $('#contract-table').DataTable({
+            responsive: true,
             "ajax":"contract/list/"+$("#status").val(),
             "language": {
                 "sProcessing":     "Procesando...",
@@ -117,16 +126,22 @@
                 }
             },
             "createdRow": function( row, data, dataIndex){
-                fdata = data[5].split("-");
+                fdata = data[10].split("-");                
                 fdata = new Date(fdata[1]+'-'+fdata[0]+'-'+fdata[2]);
                 fhoy = new Date();
+
+                
                 if( fdata.setHours(0,0,0,0) ==  fhoy.setHours(0,0,0,0)){
                     $(row).addClass('bg bg-warning');
                 }
                 if( fdata.setHours(0,0,0,0) <  fhoy.setHours(0,0,0,0)){
-                    if (data[7] == '<i class="fa fa-check"></i>') {
-                        $(row).addClass('bg bg-danger');
-                    }
+                    if (data[19] == 'Concluido') {
+                        $(row).addClass('bg bg-muted');
+                        $(row).find("[class*='delete']").hide();
+                        $(row).find("[class*='recontract']").hide();
+                    } else {
+                        $(row).addClass('bg bg-danger');    
+                    }                    
                 }
             },
             "initComplete": function () {
@@ -147,6 +162,7 @@
                     });
 
                 });
+                $('[data-toggle="tooltip"]').tooltip();
                 
             },
             stateSave: true            

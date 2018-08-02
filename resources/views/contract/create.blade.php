@@ -33,8 +33,7 @@
             </div>
             <div class="ibox-content">
                 <div class="row">
-                    <div class="col-md-4">&nbsp;</div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-6">
                         <form method="POST" action="{{asset('contract')}}">
                             {{ csrf_field() }}
                             <div class="form-group row">
@@ -155,7 +154,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="alert alert-info">
                             <span class="alert-link">Empleado: </span><span id="emp"> *</span><br>
                             <span class="alert-link">Cargo: </span><span id="pos"> *</span><br>
