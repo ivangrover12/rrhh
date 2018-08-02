@@ -613,9 +613,9 @@ class PayrollController extends Controller
             $company = Company::select()->first();
 
             $payrolls = Payroll::where('procedure_id', $procedure->id)->orderBy('id')->get();
-            if (config('app.debug')) {
-                $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->orderBy('contract_id', 'ASC')->orderBy('id', 'ASC')->get();
-            }
+            // if (config('app.debug')) {
+            //     $payrolls = Payroll::where('procedure_id',$procedure->id)->take(10)->orderBy('contract_id', 'ASC')->orderBy('id', 'ASC')->get();
+            // }
             foreach ($payrolls as $key => $payroll) {
                 $contract = $payroll->contract;
                 $employee = $contract->employee;
@@ -763,8 +763,6 @@ class PayrollController extends Controller
 
         $response = $this->getFormattedData($year, $month->id, $valid_contracts, $consultant, $with_account, $management_entity, $position_group, $employer_number);
 
-        // return response()->json($response);
-
         $response->data['title']->subtitle = '';
         $response->data['title']->management_entity = '';
         $response->data['title']->position_group = '';
@@ -811,6 +809,8 @@ class PayrollController extends Controller
             $response->data['title']->employer_number = $employer_number->number;
             $response->data['company']->employer_number = $employer_number->number;
         }
+
+        // return response()->json($response);
 
         $file_name= implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]).".pdf";
 
