@@ -262,8 +262,7 @@
                 @endif
                 </tr>
             @endforeach
-            
-                <tr class="total">
+                <tr class="total" style="height: 45px;">
                 @switch ($title->report_type)
                     @case ('H')
                         @if ($title->position_group)
@@ -289,7 +288,7 @@
                         @endif
                         @break
                 @endswitch
-                <td class="footer" colspan="{{ $table_footer_space1 }}">TOTAL PLANILLA ({{ $index }} FUNCIONARIOS)</td>
+                <td class="footer" colspan="{{ $table_footer_space1 }}">TOTAL PLANILLA ({{ $index }} {{ ($index == 1) ? 'FUNCIONARIO' : 'FUNCIONARIOS'}})</td>
                 @if ($title->report_type == 'H')
                     <td class="footer">{{ Util::format_number($total_discounts->base_wage) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->quotable) }}</td>
