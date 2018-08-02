@@ -171,11 +171,14 @@
             @php ($total_saldo_utilizado = 0)
             @php ($total_impuesto_pagar = 0)
             @php ($total_saldo_mes_siguiente = 0)
-            @php ($index = 0)
+            @php ($index = 1)
 
             @foreach ($employees as $i => $employee)
                 <tr>
-                    <td>{{ (($i > 0) && ($employee->employee_id == $employees[$i-1]->employee_id)) ? $index : ++$index }}</td>
+                    @if (($i > 0) && ($employee->employee_id != $employees[$i-1]->employee_id))
+                        @php (++$index)
+                    @endif
+                    <td>{{ ++$i }}</td>
                     <td>{{ $employee->ci_ext }}</td>
                     <td class="name">{{ $employee->full_name }}</td>
                 @if ($title->report_type == 'T')
@@ -286,7 +289,7 @@
                         @endif
                         @break
                 @endswitch
-                    <td class="footer" colspan="{{ $table_footer_space1 }}">TOTAL PLANILLA</td>
+                <td class="footer" colspan="{{ $table_footer_space1 }}">TOTAL PLANILLA ({{ $index }} FUNCIONARIOS)</td>
                 @if ($title->report_type == 'H')
                     <td class="footer">{{ Util::format_number($total_discounts->base_wage) }}</td>
                     <td class="footer">{{ Util::format_number($total_discounts->quotable) }}</td>
