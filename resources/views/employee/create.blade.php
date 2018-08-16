@@ -99,7 +99,7 @@
                                 <legend>Dirección</legend>
                                 Localidad <input type="text" name="location" class="form-control">
                                 Zona <input type="text" name="zone" class="form-control">
-                                Calle <input type="text" name="street" class="form-control">
+                                Avenida/Calle <input type="text" name="street" class="form-control">
                                 Numero de puerta <input type="text" name="number" class="form-control">
                             </fieldset>
                             <hr>
