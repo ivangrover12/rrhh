@@ -19,10 +19,10 @@
             margin: 1.5cm 0 0 1cm;
         }
         .zero{
-            margin: 3.5cm 0 0 0;
+            margin: 4cm 0 0 0;
         }
         .first{
-            margin: 1.5cm 0 0 0;
+            margin: 1cm 0 0 0;
         }
         .second{
             margin: 0.8cm 0 0 0;
@@ -102,7 +102,9 @@
 <div class="">
     <div class="tabla">
         <div class="zero">
+            @if (!$contract->number_insurance)
             <div class="camp ci"> CI: {{ $contract->employee->identity_card }} {{ $contract->employee->city_identity_card->shortened }} </div>
+            @endif
         </div>
         <div class="first">
             <div class="camp pat"> {{ $contract->employee->last_name }} </div>
