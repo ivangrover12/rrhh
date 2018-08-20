@@ -97,7 +97,7 @@
                                 <legend>Dirección</legend>
                                 Localidad <input type="text" name="location" class="form-control" value=" {{ $employee->location }} ">
                                 Zona <input type="text" name="zone" class="form-control" value=" {{ $employee->zone }} ">
-                                Calle <input type="text" name="street" class="form-control" value=" {{ $employee->street }} ">
+                                Avenida/Calle <input type="text" name="street" class="form-control" value=" {{ $employee->street }} ">
                                 Numero de puerta <input type="text" name="number" class="form-control" value=" {{ $employee->number }} ">
                             </fieldset>
                             <fieldset>
