@@ -57,8 +57,8 @@ class EmployeeController extends Controller
             $row[] = '
                     <div class="switch">
                         <div class="onoffswitch">
-                            <input type="checkbox" '.$checked.' class="onoffswitch-checkbox status" id="example1" value="'.$employee->id.'" >
-                            <label class="onoffswitch-label" for="example1">
+                            <input type="checkbox" '.$checked.' class="onoffswitch-checkbox status" id="act'.$employee->id.'" value="'.$employee->id.'" >
+                            <label class="onoffswitch-label" for="act'.$employee->id.'">
                                 <span class="onoffswitch-inner"></span>
                                 <span class="onoffswitch-switch"></span>
                             </label>
