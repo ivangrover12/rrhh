@@ -3,5 +3,7 @@
     "/css/app.css": "/css/app.css",
     "/css/all.css": "/css/all.css",
     "/css/swich.css": "/css/swich.css",
-    "/css/datatables-fixedcolumns.min.css": "/css/datatables-fixedcolumns.min.css"
+    "/css/datatables-fixedcolumns.min.css": "/css/datatables-fixedcolumns.min.css",
+    "/css/responsive.dataTables.min.css": "/css/responsive.dataTables.min.css",
+    "/js/dataTables.responsive.js": "/js/dataTables.responsive.js"
 }
