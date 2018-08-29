@@ -2,26 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Response;
-use App\Payroll;
-use Illuminate\Http\Request;
-use App\Employee;
-use Carbon\Carbon;
-use App\Discount;
-use Prophecy\Promise\ReturnPromise;
-use App\Procedure;
-use App\Month;
-use App\Contract;
 use App\Company;
-use App\Helpers\Util;
-use Illuminate\Support\Facades\File;
+use App\Contract;
+use App\Employee;
 use App\EmployeePayroll;
+use App\EmployerNumber;
+use App\Helpers\Util;
+use App\ManagementEntity;
+use App\Month;
+use App\Payroll;
+use App\PositionGroup;
+use App\Procedure;
 use App\TotalPayrollEmployee;
 use App\TotalPayrollEmployer;
-use App\ManagementEntity;
-use App\PositionGroup;
-use App\EmployerNumber;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Response;
 
 class PayrollController extends Controller
 {
@@ -31,13 +28,13 @@ class PayrollController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {        
-        $procedures = Procedure::with('month')->orderBy('year', 'asc')->orderBy('month_id','desc')->get();
+    {
+        $procedures = Procedure::with('month')->orderBy('year', 'asc')->orderBy('month_id', 'desc')->get();
         $lastprocedure = Procedure::orderBy('id', 'desc')->first();
         $positions = PositionGroup::all()->groupBy('employer_number_id');
         $position_groups = [];
 
-        foreach($positions as $i => $value) {
+        foreach ($positions as $i => $value) {
             if (count($value) == 1) {
                 $position_groups[] = $value[0];
             }
@@ -45,20 +42,19 @@ class PayrollController extends Controller
 
         $management_entities = ManagementEntity::all();
 
-        $data=[
+        $data = [
             'procedures' => $procedures,
             'position_groups' => $position_groups,
             'management_entities' => $management_entities,
-            'lastprocedure' => $lastprocedure
+            'lastprocedure' => $lastprocedure,
         ];
         return view("payroll.index", $data);
 
     }
     public function create($year, $month)
     {
-        
-        $months = array_map(function ($v)
-        {
+
+        $months = array_map(function ($v) {
             return strtolower($v);
         }, Month::pluck('name')->toArray());
 
@@ -68,14 +64,13 @@ class PayrollController extends Controller
             if (!$procedure) {
                 return "procedure not found";
             }
-            $procedure =  Procedure::with('month')->find($procedure->id);
+            $procedure = Procedure::with('month')->find($procedure->id);
             return view('payroll.create', compact('year', 'month', 'procedure'));
-        }else {
+        } else {
             return 'error';
         }
 
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -90,17 +85,17 @@ class PayrollController extends Controller
             return "month not found";
         }
         $procedure = Procedure::select('procedures.id')
-                                ->leftJoin("months", 'months.id', '=', 'procedures.month_id')
-                                ->whereRaw("lower(months.name) like '" . strtolower($request->month)."'")
-                                ->where('year', '=', $request->year)
-                                ->first();                                
-        if(!$procedure){
+            ->leftJoin("months", 'months.id', '=', 'procedures.month_id')
+            ->whereRaw("lower(months.name) like '" . strtolower($request->month) . "'")
+            ->where('year', '=', $request->year)
+            ->first();
+        if (!$procedure) {
             $procedure = new Procedure();
             $procedure->month_id = $month->id;
-            $procedure->year = (int)$request->year;
-            $procedure->name = "planilla de ".$request->year." ".$request->month;
+            $procedure->year = (int) $request->year;
+            $procedure->name = "planilla de " . $request->year . " " . $request->month;
             $procedure->save();
-        }else{
+        } else {
             $procedure = Procedure::find($procedure->id);
         }
         // Procedure::where('year', $request->year)->where('month', $request)
@@ -112,40 +107,41 @@ class PayrollController extends Controller
                 $payroll = $contract->payrolls()->where('procedure_id', $procedure->id)->first();
                 if (!$payroll) {
                     $payroll = new Payroll();
-                    
-                    $last_payrol = Payroll::orderBy('id','DESC')->first();    
-                    $year =  date('y');
-                    if(!isset($last_payrol->code) || $last_payrol->code == "") {
-                        $payroll->code = "1-".$year;
-                    }
-                    else{
+
+                    $last_payrol = Payroll::orderBy('id', 'DESC')->first();
+                    $year = date('y');
+                    if (!isset($last_payrol->code) || $last_payrol->code == "") {
+                        $payroll->code = "1-" . $year;
+                    } else {
                         if ($last_payrol->contract->employee_id == $contract->employee_id && $last_payrol->base_wage == $contract->position->charge->base_wage && $last_payrol->contract->position->name == $contract->position->name) {
                             $payroll->code = $last_payrol->code;
                         } else {
                             $data = explode('-', $last_payrol->code);
-                            if(!isset($data[1]))
-                                $payroll->code = "1-".$year;                
-                            else 
-                                $payroll->code = ($year!=$data[1]?"1":($data[0]+1))."-".$year;
+                            if (!isset($data[1])) {
+                                $payroll->code = "1-" . $year;
+                            } else {
+                                $payroll->code = ($year != $data[1] ? "1" : ($data[0] + 1)) . "-" . $year;
+                            }
+
                         }
                     }
 
                 }
                 $payroll->contract_id = $id;
                 $payroll->procedure_id = $procedure->id;
-                $payroll->name = "Personal Eventual - Mes ".$request->month ." de ".$request->year;
+                $payroll->name = "Personal Eventual - Mes " . $request->month . " de " . $request->year;
                 $payroll->worked_days = $value[0];
                 $payroll->unworked_days = $value[1];
                 $base_wage = $contract->position->charge->base_wage ?? 1000;
                 $payroll->base_wage = $base_wage;
-                $quotable = ($base_wage/30)* $value[0];
+                $quotable = ($base_wage / 30) * $value[0];
                 $payroll->quotable = $quotable;
-                $payroll->discount_old = ($quotable * $procedure->discount_old)/100;
-                $payroll->discount_common_risk = ($quotable * $procedure->discount_common_risk)/100;
-                $payroll->discount_commission = ($quotable * $procedure->discount_commission)/100;
-                $payroll->discount_solidary = ($quotable * $procedure->discount_solidary)/100;
-                $payroll->discount_national = ($quotable * $procedure->discount_national)/100;
-                $total_discount_law = (($quotable * $procedure->discount_old) / 100) + (($quotable * $procedure->discount_common_risk)/100)+(($quotable * $procedure->discount_commission)/100)+(($quotable * $procedure->discount_solidary)/100)+(($quotable * $procedure->discount_national)/100);
+                $payroll->discount_old = ($quotable * $procedure->discount_old) / 100;
+                $payroll->discount_common_risk = ($quotable * $procedure->discount_common_risk) / 100;
+                $payroll->discount_commission = ($quotable * $procedure->discount_commission) / 100;
+                $payroll->discount_solidary = ($quotable * $procedure->discount_solidary) / 100;
+                $payroll->discount_national = ($quotable * $procedure->discount_national) / 100;
+                $total_discount_law = (($quotable * $procedure->discount_old) / 100) + (($quotable * $procedure->discount_common_risk) / 100) + (($quotable * $procedure->discount_commission) / 100) + (($quotable * $procedure->discount_solidary) / 100) + (($quotable * $procedure->discount_national) / 100);
                 $payroll->total_amount_discount_law = $total_discount_law;
                 $payroll->net_salary = $quotable - $total_discount_law;
                 $payroll->discount_rc_iva = floatval($value[2]);
@@ -154,10 +150,10 @@ class PayrollController extends Controller
                 $total_discounts = $total_discount_law + floatval($value[3]);
                 $payroll->total_discounts = $total_discounts;
                 $payroll->payable_liquid = $quotable - $total_discounts;
-                $payroll->previous_month_balance = (int)$value[4];
+                $payroll->previous_month_balance = (int) $value[4];
 
-                $tribute = $this->tribute_calculation(($quotable - $total_discount_law), floatval($value[2]), (int)$value[4]);
-                $payroll->next_month_balance = (int)$tribute->saldo_mes_siguiente;
+                $tribute = $this->tribute_calculation(($quotable - $total_discount_law), floatval($value[2]), (int) $value[4]);
+                $payroll->next_month_balance = (int) $tribute->saldo_mes_siguiente;
 
                 $payroll->save();
             }
@@ -224,29 +220,30 @@ class PayrollController extends Controller
         //
     }
 
-    public function employee_payroll(Employee $employee){
+    public function employee_payroll(Employee $employee)
+    {
         return $employee;
     }
 
-    private function generateExcelLaboral(){
-        Excel::create('Filename', function($excel) {
+    private function generateExcelLaboral()
+    {
+        Excel::create('Filename', function ($excel) {
             // Set the title
             $excel->setTitle('Our new awesome title');
 
             // Chain the setters
             $excel->setCreator('Maatwebsite')
-                    ->setCompany('Maatwebsite');
+                ->setCompany('Maatwebsite');
 
             // Call them separately
             $excel->setDescription('A demonstration to change the file properties');
-            
-            $excel->sheet('Sheetname', function($sheet) {
+
+            $excel->sheet('Sheetname', function ($sheet) {
                 $center_style = array(
                     'alignment' => array(
                         'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                    )
+                    ),
                 );
-
 
                 $name = "MUTUAL DE SERVICIOS AL POLICIA";
                 $nit = "NIT 234578021";
@@ -259,19 +256,19 @@ class PayrollController extends Controller
                 $sheet->mergeCells('A3:C3');
 
                 $sheet->row(1, array(
-                    $name
+                    $name,
                 ));
                 $sheet->row(2, array(
-                    $nit
+                    $nit,
                 ));
                 $sheet->row(3, array(
-                    $address
+                    $address,
                 ));
-                
+
                 $objDrawing = new PHPExcel_Worksheet_Drawing;
                 $objDrawing->setPath(public_path('images/logo.jpg')); //your image path
-                $objDrawing->setCoordinates('E1');                
-                $objDrawing->setHeight(74);                
+                $objDrawing->setCoordinates('E1');
+                $objDrawing->setHeight(74);
                 $objDrawing->setWorksheet($sheet);
 
                 $sheet->mergeCells('A5:Z5');
@@ -281,29 +278,27 @@ class PayrollController extends Controller
                 $sheet->mergeCells('A7:Z7');
                 $sheet->getStyle("A7:Z7")->applyFromArray($center_style);
 
-
-
                 $sheet->row(5, array(
-                    $title
+                    $title,
                 ));
                 $sheet->row(6, array(
-                    $subtitle
+                    $subtitle,
                 ));
                 $sheet->row(7, array(
-                    $exchange
+                    $exchange,
                 ));
 
                 $row = 10;
                 $sheet->getStyle($row)->getFill()
-                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
-                ->getStartColor()
-                ->setARGB('FF808080');
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setARGB('FF808080');
                 $sheet->row($row++, array(
                     'Nº',
                     'C.I.',
                     'TRABAJADOR',
                     'SUCURSAL',
-                    'CUENTA BANCO UNION',          
+                    'CUENTA BANCO UNION',
                     'FECHA NACIMIENTO',
                     'SEXO',
                     'CARGO',
@@ -325,63 +320,64 @@ class PayrollController extends Controller
                     'Desc. Atrasos, Abandonos, Faltas y Licencia S/G Haberes',
                     'TOTAL DESCUENTOS',
                     'LIQUIDO PAGABLE',
-               ));               
-               $payrolls = Payroll::get();
-               $number = 1;
-               foreach($payrolls as $payroll){
-
-                $employee = $payroll->employee;
-                $contract = Contract::where('employee_id',$employee->id)->where('status',true)->first();
-
-                $sheet->row($row++, array(
-                    $number++,
-                    $employee->identity_card,
-                    $employee->last_name.' '.$employee->mothers_last_name.' '.$employee->first_name.' '.$employee->mothers_last_name,
-                    $employee->group_job??'Central',
-                    $employee->account_number,
-                    $employee->birth_date,
-                    $employee->gender,
-                    '1',
-                    $employee->employee_type->name,
-                    $contract->date_start,
-                    $contract->date_end,
-                    $payroll->worked_days,
-                    $contract->base_wage,
-                    $payroll->quotable,
-                    $payroll->managment_entity->name,
-                    $payroll->quotable*0.1,
-                    $payroll->quotable*0.171,
-                    $payroll->quotable*0.05,
-                    0,
-                    $payroll->total_amount_discount_institution,
-                    $payroll->payable_liquid,
-                    0,
-                    $payroll->total_discounts,
-                    $payroll->total_discounts,
-                    $payroll->payable_liquid
                 ));
-               }
+                $payrolls = Payroll::get();
+                $number = 1;
+                foreach ($payrolls as $payroll) {
+
+                    $employee = $payroll->employee;
+                    $contract = Contract::where('employee_id', $employee->id)->where('status', true)->first();
+
+                    $sheet->row($row++, array(
+                        $number++,
+                        $employee->identity_card,
+                        $employee->last_name . ' ' . $employee->mothers_last_name . ' ' . $employee->first_name . ' ' . $employee->mothers_last_name,
+                        $employee->group_job ?? 'Central',
+                        $employee->account_number,
+                        $employee->birth_date,
+                        $employee->gender,
+                        '1',
+                        $employee->employee_type->name,
+                        $contract->date_start,
+                        $contract->date_end,
+                        $payroll->worked_days,
+                        $contract->base_wage,
+                        $payroll->quotable,
+                        $payroll->managment_entity->name,
+                        $payroll->quotable * 0.1,
+                        $payroll->quotable * 0.171,
+                        $payroll->quotable * 0.05,
+                        0,
+                        $payroll->total_amount_discount_institution,
+                        $payroll->payable_liquid,
+                        0,
+                        $payroll->total_discounts,
+                        $payroll->total_discounts,
+                        $payroll->payable_liquid,
+                    ));
+                }
             });
         })->download('xls');
     }
 
-    private function generateExcelPatronal(){
-        Excel::create('Filename', function($excel) {
+    private function generateExcelPatronal()
+    {
+        Excel::create('Filename', function ($excel) {
             // Set the title
             $excel->setTitle('Our new awesome title');
 
             // Chain the setters
             $excel->setCreator('Maatwebsite')
-                    ->setCompany('Maatwebsite');
+                ->setCompany('Maatwebsite');
 
             // Call them separately
             $excel->setDescription('A demonstration to change the file properties');
-            
-            $excel->sheet('Sheetname', function($sheet) {
+
+            $excel->sheet('Sheetname', function ($sheet) {
                 $center_style = array(
                     'alignment' => array(
                         'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                    )
+                    ),
                 );
                 $name = "MUTUAL DE SERVICIOS AL POLICIA";
                 $nit = "NIT 234578021";
@@ -394,19 +390,19 @@ class PayrollController extends Controller
                 $sheet->mergeCells('A3:C3');
 
                 $sheet->row(1, array(
-                    $name
+                    $name,
                 ));
                 $sheet->row(2, array(
-                    $nit
+                    $nit,
                 ));
                 $sheet->row(3, array(
-                    $address
+                    $address,
                 ));
-                
+
                 $objDrawing = new PHPExcel_Worksheet_Drawing;
                 $objDrawing->setPath(public_path('images/logo.jpg')); //your image path
-                $objDrawing->setCoordinates('E1');                
-                $objDrawing->setHeight(74);                
+                $objDrawing->setCoordinates('E1');
+                $objDrawing->setHeight(74);
                 $objDrawing->setWorksheet($sheet);
 
                 $sheet->mergeCells('A5:N5');
@@ -416,29 +412,27 @@ class PayrollController extends Controller
                 $sheet->mergeCells('A7:N7');
                 $sheet->getStyle("A7:N7")->applyFromArray($center_style);
 
-
-
                 $sheet->row(5, array(
-                    $title
+                    $title,
                 ));
                 $sheet->row(6, array(
-                    $subtitle
+                    $subtitle,
                 ));
                 $sheet->row(7, array(
-                    $exchange
+                    $exchange,
                 ));
 
                 $row = 10;
                 $sheet->getStyle($row)->getFill()
-                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
-                ->getStartColor()
-                ->setARGB('FF808080');
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setARGB('FF808080');
                 $sheet->row($row++, array(
                     'Nº',
                     'C.I.',
                     'TRABAJADOR',
                     'SUCURSAL',
-                    'PUESTO',          
+                    'PUESTO',
                     'FECHA INGRESO',
                     'TOTAL GANADO',
                     'DIAS TRABAJADOS',
@@ -447,55 +441,55 @@ class PayrollController extends Controller
                     'Riesgo profesional 1,71%',
                     'Aporte Patronal Solidario 3%',
                     'Aporte patronal para vivienda 2%',
-                    'TOTAL A PAGAR',                    
-               ));               
-               $payrolls = Payroll::get();
-               $number = 1;
-               foreach($payrolls as $payroll){
-
-                $employee = $payroll->employee;
-                $contract = Contract::where('employee_id',$employee->id)->where('status',true)->first();
-
-                $sheet->row($row++, array(
-                    $number++,
-                    $employee->identity_card,
-                    $employee->last_name.' '.$employee->mothers_last_name.' '.$employee->first_name.' '.$employee->mothers_last_name,
-                    $employee->group_job->name??'Central',                                                                                
-                    $employee->employee_type->name,
-                    $contract->date_start,
-                    $payroll->quotable,         
-                    $payroll->worked_days,                    
-                    $employee->management_entity->name,
-                    $payroll->quotable*0.1,
-                    $payroll->quotable*0.171,
-                    $payroll->quotable*0.03,
-                    $payroll->quotable*0.02,                    
-                    $payroll->payable_liquid
+                    'TOTAL A PAGAR',
                 ));
-               }
+                $payrolls = Payroll::get();
+                $number = 1;
+                foreach ($payrolls as $payroll) {
+
+                    $employee = $payroll->employee;
+                    $contract = Contract::where('employee_id', $employee->id)->where('status', true)->first();
+
+                    $sheet->row($row++, array(
+                        $number++,
+                        $employee->identity_card,
+                        $employee->last_name . ' ' . $employee->mothers_last_name . ' ' . $employee->first_name . ' ' . $employee->mothers_last_name,
+                        $employee->group_job->name ?? 'Central',
+                        $employee->employee_type->name,
+                        $contract->date_start,
+                        $payroll->quotable,
+                        $payroll->worked_days,
+                        $employee->management_entity->name,
+                        $payroll->quotable * 0.1,
+                        $payroll->quotable * 0.171,
+                        $payroll->quotable * 0.03,
+                        $payroll->quotable * 0.02,
+                        $payroll->payable_liquid,
+                    ));
+                }
             });
         })->download('xls');
     }
 
-    private function generateExcelTributaria(){
-        Excel::create('Filename', function($excel) {
+    private function generateExcelTributaria()
+    {
+        Excel::create('Filename', function ($excel) {
             // Set the title
             $excel->setTitle('Our new awesome title');
 
             // Chain the setters
             $excel->setCreator('Maatwebsite')
-                    ->setCompany('Maatwebsite');
+                ->setCompany('Maatwebsite');
 
             // Call them separately
             $excel->setDescription('A demonstration to change the file properties');
-            
-            $excel->sheet('Sheetname', function($sheet) {
+
+            $excel->sheet('Sheetname', function ($sheet) {
                 $center_style = array(
                     'alignment' => array(
                         'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                    )
+                    ),
                 );
-
 
                 $name = "MUTUAL DE SERVICIOS AL POLICIA";
                 $nit = "NIT 234578021";
@@ -508,19 +502,19 @@ class PayrollController extends Controller
                 $sheet->mergeCells('A3:C3');
 
                 $sheet->row(1, array(
-                    $name
+                    $name,
                 ));
                 $sheet->row(2, array(
-                    $nit
+                    $nit,
                 ));
                 $sheet->row(3, array(
-                    $address
+                    $address,
                 ));
-                
+
                 $objDrawing = new PHPExcel_Worksheet_Drawing;
                 $objDrawing->setPath(public_path('images/logo.jpg')); //your image path
-                $objDrawing->setCoordinates('E1');                
-                $objDrawing->setHeight(74);                
+                $objDrawing->setCoordinates('E1');
+                $objDrawing->setHeight(74);
                 $objDrawing->setWorksheet($sheet);
 
                 $sheet->mergeCells('A5:N5');
@@ -530,29 +524,27 @@ class PayrollController extends Controller
                 $sheet->mergeCells('A7:N7');
                 $sheet->getStyle("A7:N7")->applyFromArray($center_style);
 
-
-
                 $sheet->row(5, array(
-                    $title
+                    $title,
                 ));
                 $sheet->row(6, array(
-                    $subtitle
+                    $subtitle,
                 ));
                 $sheet->row(7, array(
-                    $exchange
+                    $exchange,
                 ));
 
                 $row = 10;
                 $sheet->getStyle($row)->getFill()
-                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
-                ->getStartColor()
-                ->setARGB('FF808080');
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setARGB('FF808080');
                 $sheet->row($row++, array(
                     'Nº',
                     'C.I.',
                     'TRABAJADOR',
                     'SUCURSAL',
-                    'SUELDO NETO',          
+                    'SUELDO NETO',
                     'Minimo No imponible',
                     'Diferencia sujeto a impuestos',
                     'Impuesto 13% Debito Fisca',
@@ -566,40 +558,40 @@ class PayrollController extends Controller
                     'Saldo a favor del dependiente',
                     'Saldo Utilizado',
                     'Impuesto determinado a pagar',
-                    'Saldo para mes siguiente',                    
-               ));               
-               $payrolls = Payroll::get();
-               $number = 1;
-               $basic_salary = 4000;
-               $basic_salary_tax = $basic_salary*0.13;
-               foreach($payrolls as $payroll){
-
-                $employee = $payroll->employee;
-                $contract = Contract::where('employee_id',$employee->id)->where('status',true)->first();
-                $tax = $payroll->payable_liquid-40000>0?$payroll->payable_liquid-40000:0;
-                $sheet->row($row++, array(
-                    $number++,
-                    $employee->identity_card,
-                    $employee->last_name.' '.$employee->mothers_last_name.' '.$employee->first_name.' '.$employee->mothers_last_name,
-                    $employee->group_job->name??'Central',                                                                                
-                    $payroll->payable_liquid,
-                    $basic_salary,
-                    $tax,
-                    '0',
-                    $basic_salary_tax,
-                    '0f',
-                    '0D',
-                    '0m',
-                    '0A',
-                    '0T',
-                    '0S',
-                    '0u',
-                    '0I',
-                    '0sig',                    
+                    'Saldo para mes siguiente',
                 ));
-               }
+                $payrolls = Payroll::get();
+                $number = 1;
+                $basic_salary = 4000;
+                $basic_salary_tax = $basic_salary * 0.13;
+                foreach ($payrolls as $payroll) {
+
+                    $employee = $payroll->employee;
+                    $contract = Contract::where('employee_id', $employee->id)->where('status', true)->first();
+                    $tax = $payroll->payable_liquid - 40000 > 0 ? $payroll->payable_liquid - 40000 : 0;
+                    $sheet->row($row++, array(
+                        $number++,
+                        $employee->identity_card,
+                        $employee->last_name . ' ' . $employee->mothers_last_name . ' ' . $employee->first_name . ' ' . $employee->mothers_last_name,
+                        $employee->group_job->name ?? 'Central',
+                        $payroll->payable_liquid,
+                        $basic_salary,
+                        $tax,
+                        '0',
+                        $basic_salary_tax,
+                        '0f',
+                        '0D',
+                        '0m',
+                        '0A',
+                        '0T',
+                        '0S',
+                        '0u',
+                        '0I',
+                        '0sig',
+                    ));
+                }
             });
-        })->download('xls');    
+        })->download('xls');
     }
 
     private function getFormattedData($year, $month, $valid_contracts, $consultant, $with_account, $management_entity, $position_group, $employer_number)
@@ -627,17 +619,17 @@ class PayrollController extends Controller
                     foreach ($employee_contracts as $key => $employee_contract) {
                         if ($key > 0) {
                             $current_contract_date = Carbon::parse($employee_contract->date_start);
-                            $last_contract_date = Carbon::parse($employee_contracts[$key-1]->date_end);
+                            $last_contract_date = Carbon::parse($employee_contracts[$key - 1]->date_end);
                             if ($last_contract_date->year == $current_contract_date->year && $last_contract_date->month == $current_contract_date->month) {
                                 $rehired = true;
                             }
                         } else {
-                            
+
                         }
                     }
                 }
 
-                if(Payroll::where('code', $payroll->code)->count() > 1) {
+                if (Payroll::where('code', $payroll->code)->count() > 1) {
                     $rehired = true;
                 }
 
@@ -675,15 +667,15 @@ class PayrollController extends Controller
                 $total_contributions->add_total_contributions($e->total_contributions);
             }
         } else {
-            return (object)array(
+            return (object) array(
                 "code" => 404,
                 "error" => true,
                 "message" => "Planilla inexistente",
-                "data" => null
+                "data" => null,
             );
         }
 
-        return (object)array(
+        return (object) array(
             "code" => 200,
             "error" => false,
             "message" => "Planilla generada con éxito",
@@ -693,10 +685,10 @@ class PayrollController extends Controller
                 'employees' => $employees,
                 'procedure' => $procedure,
                 'company' => $company,
-                'title' => (object)array(
+                'title' => (object) array(
                     'year' => $year,
                 ),
-            ]
+            ],
         );
     }
 
@@ -792,7 +784,7 @@ class PayrollController extends Controller
                 return response()->json([
                     'error' => true,
                     'message' => 'No se encuentra la planilla',
-                    'data' => null
+                    'data' => null,
                 ]);
         }
 
@@ -812,7 +804,7 @@ class PayrollController extends Controller
 
         // return response()->json($response);
 
-        $file_name= implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]).".pdf";
+        $file_name = implode(" ", [$response->data['title']->name, $report_name, $year, strtoupper($month->name)]) . ".pdf";
 
         return \PDF::loadView('payroll.print', $response->data)
             ->setOption('page-width', '216')
@@ -822,14 +814,14 @@ class PayrollController extends Controller
             ->setOrientation('landscape')
             ->setOption('encoding', 'utf-8')
             ->setOption('footer-font-size', 5)
-            ->setOption('footer-center', '[page] de [topage] - Impreso el '.date('m/d/Y H:i'))
+            ->setOption('footer-center', '[page] de [topage] - Impreso el ' . date('m/d/Y H:i'))
             ->stream($file_name);
     }
 
-    public function addmonth ()
+    public function addmonth()
     {
-        $procedure = Procedure::orderBy('id', 'desc')->first();
-        
+        $procedure = Procedure::orderBy('year', 'desc')->orderBy('month_id', 'desc')->first();
+
         if ($procedure->month_id == 12) {
             $month = 1;
             $year = $procedure->year + 1;
@@ -837,11 +829,11 @@ class PayrollController extends Controller
             $month = $procedure->month_id + 1;
             $year = $procedure->year;
         }
-        if ( $month < (int)date('m') + 1 && $year <= date('Y') ) {
+        if ($month < (int) date('m') + 1 && $year <= date('Y')) {
             $pro = new Procedure;
             $pro->month_id = $month;
             $pro->year = $year;
-            $pro->name = '';  
+            $pro->name = '';
             $pro->discount_old = 10;
             $pro->discount_common_risk = 1.71;
             $pro->discount_commission = 0.50;
@@ -852,7 +844,7 @@ class PayrollController extends Controller
             $pro->save();
         }
         return redirect('payroll');
-  }
+    }
 
     /**
      * Print TXT payroll reports.
@@ -877,27 +869,27 @@ class PayrollController extends Controller
 
         if ($total_employees == 0) {
             return Redirect::back()->withErrors([
-                "message" => "Todavía no se ha registrado el mes de ".$month->name
+                "message" => "Todavía no se ha registrado el mes de " . $month->name,
             ]);
         }
 
         $content = "";
 
-        $content .= "sueldo del mes de ".strtolower($month->name)." ".$year." ".Util::fillZerosLeft(strval($total_employees), 4).Carbon::now()->format('dmY') ."\r\n";
+        $content .= "sueldo del mes de " . strtolower($month->name) . " " . $year . " " . Util::fillZerosLeft(strval($total_employees), 4) . Carbon::now()->format('dmY') . "\r\n";
 
-        $content .= $response->data['company']->account_number.Util::fillZerosLeft(strval(Util::format_number($response->data['total_discounts']->payable_liquid, 2, '', '.')), 12)."\r\n";
+        $content .= $response->data['company']->account_number . Util::fillZerosLeft(strval(Util::format_number($response->data['total_discounts']->payable_liquid, 2, '', '.')), 12) . "\r\n";
 
         foreach ($response->data['employees'] as $i => $employee) {
-            $content .= $employee->account_number.Util::fillZerosLeft(strval(Util::format_number($employee->payable_liquid, 2, '', '.')), 12)."1";
+            $content .= $employee->account_number . Util::fillZerosLeft(strval(Util::format_number($employee->payable_liquid, 2, '', '.')), 12) . "1";
 
             if ($i < ($total_employees - 1)) {
                 $content .= "\r\n";
             }
         }
 
-        $filename = implode('_', ["sueldos", strtolower($month->name), $year]).".txt";
+        $filename = implode('_', ["sueldos", strtolower($month->name), $year]) . ".txt";
 
-        $headers = ['Content-type'=>'text/plain', 'Content-Disposition'=>sprintf('attachment; filename="%s"', $filename)];
+        $headers = ['Content-type' => 'text/plain', 'Content-Disposition' => sprintf('attachment; filename="%s"', $filename)];
 
         // return response()->json($content);
 
@@ -918,53 +910,53 @@ class PayrollController extends Controller
 
         $employees = $this->getFormattedData($year, $month->id, 0, 0, 0, 0, 0, 0)->data['employees'];
         $total_employees = count($employees);
-        
+
         // return response()->json($employees);
 
         $content = "";
 
-        $content .= implode(',', ["Nro","Tipo de documento de identidad","Número de documento de identidad","Lugar de expedición","Fecha de nacimiento","Apellido Paterno","Apellido Materno","Nombres","País de nacionalidad","Sexo","Jubilado","¿Aporta a la AFP?","¿Persona con discapacidad?","Tutor de persona con discapacidad","Fecha de ingreso","Fecha de retiro","Motivo retiro","Caja de salud","AFP a la que aporta","NUA/CUA","Sucursal o ubicación adicional","Clasificación laboral","Cargo","Modalidad de contrato","Tipo contrato","Días pagados","Horas pagadas","Haber Básico","Bono de antigüedad","Horas extra","Monto horas extra","Horas recargo nocturno","Monto horas extra nocturnas","Horas extra dominicales","Monto horas extra dominicales","Domingos trabajados","Monto domingo trabajado","Nro. dominicales","Salario dominical","Bono producción","Subsidio frontera","Otros bonos y pagos","RC-IVA","Aporte Caja Salud","Aporte AFP","Otros descuentos","\r\n"]);
+        $content .= implode(',', ["Nro", "Tipo de documento de identidad", "Número de documento de identidad", "Lugar de expedición", "Fecha de nacimiento", "Apellido Paterno", "Apellido Materno", "Nombres", "País de nacionalidad", "Sexo", "Jubilado", "¿Aporta a la AFP?", "¿Persona con discapacidad?", "Tutor de persona con discapacidad", "Fecha de ingreso", "Fecha de retiro", "Motivo retiro", "Caja de salud", "AFP a la que aporta", "NUA/CUA", "Sucursal o ubicación adicional", "Clasificación laboral", "Cargo", "Modalidad de contrato", "Tipo contrato", "Días pagados", "Horas pagadas", "Haber Básico", "Bono de antigüedad", "Horas extra", "Monto horas extra", "Horas recargo nocturno", "Monto horas extra nocturnas", "Horas extra dominicales", "Monto horas extra dominicales", "Domingos trabajados", "Monto domingo trabajado", "Nro. dominicales", "Salario dominical", "Bono producción", "Subsidio frontera", "Otros bonos y pagos", "RC-IVA", "Aporte Caja Salud", "Aporte AFP", "Otros descuentos", "\r\n"]);
 
         foreach ($employees as $i => $e) {
-            $content .= implode(',', [++$i,"CI",$e->ci,$e->id_ext,$e->birth_date,$e->last_name,$e->mothers_last_name,$e->name,"BOLIVIA",$e->gender,"0","1","0","0",$e->date_start,"","",$e->ovt->insurance_company_id,$e->ovt->management_entity_id,$e->nua_cua,"1","",mb_strtoupper(str_replace(",", " ", $e->position)),$e->ovt->contract_mode,$e->ovt->contract_type,$e->worked_days,"8",round($e->quotable, 2),"0","","","","","","","","","","","","","","",round($e->discount_old, 2),round($e->total_amount_discount_law, 2),round($e->discount_faults, 2)]);
+            $content .= implode(',', [++$i, "CI", $e->ci, $e->id_ext, $e->birth_date, $e->last_name, $e->mothers_last_name, $e->name, "BOLIVIA", $e->gender, "0", "1", "0", "0", $e->date_start, "", "", $e->ovt->insurance_company_id, $e->ovt->management_entity_id, $e->nua_cua, "1", "", mb_strtoupper(str_replace(",", " ", $e->position)), $e->ovt->contract_mode, $e->ovt->contract_type, $e->worked_days, "8", round($e->quotable, 2), "0", "", "", "", "", "", "", "", "", "", "", "", "", "", "", round($e->discount_old, 2), round($e->total_amount_discount_law, 2), round($e->discount_faults, 2)]);
 
             if ($i < ($total_employees)) {
                 $content .= "\r\n";
             }
         }
 
-        $filename = implode('_', ["planilla", "ovt", strtolower($month->name), $year]).".csv";
+        $filename = implode('_', ["planilla", "ovt", strtolower($month->name), $year]) . ".csv";
 
-        $headers = ['Content-type'=>'text/plain', 'Content-Disposition'=>sprintf('attachment; filename="%s"', $filename)];
+        $headers = ['Content-type' => 'text/plain', 'Content-Disposition' => sprintf('attachment; filename="%s"', $filename)];
 
         // return response()->json($content);
 
         return Response::make($content, 200, $headers);
 
     }
-    public static function show_payroll_month ($procedure_id) 
+    public static function show_payroll_month($procedure_id)
     {
         $procedure = Procedure::find($procedure_id);
         $result = null;
         if ($procedure != null) {
             $result = Payroll::join('procedures', 'payrolls.procedure_id', '=', 'procedures.id')
-                            ->join('contracts', 'payrolls.contract_id', '=', 'contracts.id')
-                            ->where('procedures.month_id', $procedure->month_id )
-                            ->first();
+                ->join('contracts', 'payrolls.contract_id', '=', 'contracts.id')
+                ->where('procedures.month_id', $procedure->month_id)
+                ->first();
         }
         return $result;
-    } 
+    }
 
-    public static function tribute_calculation ($salary, $rciva, $mes_anterior) 
-    { 
+    public static function tribute_calculation($salary, $rciva, $mes_anterior)
+    {
         $sal_min_nal = 2000;
 
-        $min_disponible = $sal_min_nal * 2;        
+        $min_disponible = $sal_min_nal * 2;
         $dif_salario_min_disponible = $salary - $min_disponible;
         if ($dif_salario_min_disponible < 0) {
             $dif_salario_min_disponible = 0;
         }
-        $idf = $dif_salario_min_disponible * 13 / 100;        
+        $idf = $dif_salario_min_disponible * 13 / 100;
         if ($idf > 520) {
             $min_disponible_13 = 520;
         } else {
@@ -977,16 +969,16 @@ class PayrollController extends Controller
             $fisco = $idf - ($rciva + $min_disponible_13);
         }
         if (($rciva - $min_disponible_13) > $idf) {
-            $dependiente = ($rciva + $min_disponible_13) -$idf;
-        }  
-        $saldo_mes_anterior = $mes_anterior;        
+            $dependiente = ($rciva + $min_disponible_13) - $idf;
+        }
+        $saldo_mes_anterior = $mes_anterior;
         $actualizacion = 0;
         if ($salary >= 8000) {
             $actualizacion = 1.002193919;
         }
         $total = $saldo_mes_anterior + $actualizacion;
         $saldo_favor_dependiente = $dependiente + $total;
-        if ( $fisco > $saldo_favor_dependiente) {
+        if ($fisco > $saldo_favor_dependiente) {
             $saldo_utilizado = $saldo_favor_dependiente;
         } else {
             $saldo_utilizado = $fisco;
@@ -994,7 +986,7 @@ class PayrollController extends Controller
         $impuesto_pagar = $fisco - $saldo_utilizado;
 
         $saldo_mes_siguiente = $saldo_favor_dependiente - $saldo_utilizado;
-  
+
         $tribute['min_disponible'] = $min_disponible;
         $tribute['dif_salario_min_disponible'] = $dif_salario_min_disponible;
         $tribute['idf'] = $idf;
@@ -1009,6 +1001,6 @@ class PayrollController extends Controller
         $tribute['saldo_utilizado'] = $saldo_utilizado;
         $tribute['impuesto_pagar'] = $impuesto_pagar;
         $tribute['saldo_mes_siguiente'] = $saldo_mes_siguiente;
-        return (object)$tribute;
+        return (object) $tribute;
     }
 }
