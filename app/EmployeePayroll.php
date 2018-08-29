@@ -2,12 +2,12 @@
 
 namespace App;
 
-use Carbon\Carbon;
 use App\Helpers\Util;
+use Carbon\Carbon;
 
 class EmployeePayroll
 {
-    function __construct($payroll)
+    public function __construct($payroll)
     {
         $contract = $payroll->contract;
         $employee = $contract->employee;
@@ -78,7 +78,8 @@ class EmployeePayroll
         $this->valid_contract = (is_null($contract->date_end) || $contract->status) ? true : (Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id)->endOfMonth()) || Carbon::parse($contract->date_end)->gte(Carbon::create($payroll->procedure->year, $payroll->procedure->month->id, 30)) || $contract->status);
     }
 
-    public function setZeroAccounts() {
+    public function setZeroAccounts()
+    {
         $this->base_wage = 0;
         $this->quotable = 0;
         $this->discount_old = 0;
@@ -106,8 +107,8 @@ class EmployeePayroll
     {
         $this->quotable = $this->base_wage * $this->worked_days / 30;
         $this->discount_old = Util::get_percentage($this->quotable, $payroll->procedure->discount_old);
-        $this->discount_common_risk = Util::get_percentage($this->quotable,$payroll->procedure->discount_common_risk);
-        $this->discount_commission = Util::get_percentage($this->quotable,$payroll->procedure->discount_commission);
+        $this->discount_common_risk = Util::get_percentage($this->quotable, $payroll->procedure->discount_common_risk);
+        $this->discount_commission = Util::get_percentage($this->quotable, $payroll->procedure->discount_commission);
         $this->discount_solidary = Util::get_percentage($this->quotable, $payroll->procedure->discount_solidary);
         $this->discount_national = Util::get_percentage($this->quotable, $payroll->procedure->discount_national);
         $this->total_amount_discount_law = $this->discount_old + $this->discount_common_risk + $this->discount_commission + $this->discount_solidary + $this->discount_national;
@@ -121,7 +122,9 @@ class EmployeePayroll
 
     private function employerContribution($payroll)
     {
-        $this->contribution_insurance_company = Util::get_percentage($this->quotable, $payroll->procedure->contribution_insurance_company);
+        if ($payroll->contract->employee->insurance_company->active) {
+            $this->contribution_insurance_company = Util::get_percentage($this->quotable, $payroll->procedure->contribution_insurance_company);
+        }
         $this->contribution_professional_risk = Util::get_percentage($this->quotable, $payroll->procedure->contribution_professional_risk);
         $this->contribution_employer_solidary = Util::get_percentage($this->quotable, $payroll->procedure->contribution_employer_solidary);
         $this->contribution_employer_housing = Util::get_percentage($this->quotable, $payroll->procedure->contribution_employer_housing);
@@ -149,8 +152,8 @@ class EmployeePayroll
     {
         $contract = $payroll->contract;
 
-        $payroll_date = (object)[
-            "year" =>  $payroll->procedure->year,
+        $payroll_date = (object) [
+            "year" => $payroll->procedure->year,
             "month" => $payroll->procedure->month_id,
         ];
 
@@ -165,7 +168,7 @@ class EmployeePayroll
             }
         }
 
-        $last_day_of_month = Carbon::create($payroll_date->year, $payroll_date->month)->endOfMonth()->day;        
+        $last_day_of_month = Carbon::create($payroll_date->year, $payroll_date->month)->endOfMonth()->day;
         $worked_days = 0;
 
         if ($contract->date_end == null) {
